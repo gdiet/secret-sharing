@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secret Sharing</title>
+</head>
+
+<body>
+  <h1>Secret Sharing</h1>
+  <p>
+    These pages demonstrate some
+    <blockquote>
+      methods for distributing a secret among a group, in such a way that no individual holds any intelligible information about the secret, but when a sufficient number of individuals combine their 'shares', the secret may be reconstructed.
+    </blockquote>
+    <cite><a href="https://en.wikipedia.org/wiki/Secret_sharing">https://en.wikipedia.org/wiki/Secret_sharing</a></cite>
+  </p>
+
+  <h2>Conversion Text ⇔ Bytes</h2>
+  <p>
+    The secret sharing methods demonstrated here take as input unsigned bytes holding values from 0 to 255. To share a secret text, I recommend using <a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a> to convert between text and list-of-bytes.
+  </p>
+  <p>Text: <input id="textInput" type="text" value="¡secret!" size="50"></p>
+  <p>
+    <button id="textToBytesButton">⇊ UTF-8 convert ⇊</button> <button id="bytesToTextButton">⇈ UTF-8 convert ⇈</button>
+  </p>
+  <p>
+    Bytes: <input id="numbersInput" type="text" size="50">
+  </p>
+  <script>
+    document.getElementById('textToBytesButton').addEventListener('click', () => {
+      document.getElementById('numbersInput').value =
+        Array.from(
+          new TextEncoder().encode(
+            document.getElementById('textInput').value
+          )
+        ).join(',')
+    })
+    document.getElementById('bytesToTextButton').addEventListener('click', () => {
+      document.getElementById('textInput').value =
+        new TextDecoder().decode(
+          new Uint8Array(
+            document.getElementById('numbersInput').value
+              .split(',').map(n => parseInt(n))
+          )
+        )
+    })
+  </script>
+
+  <hr>
+
+  <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+    <a rel="license"
+       href="http://creativecommons.org/publicdomain/zero/1.0/">
+      <img src="http://i.creativecommons.org/p/zero/1.0/88x31.png" style="border-style: none;" alt="CC0" />
+    </a>
+    <br />
+    To the extent possible under law,
+    <a rel="dct:publisher"
+       href="https://github.com/gdiet/">
+      <span property="dct:title">gdiet</span></a>
+    has waived all copyright and related or neighboring rights to
+    these pages about
+    <span property="dct:title">Secret Sharing</span>.
+  This work is published from:
+  <span property="vcard:Country" datatype="dct:ISO3166"
+        content="DE" about="sharing-url">
+    Germany</span>.
+  </p>
+
+</body>
+</html>
