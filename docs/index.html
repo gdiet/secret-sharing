@@ -17,6 +17,9 @@
     <cite><a href="https://en.wikipedia.org/wiki/Secret_sharing">https://en.wikipedia.org/wiki/Secret_sharing</a></cite>
   </p>
 
+  <p>The methods demonstrated here are implemented as <a href="https://en.wikipedia.org/wiki/Block_cipher#Iterated_block_ciphers">iterated block ciphers</a> with a block length of 8 bits (one byte).</p>
+
+
   <h2>Conversion Text ⇔ Bytes</h2>
   <p>
     The secret sharing methods demonstrated here take as input unsigned bytes holding values from 0 to 255. To share a secret text, I recommend using <a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a> to convert between text and list-of-bytes.
@@ -47,6 +50,14 @@
         )
     })
   </script>
+
+  <h2>Secret Sharing Methods</h2>
+  <p>
+    <ul>
+      <li><a href="xor.html">Trivial - xor ⊕</a></li>
+      <li>Shamir's Secret Sharing</li>
+    </ul>
+  </p>
 
   <hr>
 
