@@ -18,26 +18,36 @@ let limit = (n: number, min: number, max: number) => Math.min(max - 1, Math.max(
 
 // document content
 let cont = {
-  get secretText() { return input('secretTextInput').value },
+  get secretText() { return   input('secretTextInput').value },
+  set secretText(s: string) { input('secretTextInput').value = s },
   get secretBytes() { return parseInts(input('secretBytesInput').value, 95) },
+  set secretBytes(b: number[]) {       input('secretBytesInput').value = b.join(',') },
   get shareNumber() { return parseInt(input('shareNumberInput').value) },
-  set shareNumber(k: number) { input('shareNumberInput').value = String(k) },
+  set shareNumber(k: number) {        input('shareNumberInput').value = String(k) },
   set shareKIndex(i: number) { span('shareKIndexSpan').innerHTML = String(i) },
+  shareSpan:  (index: number) => span (`share${index}Span` ),
   shareInput: (index: number) => input(`share${index}Input`),
+  get shareKInput() { return parseInts(input('shareKInput').value, 0) },
+  set shareKInput(b: number[]) {       input('shareKInput').value = b.join(',') },
+  get reconstuctedBytes() { return parseInts(input('reconstructedSecretBytesInput').value, 0) },
+  set reconstuctedBytes(b: number[]) {       input('reconstructedSecretBytesInput').value = b.join(',') },
+  set reconstuctedText(s: string) { input('reconstructedSecretTextInput').value = s },
 }
+
+// ss: function(index: number) { return { set hidden(b: boolean) { span(`share${index}Span`).hidden = b } } },
 
 // document automation
 listen(button, 'textToBytesButton', 'click', () => {
-  input('secretBytesInput').value = fromUTF8(cont.secretText).join(',')
+  cont.secretBytes = fromUTF8(cont.secretText)
 })
 listen(button, 'bytesToTextButton', 'click', () => {
-  input('secretTextInput').value = toUTF8(cont.secretBytes)
+  cont.secretText = toUTF8(cont.secretBytes)
 })
 listen(input, 'shareNumberInput', 'change', () => {
   cont.shareNumber = limit(cont.shareNumber, 2, 7)
   cont.shareKIndex = cont.shareNumber
   for (let i = 1; i <= 5; i++)
-    span(`share${i}Span`).hidden = i >= cont.shareNumber
+    cont.shareSpan(i).hidden = i >= cont.shareNumber
 })
 listen(button, 'fillWithRandomBytesButton', 'click', () => {
   for (let i = 1; i < cont.shareNumber; i++)
@@ -49,5 +59,16 @@ listen(button, 'createShareKButton', 'click', () => {
     result = result.map((value, index) =>
       value ^ parseInts(cont.shareInput(i).value, 0)[index]
     )
-  input('shareKInput').value = result.join(',')
+  cont.shareKInput = result
+})
+listen(button, 'reconstructSecretButton', 'click', () => {
+  let result = cont.shareKInput
+  for (let i = 1; i < cont.shareNumber; i++)
+    result = result.map((value, index) =>
+      value ^ parseInts(cont.shareInput(i).value, 0)[index]
+    )
+  cont.reconstuctedBytes = result
+})
+listen(button, 'reconstructedBytesToTextButton', 'click', () => {
+  cont.reconstuctedText = toUTF8(cont.reconstuctedBytes)
 })

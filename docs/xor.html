@@ -5,6 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>xor ⊕ For Secret Sharing</title>
+  <style>
+    input:read-only { background-color: LightGray; }
+  </style>
   <script src="xor.js" defer></script>
 </head>
 
@@ -78,7 +81,7 @@
 
   <hr>
 
-  <h3>1. UTF-8 Convert Text To Bytes</h3>
+  <h3>1. UTF-8 Convert The Secret Text To Bytes</h3>
   <p>
     This secret sharing method takes as input unsigned bytes holding values from 0 to 255. To share a secret text, use <a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a> to convert between text and list-of-bytes.
   </p>
@@ -118,6 +121,25 @@
   </p>
   <p>
     Share <span id="shareKIndexSpan">2</span>: <input id="shareKInput" type="text" size="45"><br>
+  </p>
+
+  <h3>4. Reconstruct The Secret From The Shares</h3>
+  <p>
+    The secrect bytes are reconstructed from the element wise ⊕ combination of all shares.
+  </p>
+  <p>
+    <button id="reconstructSecretButton">⇊ Reconstruct the secret bytes from the shares ⇊</button>
+  </p>
+  <p>
+    Reconstructed bytes: <input id="reconstructedSecretBytesInput" type="text" size="45" readonly>
+  </p>
+
+  <h3>5. UTF-8 Convert The Secret Bytes To Text</h3>
+  <p>
+    <button id="reconstructedBytesToTextButton">⇊ UTF-8 convert ⇊</button>
+  </p>
+  <p>
+    Reconstructed secret: <input id="reconstructedSecretTextInput" type="text" size="45" readonly>
   </p>
 
   <hr>
