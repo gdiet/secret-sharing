@@ -15,70 +15,68 @@
   </p>
 
   <p>
-    The "⊕" operator is used to symbolize a <a href="https://en.wikipedia.org/wiki/Bitwise_operation#XOR">bitwise xor</a>. For calculations use unsigned bytes holding values from 0 to 255.
+    The "⊕" operator is used to symbolize a <a href="https://en.wikipedia.org/wiki/Bitwise_operation#XOR">bitwise xor</a>. For calculations, unsigned bytes holding values from 0 to 255 are used.
   </p>
 
+  <h2>Share A Secret Among K Individuals</h2>
+  <ol>
+    <li>
+      UTF-8 convert the secret, e.g. "¡secret!", to a list of N bytes
+      <math>
+        <msub><mi>s</mi><mi>1</mi></msub>
+        <mi>…</mi>
+        <msub><mi>s</mi><mi>N</mi></msub>
+      </math>
+    </li>
+    <li>
+      Fill <math><mo></mo><mi>K</mi><mo>-</mo><mn>1</mn><mo></mo></math> lists of the same size <math><mi>N</mi></math> with random bytes
+      <math>
+        <msubsup><mi>b</mi><mi>i</mi><mi>1</mi></msubsup>
+        <mi>…</mi>
+        <msubsup><mi>b</mi><mi>i</mi><mi>K-1</mi></msubsup>
+      </math>
+    </li>
+    <li>
+      Create a list <math><mi>K</mi></math> of bytes from the element wise <math><mo>⊕</mo></math> combination of all lists:<br>
+      <math>
+        <msubsup><mi>b</mi><mi>i</mi><mi>K</mi></msubsup>
+        <mo>=</mo>
+        <msub><mi>s</mi><mi>i</mi></msub>
+        <mo>⊕</mo>
+        <msubsup><mi>b</mi><mi>i</mi><mi>1</mi></msubsup>
+        <mo>⊕</mo> <mi>…</mi> <mo>⊕</mo>
+        <msubsup><mi>b</mi><mi>i</mi><mi>K-1</mi></msubsup>
+      </math>
+    </li>
+  </ol>
   <p>
-    The secret, e.g. "¡secret!", is shared among K individuals as follows:
-    <ol>
-      <li>
-        UTF-8 convert the secret text to a list of N bytes
-        <math>
-          <msubsup><mi>b</mi><mi>1</mi><mi>secret</mi></msubsup>
-          <mi>…</mi>
-          <msubsup><mi>b</mi><mi>N</mi><mi>secret</mi></msubsup>
-        </math>
-      </li>
-      <li>
-        Fill <math><mo>(</mo><mi>K</mi><mo>-</mo><mn>1</mn><mo>)</mo></math> lists of the same size <math><mi>N</mi></math> with random bytes
-        <math>
-          <msubsup><mi>b</mi><mi>i</mi><mi>1</mi></msubsup>
-          <mi>…</mi>
-          <msubsup><mi>b</mi><mi>i</mi><mi>K-1</mi></msubsup>
-        </math>
-      </li>
-      <li>
-        Create a list <math><mi>K</mi></math> of bytes from the element wise <math><mo>⊕</mo></math> combination of all lists:<br>
-        <math>
-          <msubsup><mi>b</mi><mi>i</mi><mi>K</mi></msubsup>
-          <mo>=</mo>
-          <msubsup><mi>b</mi><mi>i</mi><mi>secret</mi></msubsup>
-          <mo>⊕</mo>
-          <msubsup><mi>b</mi><mi>i</mi><mi>1</mi></msubsup>
-          <mo>⊕</mo> <mi>…</mi> <mo>⊕</mo>
-          <msubsup><mi>b</mi><mi>i</mi><mi>K-1</mi></msubsup>
-        </math>
-      </li>
-      <li>
-        The lists
-        <math>
-          <msubsup><mi>b</mi><mi>i</mi><mi>1</mi></msubsup>
-          <mi>…</mi>
-          <msubsup><mi>b</mi><mi>i</mi><mi>K</mi></msubsup>
-        </math>
-        are the shares
-      </li>
-    </ol>
+    The lists
+    <math>
+      <msubsup><mi>b</mi><mi>i</mi><mi>1</mi></msubsup>
+      <mi>…</mi>
+      <msubsup><mi>b</mi><mi>i</mi><mi>K</mi></msubsup>
+    </math>
+    are the shares.
   </p>
 
-  <p>
-    Reconstruct the secret from the shares as follows:
-    <ol>
-      <li value="5">
-        Create the list of secret bytes from the element wise <math><mo>⊕</mo></math> combination of all shares:<br>
-        <math>
-          <msubsup><mi>b</mi><mi>i</mi><mi>secret</mi></msubsup>
-          <mo>=</mo>
-          <msubsup><mi>b</mi><mi>i</mi><mi>1</mi></msubsup>
-          <mo>⊕</mo> <mi>…</mi> <mo>⊕</mo>
-          <msubsup><mi>b</mi><mi>i</mi><mi>K</mi></msubsup>
-        </math>
-      </li>
-      <li>
-        UTF-8 convert the secret bytes to text
-      </li>
-    </ol>
-  </p>
+  <h2>Reconstruct The Secret From The Shares</h2>
+  <ol>
+    <li value="4">
+      Create the list of secret bytes from the element wise <math><mo>⊕</mo></math> combination of all shares:<br>
+      <math>
+        <msubsup><mi>s'</mi><mi>i</mi><mi></mi></msubsup>
+        <mo>=</mo>
+        <msubsup><mi>b</mi><mi>i</mi><mi>1</mi></msubsup>
+        <mo>⊕</mo> <mi>…</mi> <mo>⊕</mo>
+        <msubsup><mi>b</mi><mi>i</mi><mi>K</mi></msubsup>
+      </math>
+    </li>
+    <li>
+      UTF-8 convert the secret bytes to text
+    </li>
+  </ol>
+
+  <hr>
 
   <h3>1. UTF-8 Convert Text To Bytes</h3>
   <p>
