@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>xor ⊕ For Secret Sharing</title>
+  <script src="xor.js" defer></script>
 </head>
 
 <body>
@@ -90,25 +91,6 @@
   <p>
     Secret bytes: <input id="numbersInput" type="text" size="50">
   </p>
-  <script>
-    document.getElementById('textToBytesButton').addEventListener('click', () => {
-      document.getElementById('numbersInput').value =
-        Array.from(
-          new TextEncoder().encode(
-            document.getElementById('textInput').value
-          )
-        ).join(',')
-    })
-    document.getElementById('bytesToTextButton').addEventListener('click', () => {
-      document.getElementById('textInput').value =
-        new TextDecoder().decode(
-          new Uint8Array(
-            document.getElementById('numbersInput').value
-              .split(',').map(n => parseInt(n))
-          )
-        )
-    })
-  </script>
 
   <hr>
 
