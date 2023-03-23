@@ -20,6 +20,7 @@ let cont = {
     get secretBytes() { return parseInts(input('secretBytesInput').value, 95); },
     get shareNumber() { return parseInt(input('shareNumberInput').value); },
     set shareNumber(k) { input('shareNumberInput').value = String(k); },
+    set shareKIndex(i) { span('shareKIndexSpan').innerHTML = String(i); },
     shareInput: (index) => input(`share${index}Input`),
 };
 // document automation
@@ -31,11 +32,18 @@ listen(button, 'bytesToTextButton', 'click', () => {
 });
 listen(input, 'shareNumberInput', 'change', () => {
     cont.shareNumber = limit(cont.shareNumber, 2, 7);
+    cont.shareKIndex = cont.shareNumber;
     for (let i = 1; i <= 5; i++)
         span(`share${i}Span`).hidden = i >= cont.shareNumber;
 });
 listen(button, 'fillWithRandomBytesButton', 'click', () => {
     for (let i = 1; i < cont.shareNumber; i++)
         cont.shareInput(i).value = cont.secretBytes.map(() => random(0, 256)).join(",");
+});
+listen(button, 'createShareKButton', 'click', () => {
+    let result = cont.secretBytes;
+    for (let i = 1; i < cont.shareNumber; i++)
+        result = result.map((value, index) => value ^ parseInts(cont.shareInput(i).value, 0)[index]);
+    input('shareKInput').value = result.join(',');
 });
 //# sourceMappingURL=xor.js.map

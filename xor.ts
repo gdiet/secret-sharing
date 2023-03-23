@@ -22,6 +22,7 @@ let cont = {
   get secretBytes() { return parseInts(input('secretBytesInput').value, 95) },
   get shareNumber() { return parseInt(input('shareNumberInput').value) },
   set shareNumber(k: number) { input('shareNumberInput').value = String(k) },
+  set shareKIndex(i: number) { span('shareKIndexSpan').innerHTML = String(i) },
   shareInput: (index: number) => input(`share${index}Input`),
 }
 
@@ -34,10 +35,19 @@ listen(button, 'bytesToTextButton', 'click', () => {
 })
 listen(input, 'shareNumberInput', 'change', () => {
   cont.shareNumber = limit(cont.shareNumber, 2, 7)
+  cont.shareKIndex = cont.shareNumber
   for (let i = 1; i <= 5; i++)
     span(`share${i}Span`).hidden = i >= cont.shareNumber
 })
 listen(button, 'fillWithRandomBytesButton', 'click', () => {
   for (let i = 1; i < cont.shareNumber; i++)
     cont.shareInput(i).value = cont.secretBytes.map(() => random(0, 256)).join(",")
+})
+listen(button, 'createShareKButton', 'click', () => {
+  let result = cont.secretBytes
+  for (let i = 1; i < cont.shareNumber; i++)
+    result = result.map((value, index) =>
+      value ^ parseInts(cont.shareInput(i).value, 0)[index]
+    )
+  input('shareKInput').value = result.join(',')
 })

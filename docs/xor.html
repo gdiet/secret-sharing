@@ -99,17 +99,26 @@
     <input id="shareNumberInput" type="number" min="2" max="6" step="1" value="2">
   </p>
   <p>
+    <button id="fillWithRandomBytesButton">⇊ Fill the (K-1) shares with random bytes ⇊</button>
+  </p>
+  <p>
     <span id="share1Span"              >Share 1: <input id="share1Input" type="text" size="45"></span><br>
     <span id="share2Span" hidden="true">Share 2: <input id="share2Input" type="text" size="45"></span><br>
     <span id="share3Span" hidden="true">Share 3: <input id="share3Input" type="text" size="45"></span><br>
     <span id="share4Span" hidden="true">Share 4: <input id="share4Input" type="text" size="45"></span><br>
     <span id="share5Span" hidden="true">Share 5: <input id="share5Input" type="text" size="45"></span><br>
   </p>
-  <p>
-    <button id="fillWithRandomBytesButton">⇈ Fill (K-1) shares with random bytes ⇈</button>
-  </p>
 
   <h3>3. Create The Last Share From The ⊕ Combination</h3>
+  <p>
+    The last share is the element wise ⊕ combination of the secret with all other shares.
+  </p>
+  <p>
+    <button id="createShareKButton">⇊ Create the last share ⇊</button>
+  </p>
+  <p>
+    Share <span id="shareKIndexSpan">2</span>: <input id="shareKInput" type="text" size="45"><br>
+  </p>
 
   <hr>
 
