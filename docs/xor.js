@@ -32,7 +32,7 @@ listen(button, 'bytesToTextButton', 'click', () => {
 listen(input, 'shareNumberInput', 'change', () => {
     cont.shareNumber = limit(cont.shareNumber, 2, 7);
     for (let i = 1; i <= 5; i++)
-        input(`share${i}Input`).hidden = i >= cont.shareNumber;
+        span(`share${i}Span`).hidden = i >= cont.shareNumber;
 });
 listen(button, 'fillWithRandomBytesButton', 'click', () => {
     for (let i = 1; i < cont.shareNumber; i++)

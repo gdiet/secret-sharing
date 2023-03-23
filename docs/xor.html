@@ -90,21 +90,26 @@
     Secret bytes: <input id="secretBytesInput" type="text" size="50">
   </p>
 
-  <h3>2. Fill (K-1) lists of the same size N with random bytes</h3>
+  <h3>2. Fill (K-1) Shares With Random Bytes</h3>
   <p>
-    How many shares (K) shall be created?
+    For this secret sharing method, all shares must have the same number of bytes.
+  </p>
+  <p>
+    How many shares (K) in total shall be created?
     <input id="shareNumberInput" type="number" min="2" max="6" step="1" value="2">
   </p>
   <p>
-    Share 1: <input id="share1Input" type="text" size="45"><br>
-    Share 2: <input id="share2Input" type="text" size="45" hidden="true"><br>
-    Share 3: <input id="share3Input" type="text" size="45" hidden="true"><br>
-    Share 4: <input id="share4Input" type="text" size="45" hidden="true"><br>
-    Share 5: <input id="share5Input" type="text" size="45" hidden="true">
+    <span id="share1Span"              >Share 1: <input id="share1Input" type="text" size="45"></span><br>
+    <span id="share2Span" hidden="true">Share 2: <input id="share2Input" type="text" size="45"></span><br>
+    <span id="share3Span" hidden="true">Share 3: <input id="share3Input" type="text" size="45"></span><br>
+    <span id="share4Span" hidden="true">Share 4: <input id="share4Input" type="text" size="45"></span><br>
+    <span id="share5Span" hidden="true">Share 5: <input id="share5Input" type="text" size="45"></span><br>
   </p>
   <p>
     <button id="fillWithRandomBytesButton">⇈ Fill (K-1) shares with random bytes ⇈</button>
   </p>
+
+  <h3>3. Create The Last Share From The ⊕ Combination</h3>
 
   <hr>
 
