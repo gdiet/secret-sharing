@@ -84,12 +84,28 @@
   <p>
     This secret sharing method takes as input unsigned bytes holding values from 0 to 255. To share a secret text, use <a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a> to convert between text and list-of-bytes.
   </p>
-  <p>Text: <input id="textInput" type="text" value="¡secret!" size="50"></p>
+  <p>Text: <input id="secretTextInput" type="text" value="¡secret!" size="50"></p>
   <p>
     <button id="textToBytesButton">⇊ UTF-8 convert ⇊</button> <button id="bytesToTextButton">⇈ UTF-8 convert ⇈</button>
   </p>
   <p>
-    Secret bytes: <input id="numbersInput" type="text" size="50">
+    Secret bytes: <input id="secretBytesInput" type="text" size="50">
+  </p>
+
+  <h3>2. Fill (K-1) lists of the same size N with random bytes</h3>
+  <p>
+    How many shares (K) shall be created?
+    <input id="shareNumberInput" type="number" min="2" max="6" step="1" value="2">
+  </p>
+  <p>
+    Share 1: <input id="share1Input" type="text" size="45"><br>
+    Share 2: <input id="share2Input" type="text" size="45" hidden="true"><br>
+    Share 3: <input id="share3Input" type="text" size="45" hidden="true"><br>
+    Share 4: <input id="share4Input" type="text" size="45" hidden="true"><br>
+    Share 5: <input id="share5Input" type="text" size="45" hidden="true">
+  </p>
+  <p>
+    <button id="fillWithRandomBytesButton">⇈ Fill (K-1) shares with random bytes ⇈</button>
   </p>
 
   <hr>
