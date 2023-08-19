@@ -3,6 +3,10 @@ package shamir
 import scala.annotation.{elidable, tailrec}
 import scala.annotation.elidable.ASSERTION
 
+/** Operations on the Galois field GF(256) that is defined by the `x^8 + x^4 + x^3 + x^1 + x^0` polynomial, with
+  * big-endian bit order for bytes. These are the same operations as used for AES encryption.
+  *
+  * @see https://en.wikipedia.org/wiki/Finite_field_arithmetic#Rijndael's_(AES)_finite_field */
 object gf256:
 
   @elidable(ASSERTION) private def assertIsByte(a: Int): Unit = assert(a >= 0 && a < 256)

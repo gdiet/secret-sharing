@@ -7,9 +7,7 @@ package shamir
   * @see https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
   * @see https://en.wikipedia.org/wiki/Finite_field_arithmetic#Rijndael's_(AES)_finite_field */
 @main def main(): Unit =
-  println(f"0x53 + 0xca = 0x${gf256.add(0x53, 0xca)}%02x")
-  println(f"0x53 - 0xca = 0x${gf256.sub(0x53, 0xca)}%02x")
-  println(f"0x53 * 0xca = 0x${gf256.mul(0x53, 0xca)}%02x")
-  println(f"0x53 / 0xca = 0x${gf256.div(0x53, 0xca)}%02x")
-  println(f"0x53 / 0xb5 = 0x${gf256.div(0x53, 0xb5)}%02x")
+  val shares = shareSecret(Array(1,2,3), 3, 2, (_, _) => 5)
+  println(shares.map(_._2.map(byteToHex).mkString("")).mkString("\n"))
 
+def byteToHex(byte: Int): String = f"$byte%02x"
