@@ -9,6 +9,13 @@ package shamir
 @main def main(): Unit =
   import gf256.*
   Ops.proveFunctionality()
-  println(s"hello ${TableOps.mul(0x53, 0xca)}")
-  println(s"hello ${CalculatedOps.mul(0x53, 0xca)}")
+  Set(TableOps, CalculatedOps).foreach { ops =>
+    println(s"")
+    println(s"Using $ops for calculation")
+    println(f"0x53 + 0xca = 0x${ops.add(0x53, 0xca)}%02x")
+    println(f"0x53 - 0xca = 0x${ops.sub(0x53, 0xca)}%02x")
+    println(f"0x53 * 0xca = 0x${ops.mul(0x53, 0xca)}%02x")
+    println(f"0x53 / 0xca = 0x${ops.div(0x53, 0xca)}%02x")
+    println(f"0x53 / 0xb5 = 0x${ops.div(0x53, 0xb5)}%02x")
+  }
 

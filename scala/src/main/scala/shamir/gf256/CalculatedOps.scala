@@ -21,6 +21,18 @@ object CalculatedOps extends Ops {
 
     calc(a, b, 0)
 
-  override def inv(a: Int): Int = ???
+  /** "Brute force" create the lookup table for the AES GF(256) multiplicative inverse. */
+  val inverseTable: Seq[Int] =
+      for (
+        n <- 1 to 255;
+        k <- (1 to 255).find(mul(_, n) == 1)
+      ) yield k
+
+  /** The AES GF(256) multiplicative inverse with the identity. */
+  override def inv(a: Int): Int =
+    assertIsByte(a)
+    assert(a != 0)
+    inverseTable(a - 1)
+
 }
 
