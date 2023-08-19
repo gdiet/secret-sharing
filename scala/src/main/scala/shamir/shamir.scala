@@ -7,9 +7,10 @@ type RandomInt = (Int, Int) => Int
   *
   * @param secretBytes The bytes to create shares for.
   * @param numOfShares The number of shares to create.
-  * @param threshold The number of shares needed to recreate the secret.
+  * @param threshold The minimum number of shares needed to recreate the secret.
   * @param random The random number generator to use.
-  * @return The shares created. FIXME do we need to return the share number?
+  * @return The shares created.
+  *
   * @see https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing */
 def shareSecret(secretBytes: Array[Int], numOfShares: Int, threshold: Int, random: RandomInt): Map[Int, Array[Int]] =
   val polynomials = secretBytes.map { byte => generatePolynomial(byte, random, threshold - 1) }
@@ -18,5 +19,6 @@ def shareSecret(secretBytes: Array[Int], numOfShares: Int, threshold: Int, rando
 private def generatePolynomial(firstByte: Int, random: RandomInt, arraySize: Int): Array[Int] =
   firstByte +: Array.fill(arraySize - 2)(random(0, 256)) :+ random(1, 256)
 
+/** @see https://en.wikipedia.org/wiki/Horner%27s_method */
 private def evaluate(polynomial: Array[Int], share: Int): Int =
   polynomial.foldRight(0) { (e, result) => gf256.add(gf256.mul(result, share), e) }

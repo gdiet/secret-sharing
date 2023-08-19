@@ -8,7 +8,8 @@ package shamir
   * @see https://en.wikipedia.org/wiki/Finite_field_arithmetic#Rijndael's_(AES)_finite_field */
 @main def main(): Unit =
   val shares = shareSecret(Array(1,2,3), 3, 2, (_, _) => 5)
-  println(shares.map(_._2.map(byteToHex).mkString("")).mkString("\n"))
+  println(shares.map(shareToString(_, _)).mkString("\n"))
 
+def shareToString(index: Int, share: Array[Int]): String = s"$index-${share.map(byteToHex).mkString}"
 def byteToHex(byte: Int ): String = f"$byte%02x"
 def byteToInt(byte: Byte): Int    = java.lang.Byte.toUnsignedInt(byte)
