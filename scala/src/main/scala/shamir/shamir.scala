@@ -10,7 +10,6 @@ type RandomInt = (Int, Int) => Int
   * @param threshold The number of shares needed to recreate the secret.
   * @param random The random number generator to use.
   * @return The shares created. FIXME do we need to return the share number?
-  * FIXME would it be nicer to have the calculation for single bytes and map on the input array as last step?
   * @see https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing */
 def shareSecret(secretBytes: Array[Int], numOfShares: Int, threshold: Int, random: RandomInt): Map[Int, Array[Int]] =
   val polynomials = secretBytes.map { byte => generatePolynomial(byte, random, threshold - 1) }

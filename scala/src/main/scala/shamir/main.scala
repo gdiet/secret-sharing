@@ -10,4 +10,5 @@ package shamir
   val shares = shareSecret(Array(1,2,3), 3, 2, (_, _) => 5)
   println(shares.map(_._2.map(byteToHex).mkString("")).mkString("\n"))
 
-def byteToHex(byte: Int): String = f"$byte%02x"
+def byteToHex(byte: Int ): String = f"$byte%02x"
+def byteToInt(byte: Byte): Int    = java.lang.Byte.toUnsignedInt(byte)
