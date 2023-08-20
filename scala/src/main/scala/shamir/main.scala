@@ -4,7 +4,7 @@ val random = scala.util.Random.between(_: Int, _: Int)
 
 /** Shamir's secret sharing implemented using the Galois field GF(256) used by the AES encryption,
   * the `x^8 + x^4 + x^3 + x^1 + x^0` polynomial, with big-endian bit order for bytes. The secret
-  * is the `y` value at `x = 0`.
+  * is the `y` value at `x = 0`. The 'x' values of the shares are stored in the shares' first byte.
   *
   * For string from/to byte sequence conversions, UTF-8 is used.
   *
