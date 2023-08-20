@@ -20,24 +20,54 @@ val random = scala.util.Random.between(_: Int, _: Int)
       println(s"Shares for the secret '$stringSecret:")
       println(shares.map(toHex).mkString("\n"))
 
+    case Seq("shareSilent", stringSecret, numberOfShares, threshold) =>
+      val secret = toBytes(stringSecret)
+      val shares = shareSecret(secret, numberOfShares.toInt, threshold.toInt, random)
+      println(shares.map(toHex).mkString("\n"))
+
     case Seq("shareHex", hexSecret, numberOfShares, threshold) =>
       val secret = fromHex(hexSecret)
       val shares = shareSecret(secret, numberOfShares.toInt, threshold.toInt, random)
       println(s"Shares for the hex secret ${toHex(secret)}:")
       println(shares.map(toHex).mkString("\n"))
 
+    case Seq("shareHexSilent", hexSecret, numberOfShares, threshold) =>
+      val secret = fromHex(hexSecret)
+      val shares = shareSecret(secret, numberOfShares.toInt, threshold.toInt, random)
+      println(shares.map(toHex).mkString("\n"))
+
     case "join" +: hexShares =>
       val shares = hexShares.map(fromHex)
       val recovered = joinShares(shares)
       println(s"Secret recovered from joined shares:")
-      println(s"Hex   : ${toHex(recovered)}")
-      println(s"String: ${asString(recovered)}")
+      println(asString(recovered))
+
+    case "joinSilent" +: hexShares =>
+      val shares = hexShares.map(fromHex)
+      val recovered = joinShares(shares)
+      println(asString(recovered))
+
+    case "joinHex" +: hexShares =>
+      val shares = hexShares.map(fromHex)
+      val recovered = joinShares(shares)
+      println(s"Hex secret recovered from joined shares:")
+      println(toHex(recovered))
+
+    case "joinHexSilent" +: hexShares =>
+      val shares = hexShares.map(fromHex)
+      val recovered = joinShares(shares)
+      println(toHex(recovered))
 
     case _ =>
       println("Shamir's secret sharing - use with the following parameters:")
       println("'share' <secret> <number of shares> <threshold>")
+      println("'shareSilent' <secret> <number of shares> <threshold>")
       println("'shareHex' <secret as hex string> <number of shares> <threshold>")
+      println("'shareHexSilent' <secret as hex string> <number of shares> <threshold>")
       println("'join' <share1> <share2> ...")
+      println("'joinSilent' <share1> <share2> ...")
+      println("'joinHex' <share1> <share2> ...")
+      println("'joinHexSilent' <share1> <share2> ...")
 
 def toBytes (string: String    ): Array[Int] = string.getBytes("UTF-8").map(toInt)
 def toInt   (byte  : Byte      ): Int        = java.lang.Byte.toUnsignedInt(byte)
