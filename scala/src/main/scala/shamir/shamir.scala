@@ -3,6 +3,7 @@ package shamir
 /** A random generator returning a integers between a (inclusive) and b (exclusive). */
 type RandomInt = (Int, Int) => Int
 
+
 /** Split a secret into shares using Shamir's secret sharing algorithm. Use the AES GF(256) operations for calculations.
   *
   * @param secretBytes The bytes to create shares for.
@@ -12,9 +13,13 @@ type RandomInt = (Int, Int) => Int
   * @return The shares created.
   *
   * @see https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing */
-def shareSecret(secretBytes: Array[Int], numOfShares: Int, threshold: Int, random: RandomInt): Map[Int, Array[Int]] =
+def shareSecret(secretBytes: Array[Int], numOfShares: Int, threshold: Int, random: RandomInt): Seq[Array[Int]] =
+  require(numOfShares <= 255, "No more than 255 shares supported.")
+  require(numOfShares > 1, "At least 2 shares are required.")
+  require(threshold <= numOfShares, "The threshold can not be larger than the number of shares.")
+  require(threshold >= 2, "The threshold must be at least 2.")
   val polynomials = secretBytes.map { byte => generatePolynomial(byte, random, threshold - 1) }
-  (1 to numOfShares).map { share => share -> polynomials.map { polynomial => evaluate(polynomial, share) } }.toMap
+  (1 to numOfShares).map { share => share +: polynomials.map { polynomial => evaluate(polynomial, share) } }
 
 private def generatePolynomial(firstByte: Int, random: RandomInt, arraySize: Int): Array[Int] =
   firstByte +: Array.fill(arraySize - 2)(random(0, 256)) :+ random(1, 256)
