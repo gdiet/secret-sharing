@@ -1,7 +1,7 @@
 package shamir
 
-import scala.annotation.{elidable, tailrec}
 import scala.annotation.elidable.ASSERTION
+import scala.annotation.{elidable, tailrec}
 
 /** Operations on the Galois field GF(256) that is defined by the `x^8 + x^4 + x^3 + x^1 + x^0` polynomial, with
   * big-endian bit order for bytes. These are the same operations as used for AES encryption.
@@ -50,3 +50,15 @@ object gf256:
     assertIsByte(b)
     assert(b != 0)
     mul(a, inverseTable(b - 1))
+
+  /** @return The Lagrange interpolation of the polynomial defined by the data values at x = 0.
+    *
+    * @see https://en.wikipedia.org/wiki/Lagrange_polynomial */
+  def interpolate(data: Iterable[(Int, Int)]): Int =
+    data.zipWithIndex.foldLeft(0) { case (r, (x1 -> y, i)) =>
+      val t = data.zipWithIndex.foldLeft(1) { case (t, (x2 -> _, j)) =>
+        // The divisor x2 is (x - x2) which is (0 - x2), and 'minus' being 'xor' is just x2.
+        if i == j then t else mul(t, div(x2, sub(x1, x2)))
+      }
+      add(r, mul(t, y))
+    }

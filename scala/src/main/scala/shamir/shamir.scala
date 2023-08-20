@@ -18,6 +18,7 @@ def shareSecret(secretBytes: Array[Int], numOfShares: Int, threshold: Int, rando
   require(numOfShares > 1, "At least 2 shares are required.")
   require(threshold <= numOfShares, "The threshold can not be larger than the number of shares.")
   require(threshold >= 2, "The threshold must be at least 2.")
+  require(secretBytes.forall(byte => byte >= 0 && byte <= 255), "Secret bytes must be in the range 0..255.")
   val polynomials = secretBytes.map { byte => generatePolynomial(byte, random, threshold - 1) }
   (1 to numOfShares).map { share => share +: polynomials.map { polynomial => evaluate(polynomial, share) } }
 
@@ -27,3 +28,26 @@ private def generatePolynomial(firstByte: Int, random: RandomInt, arraySize: Int
 /** @see https://en.wikipedia.org/wiki/Horner%27s_method */
 private def evaluate(polynomial: Array[Int], share: Int): Int =
   polynomial.foldRight(0) { (e, result) => gf256.add(gf256.mul(result, share), e) }
+
+
+/** Join the given shares using Shamir's secret sharing algorithm to recover the original secret.
+  * Use the AES GF(256) operations for calculations.
+  *
+  * Note: If the shares are incorrect, or their number is under the threshold value that was used when
+  * generating the shares, the output will be meaningless.
+  *
+  * @param shares The shares to join.
+  * @return The original secret.
+  *
+  * @see https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing */
+def joinShares(shares: Seq[Array[Int]]): Array[Int] =
+  require(shares.nonEmpty, "No shares provided.")
+  require(shares.map(_.length).toSet.size == 1, "Varying lengths of shares.")
+  require(shares.flatten.forall(byte => byte >= 0 && byte <= 255), "Share bytes must be in the range 0..255.")
+  require(shares.map(_.toSeq).toSet.size == shares.length, "Duplicate share detected.")
+  val length = shares.head.length
+  (for {
+    index <- 1 until length
+    points = shares.map(share => share(0) -> share(index))
+  } yield gf256.interpolate(points)
+  ).toArray
