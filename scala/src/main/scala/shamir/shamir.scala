@@ -4,7 +4,8 @@ package shamir
 type RandomInt = (Int, Int) => Int
 
 
-/** Split a secret into shares using Shamir's secret sharing algorithm. Use the AES GF(256) operations for calculations.
+/** Split a secret into shares using Shamir's secret sharing algorithm.
+  * Use the AES GF(256) operations for calculations and assume that the `x` value of the secret is `0`.
   *
   * @param secretBytes The bytes to create shares for.
   * @param numOfShares The number of shares to create.
@@ -31,7 +32,7 @@ private def evaluate(polynomial: Array[Int], share: Int): Int =
 
 
 /** Join the given shares using Shamir's secret sharing algorithm to recover the original secret.
-  * Use the AES GF(256) operations for calculations.
+  * Use the AES GF(256) operations for calculations and assume that the `x` value of the secret is `0`.
   *
   * Note: If the shares are incorrect, or their number is under the threshold value that was used when
   * generating the shares, the output will be meaningless.
