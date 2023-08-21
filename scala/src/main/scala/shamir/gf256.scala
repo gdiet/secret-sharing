@@ -23,7 +23,8 @@ object gf256:
     * the subtraction must be the inverse of the addition, and 'xor' is the inverse of itself. */
   def sub(a: Int, b: Int): Int = add(a, b)
 
-  /** The AES GF(256) multiplication.
+  /** The AES GF(256) multiplication. The constant 0x11b (binary 1.0001.1011, big-endian) represents the AES encryption
+    * `x^8 + x^4 + x^3 + x^1 + x^0` polynomial - the bits 8, 4, 3, 1, 0 are set in 0x11b.
     *
     * @see https://en.wikipedia.org/wiki/Finite_field_arithmetic#C_programming_example */
   def mul(a: Int, b: Int): Int =
