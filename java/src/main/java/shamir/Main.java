@@ -14,18 +14,21 @@ public class Main {
     void run(String[] args) {
         if (args.length == 0) usage();
         else if ("share"         .equals(args[0]) && args.length == 4)
-            share      (args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+            share         (args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
         else if ("shareSilent"   .equals(args[0]) && args.length == 4)
-            shareSilent(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+            shareSilent   (args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
         else if ("shareHex"      .equals(args[0]) && args.length == 4)
-            share      (args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+            shareHex      (args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
         else if ("shareHexSilent".equals(args[0]) && args.length == 4)
-            share      (args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+            shareHexSilent(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
         else usage();
     }
 
     final Shamir.Random random = Optional.ofNullable(System.getenv("fakerandom"))
-            .map(fakeRandom -> (Shamir.Random) (ignore1, ignore2) -> Integer.parseInt(fakeRandom))
+            .map(fakeRandom -> {
+                System.err.printf("Using fake random value %s.\n", fakeRandom);
+                return (Shamir.Random) (ignore1, ignore2) -> Integer.parseInt(fakeRandom);
+            })
             .orElse(new SecureRandom()::nextInt);
 
     void share(String stringSecret, int numberOfShares, int threshold, Shamir.Random random) {
@@ -42,12 +45,31 @@ public class Main {
         for (int[] share : shares) println(toHex(share));
     }
 
+    void shareHex(String hexSecret, int numberOfShares, int threshold, Shamir.Random random) {
+        int[] secret = fromHex(hexSecret);
+        int[][] shares = Shamir.shareSecret(secret, numberOfShares, threshold, random);
+        println("Shares for the hex secret %s:", toHex(secret));
+        for (int[] share : shares) println(toHex(share));
+    }
+
+    void shareHexSilent(String hexSecret, int numberOfShares, int threshold, Shamir.Random random) {
+        int[] secret = fromHex(hexSecret);
+        int[][] shares = Shamir.shareSecret(secret, numberOfShares, threshold, random);
+        for (int[] share : shares) println(toHex(share));
+    }
+
     String toHex(int[] bytes) {
         return Arrays.stream(bytes).mapToObj(this::toHex).collect(Collectors.joining());
     }
 
     String toHex(int b) {
         return String.format("%02x", b);
+    }
+
+    int[] fromHex(String hexString) {
+        return Arrays.stream(hexString.split("(?<=\\G..)"))
+                .mapToInt(hexPair -> Integer.parseInt(hexPair, 16))
+                .toArray();
     }
 
     int[] toBytes(String string) {
