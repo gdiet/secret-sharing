@@ -10,8 +10,23 @@ class Shamir {
         if (!condition) throw new IllegalArgumentException(message);
     }
 
-    interface Random extends IntBinaryOperator { }
+    /** A random generator returning integers between a (inclusive) and b (exclusive). */
+    interface Random extends IntBinaryOperator {
+    }
 
+    /**
+     * Split a secret into shares using Shamir's secret sharing algorithm. Use the AES GF(256) operations for
+     * calculations and assume that the `x` value of the secret is `0`. The `x` values of the shares are stored in the
+     * shares' first byte.
+     *
+     * @param secretBytes The bytes to create shares for.
+     * @param numOfShares The number of shares to create.
+     * @param threshold   The minimum number of shares needed to recreate the secret.
+     * @param random      The random number generator to use.
+     * @return The shares created.
+     * @see <a href="https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing">Wikipedia:
+     * Shamir's secret sharing</a>
+     */
     static int[][] shareSecret(int[] secretBytes, int numOfShares, int threshold, Random random) {
         require(numOfShares <= 255, "No more than 255 shares supported.");
         require(numOfShares > 1, "At least 2 shares are required.");
@@ -49,6 +64,7 @@ class Shamir {
         return result;
     }
 
+    /** @see <a href="https://en.wikipedia.org/wiki/Horner%27s_method">Wikipedia: Horner's method</a> */
     private static int evaluate(int[] polynomial, int share) {
         int result = 0;
         for (int i = polynomial.length - 1; i >= 0; i--) result = GF256.add(GF256.mul(result, share), polynomial[i]);

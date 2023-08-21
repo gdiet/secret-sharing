@@ -1,12 +1,12 @@
 package shamir
 
-/** A random generator returning a integers between a (inclusive) and b (exclusive). */
+/** A random generator returning integers between a (inclusive) and b (exclusive). */
 type RandomInt = (Int, Int) => Int
 
 
 /** Split a secret into shares using Shamir's secret sharing algorithm.
   * Use the AES GF(256) operations for calculations and assume that the `x` value of the secret is `0`.
-  * The 'x' values of the shares are stored in the shares' first byte.
+  * The `x` values of the shares are stored in the shares' first byte.
   *
   * @param secretBytes The bytes to create shares for.
   * @param numOfShares The number of shares to create.
