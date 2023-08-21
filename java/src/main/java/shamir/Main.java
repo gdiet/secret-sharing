@@ -1,6 +1,7 @@
 package shamir;
 
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -11,18 +12,24 @@ public class Main {
 
     void run(String[] args) {
         if (args.length == 0) usage();
-        else if ("share"         .equals(args[0]) && args.length == 3) share(args);
-        else if ("shareSilent"   .equals(args[0]) && args.length == 3) share(args);
-        else if ("shareHex"      .equals(args[0]) && args.length == 3) share(args);
-        else if ("shareHexSilent".equals(args[0]) && args.length == 3) share(args);
+        else if ("share"         .equals(args[0]) && args.length == 4)
+            share(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+        else if ("shareSilent"   .equals(args[0]) && args.length == 4)
+            share(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+        else if ("shareHex"      .equals(args[0]) && args.length == 4)
+            share(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+        else if ("shareHexSilent".equals(args[0]) && args.length == 4)
+            share(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
         else usage();
     }
 
-    void share(String[] args) {
-        int[] secret = toBytes(args[1]);
-        int[][] shares = Shamir.shareSecret(secret, Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+    final Shamir.Random random = new SecureRandom()::nextInt;
+
+    void share(String stringSecret, int numberOfShares, int threshold, Shamir.Random random) {
+        int[] secret = toBytes(stringSecret);
+        int[][] shares = Shamir.shareSecret(secret, numberOfShares, threshold, random);
 //        println(s"The secret as hex string: ${toHex(secret)}")
-//        println(s"Shares for the secret '$stringSecret:")
+        println("Shares for the secret '%s':", stringSecret);
 //        println(shares.map(toHex).mkString("\n"))
         for (int[] share : shares) {
             println(toHex(share));
@@ -50,8 +57,8 @@ public class Main {
         return Byte.toUnsignedInt(b);
     }
 
-    void println(String string) {
-        System.out.println(string);
+    void println(String string, Object... objects) {
+        System.out.printf(string + "\n", objects);
     }
 
     void usage() {
