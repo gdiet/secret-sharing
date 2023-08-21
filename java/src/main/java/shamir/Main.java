@@ -14,13 +14,13 @@ public class Main {
     void run(String[] args) {
         if (args.length == 0) usage();
         else if ("share"         .equals(args[0]) && args.length == 4)
-            share(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+            share      (args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
         else if ("shareSilent"   .equals(args[0]) && args.length == 4)
-            share(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+            shareSilent(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
         else if ("shareHex"      .equals(args[0]) && args.length == 4)
-            share(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+            share      (args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
         else if ("shareHexSilent".equals(args[0]) && args.length == 4)
-            share(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
+            share      (args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), random);
         else usage();
     }
 
@@ -31,12 +31,15 @@ public class Main {
     void share(String stringSecret, int numberOfShares, int threshold, Shamir.Random random) {
         int[] secret = toBytes(stringSecret);
         int[][] shares = Shamir.shareSecret(secret, numberOfShares, threshold, random);
-//        println(s"The secret as hex string: ${toHex(secret)}")
+        println("The secret as hex string: %s", toHex(secret));
         println("Shares for the secret '%s':", stringSecret);
-//        println(shares.map(toHex).mkString("\n"))
-        for (int[] share : shares) {
-            println(toHex(share));
-        }
+        for (int[] share : shares) println(toHex(share));
+    }
+
+    void shareSilent(String stringSecret, int numberOfShares, int threshold, Shamir.Random random) {
+        int[] secret = toBytes(stringSecret);
+        int[][] shares = Shamir.shareSecret(secret, numberOfShares, threshold, random);
+        for (int[] share : shares) println(toHex(share));
     }
 
     String toHex(int[] bytes) {
