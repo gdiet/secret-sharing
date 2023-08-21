@@ -52,5 +52,17 @@ def joinShares(shares: Seq[Array[Int]]): Array[Int] =
   (for {
     index <- 1 until length
     points = shares.map(share => share(0) -> share(index))
-  } yield gf256.interpolate(points)
+  } yield interpolate(points)
   ).toArray
+
+/** @return The Lagrange interpolation of the polynomial defined by the data values at x = 0.
+  *
+  * @see https://en.wikipedia.org/wiki/Lagrange_polynomial */
+private def interpolate(data: Iterable[(Int, Int)]): Int =
+  data.zipWithIndex.foldLeft(0) { case (r, (x1 -> y, i)) =>
+    val t = data.zipWithIndex.foldLeft(1) { case (t, (x2 -> _, j)) =>
+      // The divisor x2 is (x - x2) which is (0 - x2), and 'minus' being 'xor' is just x2.
+      if i == j then t else gf256.mul(t, gf256.div(x2, gf256.sub(x1, x2)))
+    }
+    gf256.add(r, gf256.mul(t, y))
+  }
