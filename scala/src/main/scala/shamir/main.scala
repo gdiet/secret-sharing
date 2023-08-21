@@ -17,7 +17,7 @@ val random: RandomInt = java.security.SecureRandom().nextInt(_, _)
       val secret = toBytes(stringSecret)
       val shares = shareSecret(secret, numberOfShares.toInt, threshold.toInt, random)
       println(s"The secret as hex string: ${toHex(secret)}")
-      println(s"Shares for the secret '$stringSecret:")
+      println(s"Shares for the secret '$stringSecret':")
       println(shares.map(toHex).mkString("\n"))
 
     case Seq("shareSilent", stringSecret, numberOfShares, threshold) =>
