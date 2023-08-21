@@ -1,6 +1,6 @@
 package shamir
 
-val random = scala.util.Random.between(_: Int, _: Int)
+val random: RandomInt = java.security.SecureRandom().nextInt(_, _)
 
 /** Shamir's secret sharing implemented using the Galois field GF(256) used by the AES encryption,
   * the `x^8 + x^4 + x^3 + x^1 + x^0` polynomial, with big-endian bit order for bytes. The secret
