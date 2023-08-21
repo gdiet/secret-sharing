@@ -3,6 +3,7 @@ package shamir;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -23,7 +24,9 @@ public class Main {
         else usage();
     }
 
-    final Shamir.Random random = new SecureRandom()::nextInt;
+    final Shamir.Random random = Optional.ofNullable(System.getenv("fakerandom"))
+            .map(fakeRandom -> (Shamir.Random) (ignore1, ignore2) -> Integer.parseInt(fakeRandom))
+            .orElse(new SecureRandom()::nextInt);
 
     void share(String stringSecret, int numberOfShares, int threshold, Shamir.Random random) {
         int[] secret = toBytes(stringSecret);
