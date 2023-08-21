@@ -1,7 +1,5 @@
 package shamir
 
-val random: RandomInt = java.security.SecureRandom().nextInt(_, _)
-
 /** Shamir's secret sharing implemented using the Galois field GF(256) used by the AES encryption,
   * the `x^8 + x^4 + x^3 + x^1 + x^0` polynomial, with big-endian bit order for bytes. The secret
   * is the `y` value at `x = 0`. The 'x' values of the shares are stored in the shares' first byte.
@@ -11,6 +9,11 @@ val random: RandomInt = java.security.SecureRandom().nextInt(_, _)
   * @see https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
   * @see https://en.wikipedia.org/wiki/Finite_field_arithmetic#Rijndael's_(AES)_finite_field */
 @main def main(args: String*): Unit =
+  val random: RandomInt = sys.env.get("fakerandom").map(_.toInt)
+    .fold(java.security.SecureRandom().nextInt(_, _)) { fakerandom =>
+      System.err.println(s"Using fake random value $fakerandom."); (_, _) => fakerandom
+    }
+
   args match
 
     case Seq("share", stringSecret, numberOfShares, threshold) =>

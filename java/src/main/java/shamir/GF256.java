@@ -42,7 +42,7 @@ class GF256 {
      * @see <a href="https://en.wikipedia.org/wiki/Finite_field_arithmetic#C_programming_example">Wikipedia:
      * C programming example</a>
      */
-    public static int mul(int a, int b) {
+    static int mul(int a, int b) {
         assertIsByte(a);
         assertIsByte(b);
         return calculateMultiplication(a, b, 0);
