@@ -42,7 +42,7 @@ class Shamir {
 
     private static int[][] createPolynomials(int[] secretBytes, int threshold, Random random) {
         return Arrays
-                .stream(secretBytes).mapToObj(b -> generatePolynomial(b, random, threshold - 1))
+                .stream(secretBytes).mapToObj(b -> generatePolynomial(b, random, threshold))
                 .toArray(int[][]::new);
     }
 

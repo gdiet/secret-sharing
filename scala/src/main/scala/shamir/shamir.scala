@@ -21,7 +21,7 @@ def shareSecret(secretBytes: Array[Int], numOfShares: Int, threshold: Int, rando
   require(threshold <= numOfShares, "The threshold can not be larger than the number of shares.")
   require(threshold >= 2, "The threshold must be at least 2.")
   require(secretBytes.forall(byte => byte >= 0 && byte <= 255), "Secret bytes must be in the range 0..255.")
-  val polynomials = secretBytes.map { byte => generatePolynomial(byte, random, threshold - 1) }
+  val polynomials = secretBytes.map { byte => generatePolynomial(byte, random, threshold) }
   (1 to numOfShares).map { share => share +: polynomials.map { polynomial => evaluate(polynomial, share) } }
 
 private def generatePolynomial(firstByte: Int, random: RandomInt, arraySize: Int): Array[Int] =

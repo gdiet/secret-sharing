@@ -35,7 +35,7 @@ func shareSecret(secret []byte, numberOfShares int, threshold int, random Random
 
 	var polynomials [][]int
 	for _, byteValue := range secret {
-		polynomial := generatePolynomial(int(byteValue), random, threshold-1)
+		polynomial := generatePolynomial(int(byteValue), random, threshold)
 		polynomials = append(polynomials, polynomial)
 	}
 
