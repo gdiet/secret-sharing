@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// A random generator returning integers between a (inclusive) and b (exclusive).
 type Random func(a, b int) int
 
 func require(condition bool, message string) {
@@ -14,6 +15,18 @@ func require(condition bool, message string) {
 	}
 }
 
+// Split a secret into shares using Shamir's secret sharing algorithm.
+// Use the AES GF(256) operations for calculations and assume that the `x` value of the secret is `0`.
+// The `x` values of the shares are stored in the shares' first byte.
+//
+// secretBytes: The bytes to create shares for.
+// numOfShares: The number of shares to create.
+// threshold: The minimum number of shares needed to recreate the secret.
+// random: The random number generator to use.
+//
+// returns the shares created.
+//
+// See https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
 func shareSecret(secret []byte, numberOfShares int, threshold int, random Random) [][]int {
 	require(numberOfShares <= 255, "No more than 255 shares supported.")
 	require(numberOfShares > 1, "At least 2 shares are required.")
@@ -48,29 +61,11 @@ func generatePolynomial(firstByte int, random Random, arraySize int) []int {
 	return polynomial
 }
 
+// See https://en.wikipedia.org/wiki/Horner%27s_method
 func evaluate(polynomial []int, share int) int {
 	result := 0
 	for i := len(polynomial) - 1; i >= 0; i-- {
 		result = gf256Add(gf256Mul(result, share), polynomial[i])
-	}
-	return result
-}
-
-func gf256Add(a int, b int) int {
-	return a ^ b
-}
-
-func gf256Mul(a, b int) int {
-	result := 0
-	for i := 0; i < 8; i++ {
-		if b&1 != 0 {
-			result ^= a
-		}
-		b >>= 1
-		a <<= 1
-		if a&0x100 != 0 {
-			a ^= 0x11b // Represents x^8 + x^4 + x^3 + x^1 + x^0
-		}
 	}
 	return result
 }

@@ -8,13 +8,15 @@ import (
 	"time"
 )
 
+// Shamir's secret sharing implemented using the Galois field GF(256) used by the AES encryption,
+// the `x^8 + x^4 + x^3 + x^1 + x^0` polynomial, with big-endian bit order for bytes. The secret
+// is the `y` value at `x = 0`. The 'x' values of the shares are stored in the shares' first byte.
+//
+// For string from/to byte sequence conversions, UTF-8 is used.
+//
+// See https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
+// See https://en.wikipedia.org/wiki/Finite_field_arithmetic#Rijndael's_(AES)_finite_field
 func main() {
-	// str := "Hello, 世界"
-	// byteArray := []byte(str)
-
-	// fmt.Printf("Original string: %s\n", str)
-	// fmt.Printf("Byte array: %v\n", byteArray)
-
 	args := os.Args[1:]
 	if len(args) == 0 {
 		usage()
