@@ -36,6 +36,7 @@ public class Main {
         int[][] shares = Shamir.shareSecret(secret, numberOfShares, threshold, random);
         println("The secret as hex string: %s", toHex(secret));
         println("Shares for the secret '%s':", stringSecret);
+        println("To recover, you need %d of %d shares.", threshold, numberOfShares);
         for (int[] share : shares) println(toHex(share));
     }
 
@@ -49,6 +50,7 @@ public class Main {
         int[] secret = fromHex(hexSecret);
         int[][] shares = Shamir.shareSecret(secret, numberOfShares, threshold, random);
         println("Shares for the hex secret %s:", toHex(secret));
+        println("To recover, you need %d of %d shares.", threshold, numberOfShares);
         for (int[] share : shares) println(toHex(share));
     }
 

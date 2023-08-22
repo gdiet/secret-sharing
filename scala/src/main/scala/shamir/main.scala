@@ -21,6 +21,7 @@ package shamir
       val shares = shareSecret(secret, numberOfShares.toInt, threshold.toInt, random)
       println(s"The secret as hex string: ${toHex(secret)}")
       println(s"Shares for the secret '$stringSecret':")
+      println(s"To recover, you need $threshold of $numberOfShares shares.")
       println(shares.map(toHex).mkString("\n"))
 
     case Seq("shareSilent", stringSecret, numberOfShares, threshold) =>
@@ -32,6 +33,7 @@ package shamir
       val secret = fromHex(hexSecret)
       val shares = shareSecret(secret, numberOfShares.toInt, threshold.toInt, random)
       println(s"Shares for the hex secret ${toHex(secret)}:")
+      println(s"To recover, you need $threshold of $numberOfShares shares.")
       println(shares.map(toHex).mkString("\n"))
 
     case Seq("shareHexSilent", hexSecret, numberOfShares, threshold) =>
