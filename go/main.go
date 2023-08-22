@@ -44,7 +44,7 @@ func main() {
 			hexSecret := hex.EncodeToString(secret)
 			fmt.Printf("The secret as hex string: %s\n", hexSecret)
 			fmt.Printf("Shares for the secret '%s':\n", stringSecret)
-			fmt.Printf("To recover, you need %d of %d shares.", threshold, numberOfShares)
+			fmt.Printf("To recover, you need %d of %d shares.\n", threshold, numberOfShares)
 		} else if args[0] == "shareSilent" {
 			stringSecret := args[1]
 			secret = []byte(stringSecret)
@@ -55,7 +55,7 @@ func main() {
 				log.Fatal("Could not parse hex string secret.")
 			}
 			fmt.Printf("Shares for the hex secret '%s':\n", hexSecret)
-			fmt.Printf("To recover, you need %d of %d shares.", threshold, numberOfShares)
+			fmt.Printf("To recover, you need %d of %d shares.\n", threshold, numberOfShares)
 		} else if args[0] == "shareHexSilent" {
 			hexSecret := args[1]
 			secret, err = hex.DecodeString(hexSecret)
