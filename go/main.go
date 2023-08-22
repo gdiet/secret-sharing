@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"strconv"
@@ -19,27 +21,56 @@ import (
 func main() {
 	args := os.Args[1:]
 	if len(args) == 0 {
-		usage()
+		usageAndExit(0)
 		return
 	}
 	switch args[0] {
 	case "share", "shareSilent", "shareHex", "shareHexSilent":
 		if len(args) != 4 {
-			usage()
+			usageAndExit(1)
 			return
 		}
-		stringSecret := args[1]
-		secret := []byte(stringSecret)
+		var secret []byte
+		var err error
 		numberOfShares, err1 := strconv.Atoi(args[2])
 		threshold, err2 := strconv.Atoi(args[3])
 		if err1 != nil || err2 != nil {
-			usage()
+			usageAndExit(1)
 			return
+		}
+		if args[0] == "share" {
+			stringSecret := args[1]
+			secret = []byte(stringSecret)
+			hexSecret := hex.EncodeToString(secret)
+			fmt.Printf("The secret as hex string: %s\n", hexSecret)
+			fmt.Printf("Shares for the secret '%s':\n", stringSecret)
+			fmt.Printf("To recover, you need %d of %d shares.", threshold, numberOfShares)
+		} else if args[0] == "shareSilent" {
+			stringSecret := args[1]
+			secret = []byte(stringSecret)
+		} else if args[0] == "shareHex" {
+			hexSecret := args[1]
+			secret, err = hex.DecodeString(hexSecret)
+			if err != nil {
+				log.Fatal("Could not parse hex string secret.")
+			}
+			fmt.Printf("Shares for the hex secret '%s':\n", hexSecret)
+			fmt.Printf("To recover, you need %d of %d shares.", threshold, numberOfShares)
+		} else if args[0] == "shareHexSilent" {
+			hexSecret := args[1]
+			secret, err = hex.DecodeString(hexSecret)
+			if err != nil {
+				log.Fatal("Could not parse hex string secret.")
+			}
 		}
 		random := getRandom()
 		shares := shareSecret(secret, numberOfShares, threshold, random)
-		fmt.Println("shares:")
-		fmt.Println(shares)
+		for _, share := range shares {
+			for _, b := range share {
+				fmt.Printf("%02x", b)
+			}
+			fmt.Println()
+		}
 	}
 }
 
@@ -53,7 +84,7 @@ func getRandom() Random {
 	}
 }
 
-func usage() {
+func usageAndExit(exitCode int) {
 	fmt.Println("Shamir's secret sharing - use with the following parameters:")
 	fmt.Println("'share' <secret> <number of shares> <threshold>")
 	fmt.Println("'shareSilent' <secret> <number of shares> <threshold>")
@@ -63,4 +94,5 @@ func usage() {
 	fmt.Println("'joinSilent' <share1> <share2> ...")
 	fmt.Println("'joinHex' <share1> <share2> ...")
 	fmt.Println("'joinHexSilent' <share1> <share2> ...")
+	os.Exit(exitCode)
 }
