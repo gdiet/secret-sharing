@@ -63,6 +63,9 @@ package shamir
       val recovered = joinShares(shares)
       println(toHex(recovered))
 
+    case Seq("verify") =>
+      verify()
+
     case _ =>
       println("Shamir's secret sharing - use with the following parameters:")
       println("'share' <secret> <number of shares> <threshold>")
