@@ -44,11 +44,12 @@ private def evaluate(polynomial: Array[Int], share: Int): Int =
   *
   * @see https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing */
 def joinShares(shares: Seq[Array[Int]]): Array[Int] =
-  require(shares.nonEmpty, "No shares provided.")
+  require(shares.size > 1, "At least two shares needed.")
   require(shares.map(_.length).toSet.size == 1, "Varying lengths of shares.")
   require(shares.flatten.forall(byte => byte >= 0 && byte <= 255), "Share bytes must be in the range 0..255.")
   require(shares.map(_.toSeq).toSet.size == shares.length, "Duplicate share detected.")
   val length = shares.head.length
+  require(length > 1, "Shares not long enough.")
   (for {
     index <- 1 until length
     points = shares.map(share => share(0) -> share(index))
