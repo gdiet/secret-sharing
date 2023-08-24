@@ -36,8 +36,8 @@ private def evaluate(polynomial: Array[Int], share: Int): Int =
   * Use the AES GF(256) operations for calculations and assume that the `x` value of the secret is `0`.
   * The 'x' values of the shares are read from the shares' first byte.
   *
-  * Note: If the shares are incorrect, or their number is under the threshold value that was used when
-  * generating the shares, the output will be meaningless.
+  * Note: If the shares are incorrect, or their number is less than the threshold value that was used
+  * when generating the shares, the output will be meaningless.
   *
   * @param shares The shares to join.
   * @return The original secret.
