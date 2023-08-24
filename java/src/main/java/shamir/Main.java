@@ -115,5 +115,6 @@ public class Main {
         println("'joinSilent' <share1> <share2> ...");
         println("'joinHex' <share1> <share2> ...");
         println("'joinHexSilent' <share1> <share2> ...");
+        println("'verify'");
     }
 }

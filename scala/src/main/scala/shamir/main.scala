@@ -76,6 +76,8 @@ package shamir
       println("'joinSilent' <share1> <share2> ...")
       println("'joinHex' <share1> <share2> ...")
       println("'joinHexSilent' <share1> <share2> ...")
+      println("'verify'")
+
 
 def toBytes (string: String    ): Array[Int] = string.getBytes("UTF-8").map(toInt)
 def toInt   (byte  : Byte      ): Int        = java.lang.Byte.toUnsignedInt(byte)

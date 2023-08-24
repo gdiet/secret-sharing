@@ -20,7 +20,7 @@ public class Verify {
             }
         };
         return (ignore1, ignore2) -> iterator.next();
-    };
+    }
     static void run() {
         {
             println("Check 1: Create pseudorandom shares with threshold 2");
