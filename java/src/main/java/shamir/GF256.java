@@ -57,4 +57,24 @@ class GF256 {
         );
     }
 
+    /** Lookup table for the AES GF(256) multiplicative inverse. */
+    private static final int[] inverseTable = new int[256];
+    static {
+        for (int n = 1; n <= 255; n++) {
+            for (int k = 1; k <= 255; k++) {
+                if (mul(k, n) == 1) {
+                    inverseTable[n] = k;
+                    break;
+                }
+            }
+        }
+    }
+
+    /** The AES GF(256) division done as multiplication with the inverse `b^-1`. */
+    static int div(int a, int b) {
+        assertIsByte(b);
+        assert b != 0;
+        return mul(a, inverseTable[b]);
+    }
+
 }
