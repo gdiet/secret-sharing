@@ -44,7 +44,7 @@ package shamir
     case "join" +: hexShares =>
       val shares = hexShares.map(fromHex)
       val recovered = joinShares(shares)
-      println(s"Secret recovered from joined shares:")
+      println("Secret recovered from joined shares:")
       println(asString(recovered))
 
     case "joinSilent" +: hexShares =>
@@ -55,7 +55,7 @@ package shamir
     case "joinHex" +: hexShares =>
       val shares = hexShares.map(fromHex)
       val recovered = joinShares(shares)
-      println(s"Hex secret recovered from joined shares:")
+      println("Hex secret recovered from joined shares:")
       println(toHex(recovered))
 
     case "joinHexSilent" +: hexShares =>
