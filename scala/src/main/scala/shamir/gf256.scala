@@ -41,7 +41,7 @@ object gf256:
       )
     calc(a, b, 0)
 
-  /** Lookup table for the AES GF(256) multiplicative inverse. */
+  /** Lookup table for the AES GF(256) multiplicative inverse, shifted by one because `1/0` is not defined. */
   private val inverseTable: Seq[Int] =
     for (
       n <- 1 to 255;
