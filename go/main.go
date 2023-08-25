@@ -22,13 +22,11 @@ func main() {
 	args := os.Args[1:]
 	if len(args) == 0 {
 		usageAndExit(0)
-		return
 	}
 	switch args[0] {
 	case "share", "shareSilent", "shareHex", "shareHexSilent":
 		if len(args) != 4 {
 			usageAndExit(1)
-			return
 		}
 		var secret []byte
 		var err error
@@ -36,7 +34,6 @@ func main() {
 		threshold, err2 := strconv.Atoi(args[3])
 		if err1 != nil || err2 != nil {
 			usageAndExit(1)
-			return
 		}
 		if args[0] == "share" {
 			stringSecret := args[1]
@@ -66,12 +63,23 @@ func main() {
 		random := getRandom()
 		shares := shareSecret(secret, numberOfShares, threshold, random)
 		for _, share := range shares {
-			for _, b := range share {
-				fmt.Printf("%02x", b)
-			}
-			fmt.Println()
+			fmt.Println(toHex(share))
 		}
+
+	case "verify":
+		if len(args) != 1 {
+			usageAndExit(1)
+		}
+		verify()
 	}
+}
+
+func toHex(bytes []int) string {
+	result := ""
+	for _, byte := range bytes {
+		result += fmt.Sprintf("%02x", byte)
+	}
+	return result
 }
 
 func getRandom() Random {
@@ -94,5 +102,6 @@ func usageAndExit(exitCode int) {
 	fmt.Println("'joinSilent' <share1> <share2> ...")
 	fmt.Println("'joinHex' <share1> <share2> ...")
 	fmt.Println("'joinHexSilent' <share1> <share2> ...")
+	fmt.Println("'verify'")
 	os.Exit(exitCode)
 }
