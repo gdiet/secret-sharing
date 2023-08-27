@@ -72,6 +72,21 @@ func main() {
 			fmt.Println(toHex(share))
 		}
 
+	case "join", "joinSilent", "joinHex", "joinHexSilent":
+		if len(args) < 3 {
+			usageAndExit(1)
+		}
+		shares := _map(args, func(arg string) []byte {
+			bytes, err := hex.DecodeString(arg)
+			if err != nil {
+				log.Fatalf("Can't parse share '%s'", arg)
+			}
+			return bytes
+		})
+		recovered := joinShares(shares)
+		println("Hex secret recovered from joined shares:")
+		fmt.Println(toHex(recovered))
+
 	case "verify":
 		if len(args) != 1 {
 			usageAndExit(1)

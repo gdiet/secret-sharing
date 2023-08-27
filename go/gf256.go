@@ -40,3 +40,27 @@ func gf256Mul(a, b byte) byte {
 	}
 	return result
 }
+
+func inverseTableGenerator() []byte {
+	var inverseTable []byte
+	for n := byte(1); n <= 255; n++ {
+		for k := byte(1); k <= 255; k++ {
+			if gf256Mul(k, n) == 1 {
+				inverseTable = append(inverseTable, k)
+				break
+			}
+		}
+	}
+	return inverseTable
+}
+
+// Lookup table for the AES GF(256) multiplicative inverse, shifted by one because `1/0` is not defined.
+var inverseTable = inverseTableGenerator()
+
+// The AES GF(256) division done as multiplication with the inverse `b^-1`.
+func gf256Div(a, b byte) byte {
+	if b == 0 {
+		panic("Division by zero.")
+	}
+	return gf256Mul(a, inverseTable[b-1])
+}
