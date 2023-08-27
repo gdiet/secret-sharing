@@ -90,11 +90,14 @@ func toHex(bytes []byte) string {
 
 func getRandom() Random {
 	if fakerandomInt, err := strconv.Atoi(os.Getenv("fakerandom")); err == nil {
-		fmt.Printf("Using fake random value %d.\n", fakerandomInt)
-		return func(a, b int) int { return fakerandomInt }
+		if byte(fakerandomInt) == 0 {
+			log.Fatal("The fake random value can not be 0.")
+		}
+		fmt.Printf("Using fake random value %d.\n", byte(fakerandomInt))
+		return func(limit byte) byte { return byte(fakerandomInt) }
 	} else {
 		rand.Seed(time.Now().UnixNano())
-		return func(a, b int) int { return rand.Intn(b-a) + a }
+		return func(limit byte) byte { return byte(rand.Intn(256-int(limit))) + limit }
 	}
 }
 

@@ -5,8 +5,8 @@ import (
 	"os"
 )
 
-// A random generator returning integers between a (inclusive) and b (exclusive).
-type Random func(a, b int) int // FIXME use bytes instead?
+// A random generator returning byte values of at least limit.
+type Random func(limit byte) byte
 
 func require(condition bool, message string) {
 	if !condition {
@@ -53,9 +53,9 @@ func generatePolynomial(firstByte byte, random Random, arraySize byte) []byte {
 	polynomial := make([]byte, arraySize)
 	polynomial[0] = firstByte
 	for i := byte(1); i < arraySize-1; i++ {
-		polynomial[i] = byte(random(0, 256))
+		polynomial[i] = byte(random(0))
 	}
-	polynomial[arraySize-1] = byte(random(1, 256))
+	polynomial[arraySize-1] = byte(random(1))
 	return polynomial
 }
 

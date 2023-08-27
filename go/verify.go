@@ -8,9 +8,9 @@ import (
 	"strings"
 )
 
-func pseudorandom(bytes []int) Random {
+func pseudorandom(bytes []byte) Random {
 	index := -1
-	return func(int, int) int {
+	return func(byte) byte {
 		index++
 		if index == len(bytes) {
 			index = 0
@@ -35,7 +35,7 @@ func verify() {
 	{
 		fmt.Println("Check 1: Create pseudorandom shares with threshold 2")
 		secret, _ := hex.DecodeString("003880ff")
-		random := pseudorandom([]int{0x05})
+		random := pseudorandom([]byte{0x05})
 		shares := shareSecret(secret, 8, 2, random)
 		shareLines := shareLines(shares)
 		expect := `01053d85fa
@@ -54,7 +54,7 @@ func verify() {
 	{
 		fmt.Println("Check 2: Create pseudorandom shares with threshold 3")
 		secret, _ := hex.DecodeString("003880ff")
-		random := pseudorandom([]int{0x05, 0xff})
+		random := pseudorandom([]byte{0x05, 0xff})
 		shares := shareSecret(secret, 8, 3, random)
 		shareLines := shareLines(shares)
 		expect := `01fac27a05
@@ -73,7 +73,7 @@ func verify() {
 	{
 		fmt.Println("Check 3: Create pseudorandom shares with threshold 6")
 		secret, _ := hex.DecodeString("003880ff")
-		random := pseudorandom([]int{0x05, 0xff, 0x50, 0xc1, 0x01})
+		random := pseudorandom([]byte{0x05, 0xff, 0x50, 0xc1, 0x01})
 		shares := shareSecret(secret, 8, 6, random)
 		shareLines := shareLines(shares)
 		expect := `016a52ea95
