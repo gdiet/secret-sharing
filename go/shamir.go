@@ -6,7 +6,7 @@ import (
 )
 
 // A random generator returning integers between a (inclusive) and b (exclusive).
-type Random func(a, b int) int
+type Random func(a, b int) int // FIXME use bytes instead?
 
 func require(condition bool, message string) {
 	if !condition {
@@ -27,43 +27,41 @@ func require(condition bool, message string) {
 // returns the shares created.
 //
 // See https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
-func shareSecret(secret []byte, numberOfShares int, threshold int, random Random) [][]int {
-	require(numberOfShares <= 255, "No more than 255 shares supported.")
-	require(numberOfShares > 1, "At least 2 shares are required.")
+func shareSecret(secret []byte, numberOfShares byte, threshold byte, random Random) [][]byte {
 	require(threshold <= numberOfShares, "The threshold can not be larger than the number of shares.")
 	require(threshold >= 2, "The threshold must be at least 2.")
 
-	var polynomials [][]int
+	var polynomials [][]byte
 	for _, byteValue := range secret {
-		polynomial := generatePolynomial(int(byteValue), random, threshold)
+		polynomial := generatePolynomial(byteValue, random, threshold)
 		polynomials = append(polynomials, polynomial)
 	}
 
-	shares := make([][]int, numberOfShares)
-	for share := 1; share <= numberOfShares; share++ {
-		shareValues := make([]int, len(polynomials))
+	shares := make([][]byte, numberOfShares)
+	for share := byte(1); share <= numberOfShares; share++ {
+		shareValues := make([]byte, len(polynomials))
 		for i, polynomial := range polynomials {
 			shareValues[i] = evaluate(polynomial, share)
 		}
-		shares[share-1] = append([]int{share}, shareValues...)
+		shares[share-1] = append([]byte{share}, shareValues...)
 	}
 
 	return shares
 }
 
-func generatePolynomial(firstByte int, random Random, arraySize int) []int {
-	polynomial := make([]int, arraySize)
+func generatePolynomial(firstByte byte, random Random, arraySize byte) []byte {
+	polynomial := make([]byte, arraySize)
 	polynomial[0] = firstByte
-	for i := 1; i < arraySize-1; i++ {
-		polynomial[i] = random(0, 256)
+	for i := byte(1); i < arraySize-1; i++ {
+		polynomial[i] = byte(random(0, 256))
 	}
-	polynomial[arraySize-1] = random(1, 256)
+	polynomial[arraySize-1] = byte(random(1, 256))
 	return polynomial
 }
 
 // See https://en.wikipedia.org/wiki/Horner%27s_method
-func evaluate(polynomial []int, share int) int {
-	result := 0
+func evaluate(polynomial []byte, share byte) byte {
+	result := byte(0)
 	for i := len(polynomial) - 1; i >= 0; i-- {
 		result = gf256Add(gf256Mul(result, share), polynomial[i])
 	}

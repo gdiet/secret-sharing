@@ -31,7 +31,13 @@ func main() {
 		var secret []byte
 		var err error
 		numberOfShares, err1 := strconv.Atoi(args[2])
+		if numberOfShares < 2 || numberOfShares > 255 {
+			log.Fatal("<number of shares>: Expected a value between [2..255].")
+		}
 		threshold, err2 := strconv.Atoi(args[3])
+		if threshold < 2 || threshold > 255 {
+			log.Fatal("<threshold>: Expected a value between [2..255].")
+		}
 		if err1 != nil || err2 != nil {
 			usageAndExit(1)
 		}
@@ -61,7 +67,7 @@ func main() {
 			}
 		}
 		random := getRandom()
-		shares := shareSecret(secret, numberOfShares, threshold, random)
+		shares := shareSecret(secret, byte(numberOfShares), byte(threshold), random)
 		for _, share := range shares {
 			fmt.Println(toHex(share))
 		}
@@ -74,7 +80,7 @@ func main() {
 	}
 }
 
-func toHex(bytes []int) string {
+func toHex(bytes []byte) string {
 	result := ""
 	for _, byte := range bytes {
 		result += fmt.Sprintf("%02x", byte)

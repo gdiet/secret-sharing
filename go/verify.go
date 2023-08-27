@@ -27,7 +27,7 @@ func _map[T, U any](data []T, f func(T) U) []U {
 	return res
 }
 
-func shareLines(shares [][]int) string {
+func shareLines(shares [][]byte) string {
 	return strings.Join(_map(shares, toHex), "\n")
 }
 
