@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -22,8 +23,12 @@ func main() {
 	if len(args) == 0 {
 		usageAndExit(0)
 	}
-	switch args[0] {
-	case "share", "shareSilent", "shareHex", "shareHexSilent":
+
+	cmd := strings.ToLower(args[0])
+	switch cmd {
+
+
+	case "share", "sharesilent", "sharehex", "sharehexsilent":
 		if len(args) != 4 {
 			usageAndExit(1)
 		}
@@ -40,17 +45,17 @@ func main() {
 		if err1 != nil || err2 != nil {
 			usageAndExit(1)
 		}
-		if args[0] == "share" {
+		if cmd == "share" {
 			stringSecret := args[1]
 			secret = []byte(stringSecret)
 			hexSecret := hex.EncodeToString(secret)
 			fmt.Printf("The secret as hex string: %s\n", hexSecret)
 			fmt.Printf("Shares for the secret '%s':\n", stringSecret)
 			fmt.Printf("To recover, you need %d of %d shares.\n", threshold, numberOfShares)
-		} else if args[0] == "shareSilent" {
+		} else if cmd == "sharesilent" {
 			stringSecret := args[1]
 			secret = []byte(stringSecret)
-		} else if args[0] == "shareHex" {
+		} else if cmd == "sharehex" {
 			hexSecret := args[1]
 			secret, err = hex.DecodeString(hexSecret)
 			if err != nil {
@@ -58,7 +63,7 @@ func main() {
 			}
 			fmt.Printf("Shares for the hex secret '%s':\n", hexSecret)
 			fmt.Printf("To recover, you need %d of %d shares.\n", threshold, numberOfShares)
-		} else if args[0] == "shareHexSilent" {
+		} else if cmd == "sharehexsilent" {
 			hexSecret := args[1]
 			secret, err = hex.DecodeString(hexSecret)
 			if err != nil {
@@ -71,7 +76,7 @@ func main() {
 			fmt.Println(toHex(share))
 		}
 
-	case "join", "joinSilent", "joinHex", "joinHexSilent":
+	case "join", "joinsilent", "joinhex", "joinhexsilent":
 		if len(args) < 3 {
 			usageAndExit(1)
 		}
@@ -83,15 +88,15 @@ func main() {
 			return bytes
 		})
 		recovered := joinShares(shares)
-		if args[0] == "join" {
+		if cmd == "join" {
 			fmt.Println("Secret recovered from joined shares:")
 			fmt.Println(string(recovered))
-		} else if args[0] == "joinSilent" {
+		} else if cmd == "joinsilent" {
 			fmt.Println(string(recovered))
-		} else if args[0] == "joinHex" {
+		} else if cmd == "joinhex" {
 			fmt.Println("Hex secret recovered from joined shares:")
 			fmt.Println(toHex(recovered))
-		} else if args[0] == "joinHexSilent" {
+		} else if cmd == "joinhexsilent" {
 			fmt.Println(toHex(recovered))
 		}
 
