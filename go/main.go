@@ -83,8 +83,17 @@ func main() {
 			return bytes
 		})
 		recovered := joinShares(shares)
-		println("Hex secret recovered from joined shares:")
-		fmt.Println(toHex(recovered))
+		if args[0] == "join" {
+			println("Secret recovered from joined shares:")
+			fmt.Println(string(recovered))
+		} else if args[0] == "joinSilent" {
+			fmt.Println(string(recovered))
+		} else if args[0] == "joinHex" {
+			println("Hex secret recovered from joined shares:")
+			fmt.Println(toHex(recovered))
+		} else if args[0] == "joinHexSilent" {
+			fmt.Println(toHex(recovered))
+		}
 
 	case "verify":
 		if len(args) != 1 {
