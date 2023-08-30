@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/hex"
 	"fmt"
-	"log"
 	"math/rand"
 	"os"
 	"strconv"
@@ -32,11 +31,11 @@ func main() {
 		var err error
 		numberOfShares, err1 := strconv.Atoi(args[2])
 		if numberOfShares < 2 || numberOfShares > 255 {
-			log.Fatal("<number of shares>: Expected a value between [2..255].")
+			fail("<number of shares>: Expected a value between [2..255].")
 		}
 		threshold, err2 := strconv.Atoi(args[3])
 		if threshold < 2 || threshold > 255 {
-			log.Fatal("<threshold>: Expected a value between [2..255].")
+			fail("<threshold>: Expected a value between [2..255].")
 		}
 		if err1 != nil || err2 != nil {
 			usageAndExit(1)
@@ -55,7 +54,7 @@ func main() {
 			hexSecret := args[1]
 			secret, err = hex.DecodeString(hexSecret)
 			if err != nil {
-				log.Fatal("Could not parse hex string secret.")
+				fail("Could not parse hex string secret.")
 			}
 			fmt.Printf("Shares for the hex secret '%s':\n", hexSecret)
 			fmt.Printf("To recover, you need %d of %d shares.\n", threshold, numberOfShares)
@@ -63,7 +62,7 @@ func main() {
 			hexSecret := args[1]
 			secret, err = hex.DecodeString(hexSecret)
 			if err != nil {
-				log.Fatal("Could not parse hex string secret.")
+				fail("Could not parse hex string secret.")
 			}
 		}
 		random := getRandom()
@@ -79,7 +78,7 @@ func main() {
 		shares := _map(args[1:], func(arg string) []byte {
 			bytes, err := hex.DecodeString(arg)
 			if err != nil {
-				log.Fatalf("Can't parse share '%s'", arg)
+				fail("Can't parse share '%s'", arg)
 			}
 			return bytes
 		})
@@ -95,6 +94,11 @@ func main() {
 	}
 }
 
+func fail(message string, v ...any) {
+	fmt.Printf(message+"\n", v...)
+	os.Exit(1)
+}
+
 func toHex(bytes []byte) string {
 	result := ""
 	for _, byte := range bytes {
@@ -106,7 +110,7 @@ func toHex(bytes []byte) string {
 func getRandom() Random {
 	if fakerandomInt, err := strconv.Atoi(os.Getenv("fakerandom")); err == nil {
 		if byte(fakerandomInt) == 0 {
-			log.Fatal("The fake random value can not be 0.")
+			fail("The fake random value can not be 0.")
 		}
 		fmt.Printf("Using fake random value %d.\n", byte(fakerandomInt))
 		return func(limit byte) byte { return byte(fakerandomInt) }
