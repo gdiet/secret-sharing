@@ -84,12 +84,12 @@ func main() {
 		})
 		recovered := joinShares(shares)
 		if args[0] == "join" {
-			println("Secret recovered from joined shares:")
+			fmt.Println("Secret recovered from joined shares:")
 			fmt.Println(string(recovered))
 		} else if args[0] == "joinSilent" {
 			fmt.Println(string(recovered))
 		} else if args[0] == "joinHex" {
-			println("Hex secret recovered from joined shares:")
+			fmt.Println("Hex secret recovered from joined shares:")
 			fmt.Println(toHex(recovered))
 		} else if args[0] == "joinHexSilent" {
 			fmt.Println(toHex(recovered))
