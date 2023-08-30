@@ -76,7 +76,7 @@ func main() {
 		if len(args) < 3 {
 			usageAndExit(1)
 		}
-		shares := _map(args, func(arg string) []byte {
+		shares := _map(args[1:], func(arg string) []byte {
 			bytes, err := hex.DecodeString(arg)
 			if err != nil {
 				log.Fatalf("Can't parse share '%s'", arg)

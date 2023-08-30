@@ -43,8 +43,8 @@ func gf256Mul(a, b byte) byte {
 
 func inverseTableGenerator() []byte {
 	var inverseTable []byte
-	for n := byte(1); n <= 255; n++ {
-		for k := byte(1); k <= 255; k++ {
+	for n := byte(1); n > 0; n++ { // why "n > 0" for the loop end condition? because byte wraps from 255 to 0 when incremented.
+		for k := byte(1); k > 0; k++ {
 			if gf256Mul(k, n) == 1 {
 				inverseTable = append(inverseTable, k)
 				break
