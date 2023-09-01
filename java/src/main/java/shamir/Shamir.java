@@ -19,8 +19,7 @@ class Shamir {
     }
 
     /** A random generator returning integers between a (inclusive) and b (exclusive). */
-    interface Random extends IntBinaryOperator {
-    }
+    interface Random extends IntBinaryOperator { }
 
     /**
      * Split a secret into shares using Shamir's secret sharing algorithm. Use the AES GF(256) operations for
