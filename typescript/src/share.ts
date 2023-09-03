@@ -1,24 +1,139 @@
-const documentElement = (id: string) => {
-  const maybeElement = document.getElementById(id)
-  if (maybeElement == null) {
-    document.body.innerHTML = 'Sorry, null check in script failed.'
-    throw Error('null check failed')
-  } else return maybeElement
+// ------------ document automation ------------
+
+registerListener('createSharesButton', 'click', createShares)
+
+function createShares(): void {
+  const secretBytes = utf8ToBytes(inputElement('secretInput').value)
+  const padToLength = parseInt(inputElement('padToLengthInput').value)
+  const numberOfShares = parseInt(inputElement('numberOfSharesInput').value)
+  const threshold = parseInt(inputElement('thresholdInput').value)
+
+  const secretPadded = [...secretBytes]
+  for (let i = secretBytes.length; i < padToLength; i++) secretPadded.push(0)
+
+  if (
+    checked(numberOfShares <= 255, 'No more than 255 shares supported.') &&
+    checked(numberOfShares > 1, 'At least 2 shares are required.') &&
+    checked(threshold <= numberOfShares, 'The threshold can not be larger than the number of shares.') &&
+    checked(threshold >= 2, 'The threshold must be at least 2.')
+  ) {
+    //
+  }
 }
 
-const inputElement = (id: string) => {
+function checked(condition: boolean, message: string): boolean {
+  if (!condition) alert(message)
+  return condition
+}
+
+// ------------ secret sharing ------------
+
+function generatePolynomials(secretBytes: number[], threshold: number): number[][] {
+  return secretBytes.map((secretByte) => generatePolynomial(secretByte, threshold))
+}
+
+function generatePolynomial(firstByte: number, arraySize: number): number[] {
+  const polynomial: number[] = new Array(arraySize)
+  polynomial[0] = firstByte
+  for (let i = 1; i < arraySize - 1; i++) polynomial[i] = randomInt(0, 256)
+  polynomial[arraySize - 1] = randomInt(1, 256)
+  return polynomial
+}
+
+/** @see https://en.wikipedia.org/wiki/Horner%27s_method */
+function evaluate(polynomial: number[], share: number): number {
+  let result = 0
+  // Note: ES2023 introduces Array.prototype.toReversed() which would be the better thing to do here,
+  // see e.g.https://tc39.es/ecma262/2023/
+  for (const coefficient of polynomial.reverse()) result = gf256add(gf256mul(result, share), coefficient)
+  return result
+}
+
+function createSecrets(numOfShares: number, polynomials: number[][]): number[][] {
+  const result: number[][] = []
+  for (let share = 1; share <= numOfShares; share++)
+    result.push(polynomials.map((polynomial) => evaluate(polynomial, share)))
+  return result
+}
+
+function shareSecret(secretBytes: number[], numberOfShares: number, threshold: number): number[][] {
+  const polynomials = generatePolynomials(secretBytes, threshold)
+  return createSecrets(numberOfShares, polynomials)
+}
+
+function randomInt(fromInclusive: number, untilExclusive: number) {
+  const fakerandom = parseInt(new URLSearchParams(document.location.search).get('fakerandom') || '0')
+  if (fakerandom != 0) return fakerandom
+  else return Math.floor(Math.random() * (untilExclusive - fromInclusive) + fromInclusive)
+}
+
+// ------------ gf256 math ------------
+
+function gf256add(a: number, b: number): number {
+  ensureIsByte(a)
+  ensureIsByte(b)
+  return a ^ b
+}
+
+function gf256mul(a: number, b: number) {
+  ensureIsByte(a)
+  ensureIsByte(b)
+  return gf256calculateMultiplication(a, b, 0)
+}
+
+function gf256calculateMultiplication(a: number, b: number, acc: number): number {
+  if (a === 0 || b === 0) return acc
+  else
+    return gf256calculateMultiplication(
+      (a & 0x80) !== 0 ? (a << 1) ^ 0x11b : a << 1,
+      b >> 1,
+      (b & 0x01) !== 0 ? gf256add(a, acc) : acc,
+    )
+}
+
+function ensureIsByte(a: number) {
+  ensure(a >= 0, `${a} is not a byte value.`)
+  ensure(a <= 255, `${a} is not a byte value.`)
+  ensure(Math.floor(a) === a, `${a} is not a byte value.`)
+}
+
+// ------------ conversion utilities ------------
+
+function utf8ToBytes(text: string): number[] {
+  return Array.from(new TextEncoder().encode(text))
+}
+
+function bytesToUtf8(bytes: number[]): string {
+  return new TextDecoder().decode(new Uint8Array(bytes))
+}
+
+// ------------ DOM utilities ------------
+
+function documentElement(id: string): HTMLElement {
+  const maybeElement = document.getElementById(id)
+  if (maybeElement !== null) return maybeElement
+  else {
+    alert('Sorry, null check in script failed.')
+    throw Error('null check failed')
+  }
+}
+
+function inputElement(id: string): HTMLInputElement {
   const maybeInput = documentElement(id)
   if (maybeInput instanceof HTMLInputElement) return maybeInput
   else {
-    document.body.innerHTML = 'Sorry, type check in script failed.'
+    alert('Sorry, type check in script failed.')
     throw Error('type check failed')
   }
 }
 
-const registerListener = (id: string, eventType: string, listener: EventListener) =>
+function registerListener(id: string, eventType: string, listener: () => void): void {
   documentElement(id).addEventListener(eventType, listener)
+}
 
-const utf8ToBytes = (text: string) => Array.from(new TextEncoder().encode(text))
-const bytesToUtf8 = (bytes: number[]) => new TextDecoder().decode(new Uint8Array(bytes))
-
-registerListener('createSharesButton', 'click', () => alert(`${utf8ToBytes(inputElement('secretInput').value)}`))
+function ensure(condition: boolean, message: string) {
+  if (!condition) {
+    alert(message)
+    throw Error(message)
+  }
+}
