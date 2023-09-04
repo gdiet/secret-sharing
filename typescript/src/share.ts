@@ -23,7 +23,12 @@ function createShares(): void {
 
 function shareSecret(secretBytes: number[], numberOfShares: number, threshold: number): number[][] {
   const polynomials = generatePolynomials(secretBytes, threshold)
-  return createSecrets(numberOfShares, polynomials)
+  console.log('Polynomials:')
+  polynomials.forEach((polynomial) => console.log(bytesToHex(polynomial)))
+  const result: number[][] = []
+  for (let share = 1; share <= numberOfShares; share++)
+    result.push([share, ...polynomials.map((polynomial) => evaluate(polynomial, share))])
+  return result
 }
 
 function generatePolynomials(secretBytes: number[], threshold: number): number[][] {
@@ -42,13 +47,6 @@ function randomInt(fromInclusive: number, untilExclusive: number) {
   const fakerandom = parseInt(new URLSearchParams(document.location.search).get('fakerandom') || '0')
   if (fakerandom != 0) return fakerandom
   else return Math.floor(Math.random() * (untilExclusive - fromInclusive) + fromInclusive)
-}
-
-function createSecrets(numOfShares: number, polynomials: number[][]): number[][] {
-  const result: number[][] = []
-  for (let share = 1; share <= numOfShares; share++)
-    result.push(polynomials.map((polynomial) => evaluate(polynomial, share)))
-  return result
 }
 
 /** @see https://en.wikipedia.org/wiki/Horner%27s_method */
