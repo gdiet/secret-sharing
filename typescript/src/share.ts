@@ -36,9 +36,9 @@ function generatePolynomial(firstByte: number, arraySize: number): number[] {
 /** @see https://en.wikipedia.org/wiki/Horner%27s_method */
 function evaluate(polynomial: number[], share: number): number {
   let result = 0
-  // Note: ES2023 introduces Array.prototype.toReversed() which would be the better thing to do here,
+  // Note: ES2023 introduces Array.prototype.toReversed() which is the combination of clone + reverse,
   // see e.g.https://tc39.es/ecma262/2023/
-  for (const coefficient of polynomial.reverse()) result = gf256add(gf256mul(result, share), coefficient)
+  for (const coefficient of Array.from(polynomial).reverse()) result = gf256add(gf256mul(result, share), coefficient)
   return result
 }
 
