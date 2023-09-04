@@ -17,14 +17,20 @@ function createShares(): void {
   const shares = shareSecret(secretPadded, numberOfShares, threshold)
   console.log('Shares:')
   shares.forEach((share) => console.log(bytesToHex(share)))
+  const share = shares[0] || []
+  documentElement('share-1').innerHTML = cleanMultiline(`
+      |{
+      |  "secretShare": "${bytesToHex(share)}",
+      |  "secretHashShare": "1234",
+      |  "sharesUUID": "5678"
+      |}
+    `)
 }
 
 // ------------ secret sharing ------------
 
 function shareSecret(secretBytes: number[], numberOfShares: number, threshold: number): number[][] {
   const polynomials = generatePolynomials(secretBytes, threshold)
-  console.log('Polynomials:')
-  polynomials.forEach((polynomial) => console.log(bytesToHex(polynomial)))
   const result: number[][] = []
   for (let share = 1; share <= numberOfShares; share++)
     result.push([share, ...polynomials.map((polynomial) => evaluate(polynomial, share))])
@@ -100,6 +106,14 @@ function bytesToUtf8(bytes: number[]): string {
 
 function bytesToHex(bytes: number[]): string {
   return bytes.map((byte) => byte.toString(16).padStart(2, '0')).join('')
+}
+
+function cleanMultiline(string: string): string {
+  return string
+    .split('\n')
+    .filter((line) => line.trim() !== '')
+    .map((line) => line.replace(/^ +\|/, ''))
+    .join('\n')
 }
 
 // ------------ DOM utilities ------------
