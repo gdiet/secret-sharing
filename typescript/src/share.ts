@@ -2,8 +2,8 @@
 
 registerListener('createSharesButton', 'click', createShares)
 
-function createShares(): void {
-  const secretBytes = utf8ToBytes(inputElement('secretInput').value)
+async function createShares(): Promise<void> {
+  const secretBytes = utf8ToUint8(inputElement('secretInput').value)
   const padToLength = parseInt(inputElement('padToLengthInput').value)
   const numberOfShares = parseInt(inputElement('numberOfSharesInput').value)
   const threshold = parseInt(inputElement('thresholdInput').value)
@@ -15,13 +15,17 @@ function createShares(): void {
   const secretPadded = [...secretBytes]
   for (let i = secretBytes.length; i < padToLength; i++) secretPadded.push(0)
   const shares = shareSecret(secretPadded, numberOfShares, threshold)
+
+  const hashBytes = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', secretBytes)))
+  const hashShares = shareSecret(hashBytes, numberOfShares, threshold)
+
   const sharesText = shares
     .map((share, index) => {
       return cleanMultiline(`
         |{
         |  "part number"   : ${index + 1},
         |  "part of secret": "${bytesToHex(share)}",
-        |  "part of hash"  : "1234",
+        |  "part of hash"  : "${bytesToHex(hashShares[index] || [])}",
         |  "parts ident"   : "5678"
         |}
       `)
@@ -99,8 +103,8 @@ function ensureIsByte(a: number) {
 
 // ------------ conversion utilities ------------
 
-function utf8ToBytes(text: string): number[] {
-  return Array.from(new TextEncoder().encode(text))
+function utf8ToUint8(text: string): Uint8Array {
+  return new TextEncoder().encode(text)
 }
 
 function bytesToUtf8(bytes: number[]): string {
