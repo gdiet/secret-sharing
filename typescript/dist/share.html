@@ -11,7 +11,7 @@
 <body>
   <h1>Securely Sharing Secrets Like Passwords</h1>
   <p>Secret or password: <input id="secretInput" type="text" value="¡secret!" size="50"></p>
-  <p>Pad secret to length: <input id="padToLengthInput" type="number" min="0" max="64" step="1" value="2"></p>
+  <p>Pad secret to length: <input id="padToLengthInput" type="number" min="0" max="64" step="1" value="32"></p>
   <p>Number of shares to create: <input id="numberOfSharesInput" type="number" min="2" max="255" step="1" value="3"></p>
   <p>Number of shares (threshold) needed to recover the secret: <input id="thresholdInput" type="number" min="2" max="255" step="1" value="2"></p>
   <p><button id="createSharesButton">Create Shares</button></p>

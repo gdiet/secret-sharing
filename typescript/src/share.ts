@@ -7,23 +7,16 @@ function createShares(): void {
   const padToLength = parseInt(inputElement('padToLengthInput').value)
   const numberOfShares = parseInt(inputElement('numberOfSharesInput').value)
   const threshold = parseInt(inputElement('thresholdInput').value)
+  ensure(numberOfShares <= 255, 'No more than 255 shares supported.')
+  ensure(numberOfShares > 1, 'At least 2 shares are required.')
+  ensure(threshold <= numberOfShares, 'The threshold can not be larger than the number of shares.')
+  ensure(threshold >= 2, 'The threshold must be at least 2.')
 
   const secretPadded = [...secretBytes]
   for (let i = secretBytes.length; i < padToLength; i++) secretPadded.push(0)
-
-  if (
-    checked(numberOfShares <= 255, 'No more than 255 shares supported.') &&
-    checked(numberOfShares > 1, 'At least 2 shares are required.') &&
-    checked(threshold <= numberOfShares, 'The threshold can not be larger than the number of shares.') &&
-    checked(threshold >= 2, 'The threshold must be at least 2.')
-  ) {
-    //
-  }
-}
-
-function checked(condition: boolean, message: string): boolean {
-  if (!condition) alert(message)
-  return condition
+  const shares = shareSecret(secretPadded, numberOfShares, threshold)
+  console.log('Shares:')
+  shares.forEach((share) => console.log(bytesToHex(share)))
 }
 
 // ------------ secret sharing ------------
@@ -105,6 +98,10 @@ function utf8ToBytes(text: string): number[] {
 
 function bytesToUtf8(bytes: number[]): string {
   return new TextDecoder().decode(new Uint8Array(bytes))
+}
+
+function bytesToHex(bytes: number[]): string {
+  return bytes.map((byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
 // ------------ DOM utilities ------------
