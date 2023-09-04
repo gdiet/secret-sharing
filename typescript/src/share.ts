@@ -15,16 +15,19 @@ function createShares(): void {
   const secretPadded = [...secretBytes]
   for (let i = secretBytes.length; i < padToLength; i++) secretPadded.push(0)
   const shares = shareSecret(secretPadded, numberOfShares, threshold)
-  console.log('Shares:')
-  shares.forEach((share) => console.log(bytesToHex(share)))
-  const share = shares[0] || []
-  documentElement('share-1').innerHTML = cleanMultiline(`
-      |{
-      |  "secretShare": "${bytesToHex(share)}",
-      |  "secretHashShare": "1234",
-      |  "sharesUUID": "5678"
-      |}
-    `)
+  const sharesText = shares
+    .map((share, index) => {
+      return cleanMultiline(`
+        |{
+        |  "part number"   : ${index + 1},
+        |  "part of secret": "${bytesToHex(share)}",
+        |  "part of hash"  : "1234",
+        |  "parts ident"   : "5678"
+        |}
+      `)
+    })
+    .join('\n\n\n')
+  documentElement('sharesDiv').innerHTML = `<pre>${sharesText}</pre>`
 }
 
 // ------------ secret sharing ------------
