@@ -7,10 +7,10 @@ async function createShares(): Promise<void> {
   const padToLength = parseInt(inputElement('padToLengthInput').value)
   const numberOfShares = parseInt(inputElement('numberOfSharesInput').value)
   const threshold = parseInt(inputElement('thresholdInput').value)
-  ensure(numberOfShares <= 255, 'No more than 255 shares supported.')
-  ensure(numberOfShares > 1, 'At least 2 shares are required.')
-  ensure(threshold <= numberOfShares, 'The threshold can not be larger than the number of shares.')
-  ensure(threshold >= 2, 'The threshold must be at least 2.')
+  if (numberOfShares > 255) fail('No more than 255 shares supported.')
+  if (numberOfShares < 2) fail('At least 2 shares are required.')
+  if (threshold > numberOfShares) fail('The threshold can not be larger than the number of shares.')
+  if (threshold < 2) fail('The threshold must be at least 2.')
 
   const secretPadded = [...secretBytes]
   for (let i = secretBytes.length; i < padToLength; i++) secretPadded.push(0)
@@ -97,9 +97,9 @@ function gf256calculateMultiplication(a: number, b: number, acc: number): number
 }
 
 function ensureIsByte(a: number) {
-  ensure(a >= 0, `${a} is not a byte value.`)
-  ensure(a <= 255, `${a} is not a byte value.`)
-  ensure(Math.floor(a) === a, `${a} is not a byte value.`)
+  if (a < 0) fail(`${a} is not a byte value.`)
+  if (a > 255) fail(`${a} is not a byte value.`)
+  if (Math.floor(a) !== a) fail(`${a} is not a byte value.`)
 }
 
 // ------------ conversion utilities ------------
@@ -129,28 +129,20 @@ function cleanMultiline(string: string): string {
 function documentElement(id: string): HTMLElement {
   const maybeElement = document.getElementById(id)
   if (maybeElement !== null) return maybeElement
-  else {
-    alert('Sorry, null check in script failed.')
-    throw Error('null check failed')
-  }
+  else fail('Sorry, null check in script failed.')
 }
 
 function inputElement(id: string): HTMLInputElement {
   const maybeInput = documentElement(id)
   if (maybeInput instanceof HTMLInputElement) return maybeInput
-  else {
-    alert('Sorry, type check in script failed.')
-    throw Error('type check failed')
-  }
+  else fail('Sorry, type check in script failed.')
 }
 
 function registerListener(id: string, eventType: string, listener: () => void): void {
   documentElement(id).addEventListener(eventType, listener)
 }
 
-function ensure(condition: boolean, message: string) {
-  if (!condition) {
+function fail(message: string): never {
     alert(message)
     throw Error(message)
   }
-}
