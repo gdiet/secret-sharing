@@ -18,6 +18,7 @@ async function createShares(): Promise<void> {
 
   const hashBytes = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', secretBytes)))
   const hashShares = shareSecret(hashBytes, numberOfShares, threshold)
+  const sharesIdent = Array.from(Array(12), () => randomInt(0, 10)).join('')
 
   const sharesText = shares
     .map((share, index) => {
@@ -26,7 +27,7 @@ async function createShares(): Promise<void> {
         |  "part number"   : ${index + 1},
         |  "part of secret": "${bytesToHex(share)}",
         |  "part of hash"  : "${bytesToHex(hashShares[index] || [])}",
-        |  "parts ident"   : "5678"
+        |  "identifier"    : "${sharesIdent}"
         |}
       `)
     })
