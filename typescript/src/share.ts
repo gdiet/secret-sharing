@@ -25,8 +25,8 @@ async function createShares(): Promise<void> {
       return cleanMultiline(`
         |{
         |  "part number"   : ${index + 1},
-        |  "part of secret": "${bytesToHex(share)}",
-        |  "part of hash"  : "${bytesToHex(hashShares[index] || [])}",
+        |  "part of secret": "${bytesToB64(share)}",
+        |  "part of hash"  : "${bytesToB64(hashShares[index] || [])}",
         |  "identifier"    : "${sharesIdent}"
         |}
       `)
@@ -112,9 +112,24 @@ function bytesToUtf8(bytes: number[]): string {
   return new TextDecoder().decode(new Uint8Array(bytes))
 }
 
-function bytesToHex(bytes: number[]): string {
-  return bytes.map((byte) => byte.toString(16).padStart(2, '0')).join('')
+// --- currently unused ---
+// function bytesToHex(bytes: number[]): string {
+//   return bytes.map((byte) => byte.toString(16).padStart(2, '0')).join('')
+// }
+
+function bytesToB64(bytes: number[]): string {
+  return btoa(bytes.map((byte) => String.fromCodePoint(byte)).join(''))
 }
+
+// --- currently unused ---
+// function b64ToBytes(base64: string): Uint8Array {
+//   const binaryString = atob(base64)
+//   return Uint8Array.from(binaryString, (char) => {
+//     const codePoint = char.codePointAt(0)
+//     if (codePoint !== undefined) return codePoint
+//     else fail(`Decoding base64 '${base64}' failed.`)
+//   })
+// }
 
 function cleanMultiline(string: string): string {
   return string
@@ -143,6 +158,6 @@ function registerListener(id: string, eventType: string, listener: () => void): 
 }
 
 function fail(message: string): never {
-    alert(message)
-    throw Error(message)
-  }
+  alert(message)
+  throw Error(message)
+}
