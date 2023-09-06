@@ -1,3 +1,6 @@
+const sharesDescriptionTextArea = documentElement('sharesDescription')
+sharesDescriptionTextArea.innerHTML = sharesDescriptionTextArea.innerHTML.replaceAll('  ', '')
+
 registerListener('createSharesButton', 'click', createShares)
 
 async function createShares(): Promise<void> {
