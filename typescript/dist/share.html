@@ -14,6 +14,11 @@
   <p>Pad secret to length: <input id="padToLengthInput" type="number" min="0" max="64" step="1" value="32"></p>
   <p>Number of shares to create: <input id="numberOfSharesInput" type="number" min="2" max="255" step="1" value="3"></p>
   <p>Number of shares (threshold) needed to recover the secret: <input id="thresholdInput" type="number" min="2" max="255" step="1" value="2"></p>
+  <p>Optional description of the shares:</p>
+  <p><textarea id="sharesDescription" value="" rows="3" cols="80">
+    Example description: Mary's 2023 bank account user:password at TheBigBank.boom,
+    shared with her relatives for emergency situations.
+  </textarea></p>
   <p><button id="createSharesButton">Create Shares</button></p>
   <p>Shamir's Secret Sharing, GF256 with polynomial 0x11b, utf-8, lower-endian bytes, first byte of share is the share's x value, secret possibly padded with trailing zeros, share verification SHA3-256 hash of unpadded secret, generated UUID, timestamp ISO 8601 like 2009-06-30T18:30:00+02:00.</p>
 
