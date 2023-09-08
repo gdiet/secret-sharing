@@ -5,29 +5,16 @@ interface Share {
 }
 
 const join = {
-  //
   // Basic utilities for share input UI elements
   shareId: (index: number) => `shareInput-${index}`,
   shareIndex: (shareId: string) => parseInt(shareId.substring(11)),
-  shareInputHtml: (index: number) =>
-    `<p><textarea id="${join.shareId(index)}" value="" rows="6" cols="100" hidden="true"></textarea></p>`,
-  shareInputsDiv: docutils.documentElement('shareInputs'),
   shareInput(index: number): HTMLTextAreaElement {
     const input = docutils.documentElement(join.shareId(index))
     if (input instanceof HTMLTextAreaElement) return input
-    else return docutils.fail('')
-  },
-  isString(maybeString: any): string {
-    if (typeof maybeString === 'string') return maybeString
-    else return docutils.fail(`'${JSON.stringify(maybeString)}' is not a string.`)
-  },
-  isStringOrUndefined(maybeString: any): string | undefined {
-    if (maybeString === undefined) return undefined
-    else if (typeof maybeString === 'string') return maybeString
-    else return docutils.fail(`'${JSON.stringify(maybeString)} is not a string.'`)
+    else return docutils.fail(`Expected '${input}' to be a HTMLTextAreaElement.`)
   },
   shareInputs: () => Array.from(Array(256), (_, index) => join.shareInput(index)),
-  //
+
   // Visibility of share inputs
   updateVisibility() {
     const foundIndex = join
@@ -37,40 +24,51 @@ const join = {
     const lastFilled = foundIndex == -1 ? -1 : 255 - foundIndex
     join.shareInputs().forEach((input, index) => (input.hidden = index > lastFilled + 1))
   },
-  //
+
+  // Parse share input
+  parseTextShare(input: string): Share {
+    return {
+      partOfSecret: input,
+      partOfHash: undefined,
+      identifier: undefined,
+    }
+  },
+  parseJsonShare(input: string): Share {
+    const json = JSON.parse(input)
+    return {
+      partOfSecret: conversions.expectString(json['part of secret']),
+      partOfHash: conversions.expectStringOrUndefined(json['part of hash']),
+      identifier: conversions.expectStringOrUndefined(json['identifier']),
+    }
+  },
+  parseShare: (input: string) => (input.startsWith('{') ? join.parseJsonShare(input) : join.parseTextShare(input)),
+
+  // The shares currently available
+  shares: Array<Share>(256),
+
   // React on share changes
   shareUpdated(shareInput: HTMLTextAreaElement) {
-    try {
-      const fromJson = () => {
-        const json = JSON.parse(shareInput.value)
-        return {
-          partOfSecret: join.isString(json['part of secret']),
-          partOfHash: join.isStringOrUndefined(json['part of hash']),
-          identifier: join.isStringOrUndefined(json['identifier']),
-        } as Share
-      }
-      const fromString = () => {
-        return {
-          partOfSecret: shareInput.value,
-          partOfHash: undefined,
-          identifier: undefined,
-        }
-      }
-      const s: Share = shareInput.value.startsWith('{') ? fromJson() : fromString()
-      console.log(s.partOfSecret)
-      if (s.partOfSecret === undefined) shareInput.className = 'share-problem'
-      else {
-        if (s.partOfHash === undefined || s.identifier === undefined) shareInput.className = 'share-warning'
+    const shareIndex = join.shareIndex(shareInput.id)
+    const shareValue = shareInput.value
+    if (shareValue.length === 0) {
+      shareInput.className = ''
+    } else
+      try {
+        const share: Share = join.parseShare(shareInput.value)
+        join.shares[shareIndex] = share
+        if (share.partOfHash === undefined || share.identifier === undefined) shareInput.className = 'share-warning'
         else shareInput.className = ''
+      } catch (e) {
+        shareInput.className = 'share-problem'
       }
-    } catch (e) {
-      shareInput.className = 'share-problem'
-    }
   },
 }
 
 // create share input UI elements
-join.shareInputsDiv.innerHTML = Array.from(Array(256), (_, index) => join.shareInputHtml(index)).join('\n')
+docutils.documentElement('shareInputs').innerHTML = Array.from(
+  Array(256),
+  (_, index) => `<p><textarea id="${join.shareId(index)}" value="" rows="6" cols="100" hidden="true"></textarea></p>`,
+).join('\n')
 join.shareInput(0).hidden = false
 
 // FIXME temporary block start
@@ -91,12 +89,12 @@ join.shareUpdated
 // FIXME temporary block end
 
 // wire share inputs with events
-for (let index = 0; index < 256; index++) {
-  docutils.registerListener(`shareInput-${index}`, 'change', (event) => {
+join.shareInputs().forEach((input) => {
+  docutils.registerListener(input.id, 'change', (event) => {
     const share = event.target
     if (share instanceof HTMLTextAreaElement) {
       join.updateVisibility()
       join.shareUpdated(share)
     }
   })
-}
+})

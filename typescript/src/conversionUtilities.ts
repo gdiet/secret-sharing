@@ -33,4 +33,14 @@ const conversions = {
       .map((line) => line.replace(/^ +\|/, ''))
       .join('\n')
   },
+
+  expectString(maybeString: any): string {
+    if (typeof maybeString === 'string') return maybeString
+    else return docutils.fail(`'${JSON.stringify(maybeString)}' is not a string.`)
+  },
+  expectStringOrUndefined(maybeString: any): string | undefined {
+    if (maybeString === undefined) return undefined
+    else if (typeof maybeString === 'string') return maybeString
+    else return docutils.fail(`'${JSON.stringify(maybeString)} is not a string.'`)
+  },
 }
