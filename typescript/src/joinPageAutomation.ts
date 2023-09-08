@@ -77,6 +77,23 @@ const join = {
 join.shareInputsDiv.innerHTML = Array.from(Array(256), (_, index) => join.shareInputHtml(index)).join('\n')
 join.shareInput(0).hidden = false
 
+// FIXME temporary block start
+join.shareInput(0).value = `{
+  "part number"   : 3,
+  "part of secret": "AzrC3V9NjkS7aC9KombjyDdAJe4d6r4t4e114BmOCbh1",
+  "part of hash"  : "A7TXU1gcfr5dI7xV5DRfHza1206IAimy1SLoILE3BYBY",
+  "identifier"    : "980363187642"
+}`
+join.shareInput(1).value = `{
+  "part number"   : 1,
+  "part of secret": "AWOA4HN5Jnox7+zPlyKoseTJ6loLr2obX1vaqf56B2ja",
+  "part of hash"  : "AXf73a3X+G0db2+9Si9ZfGfTkg4rvJkQj7fRfipVcr3c",
+  "identifier"    : "980363187642"
+}`
+join.updateVisibility()
+join.shareUpdated
+// FIXME temporary block end
+
 // wire share inputs with events
 for (let index = 0; index < 256; index++) {
   docutils.registerListener(`shareInput-${index}`, 'change', (event) => {
