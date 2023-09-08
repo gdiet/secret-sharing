@@ -5,15 +5,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Secret Sharing</title>
-  <!-- <script src="share.js" defer></script> -->
+  <script src="conversionUtilities.js" defer></script>
+  <script src="documentUtilities.js" defer></script>
+  <script src="gf256Math.js" defer></script>
+  <!-- The page automation script must be loaded last. -->
+  <script src="joinPageAutomation.js" defer></script>
 </head>
 
 <body>
   <h1>Restoring Shared Secrets Like Passwords</h1>
   <p>Shares data:</p>
-  <div id="shareInputs"></div>
-  <p><textarea id="shareInput" value="" rows="6" cols="100"></textarea></p>
-  <p><textarea id="shareInput" value="" rows="6" cols="100"></textarea></p>
+  <div id="shareInputs"><!-- Here, the page automation will generate share input UI elements. --></div>
   <p>Shamir's Secret Sharing, GF256 with polynomial 0x11b, utf-8, lower-endian bytes, first byte of share is the share's x value, secret possibly padded with trailing zeros, share verification SHA3-256 hash of unpadded secret, generated UUID, timestamp ISO 8601 like 2009-06-30T18:30:00+02:00.</p>
 </body>
 

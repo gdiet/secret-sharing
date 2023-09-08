@@ -11,7 +11,7 @@ const docutils = {
     else return docutils.fail('Sorry, type check in script failed.')
   },
 
-  registerListener(id: string, eventType: string, listener: () => void): void {
+  registerListener(id: string, eventType: string, listener: (event: Event) => void): void {
     docutils.documentElement(id).addEventListener(eventType, listener)
   },
 
