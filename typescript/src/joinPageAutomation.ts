@@ -1,5 +1,4 @@
 interface Share {
-  partNumber: number
   partOfSecret: string
   partOfHash: string | undefined
   identifier: string | undefined
@@ -45,7 +44,6 @@ const join = {
       const fromJson = () => {
         const json = JSON.parse(shareInput.value)
         return {
-          partNumber: parseInt(json['part number']),
           partOfSecret: join.isString(json['part of secret']),
           partOfHash: join.isStringOrUndefined(json['part of hash']),
           identifier: join.isStringOrUndefined(json['identifier']),
@@ -53,7 +51,6 @@ const join = {
       }
       const fromString = () => {
         return {
-          partNumber: NaN,
           partOfSecret: shareInput.value,
           partOfHash: undefined,
           identifier: undefined,
@@ -63,8 +60,7 @@ const join = {
       console.log(s.partOfSecret)
       if (s.partOfSecret === undefined) shareInput.className = 'share-problem'
       else {
-        if (Number.isNaN(s.partNumber) || s.partOfHash === undefined || s.identifier === undefined)
-          shareInput.className = 'share-warning'
+        if (s.partOfHash === undefined || s.identifier === undefined) shareInput.className = 'share-warning'
         else shareInput.className = ''
       }
     } catch (e) {
