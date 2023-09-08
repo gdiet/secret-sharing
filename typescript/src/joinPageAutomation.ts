@@ -42,13 +42,24 @@ const join = {
   // React on share changes
   shareUpdated(shareInput: HTMLTextAreaElement) {
     try {
-      const json = JSON.parse(shareInput.value)
-      const s: Share = {
-        partNumber: parseInt(json['part number']),
-        partOfSecret: join.isString(json['part of secret']),
-        partOfHash: join.isStringOrUndefined(json['part of hash']),
-        identifier: join.isStringOrUndefined(json['identifier']),
+      const fromJson = () => {
+        const json = JSON.parse(shareInput.value)
+        return {
+          partNumber: parseInt(json['part number']),
+          partOfSecret: join.isString(json['part of secret']),
+          partOfHash: join.isStringOrUndefined(json['part of hash']),
+          identifier: join.isStringOrUndefined(json['identifier']),
+        } as Share
       }
+      const fromString = () => {
+        return {
+          partNumber: NaN,
+          partOfSecret: shareInput.value,
+          partOfHash: undefined,
+          identifier: undefined,
+        }
+      }
+      const s: Share = shareInput.value.startsWith('{') ? fromJson() : fromString()
       console.log(s.partOfSecret)
       if (s.partOfSecret === undefined) shareInput.className = 'share-problem'
       else {
