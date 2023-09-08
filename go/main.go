@@ -27,6 +27,8 @@ func main() {
 	cmd := strings.ToLower(args[0])
 	switch cmd {
 
+	case "sharewizard":
+		shareWizard(os.Args[2:])
 
 	case "share", "sharesilent", "sharehex", "sharehexsilent":
 		if len(args) != 4 {
