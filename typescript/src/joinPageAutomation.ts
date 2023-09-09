@@ -33,12 +33,16 @@ const join = {
       identifier: undefined,
     }
   },
-  parseJsonShare(input: string): Share {
-    const json = JSON.parse(input)
-    return {
-      partOfSecret: conversions.expectString(json['part of secret']),
-      partOfHash: conversions.expectStringOrUndefined(json['part of hash']),
-      identifier: conversions.expectStringOrUndefined(json['identifier']),
+  parseJsonShare(input: string): Share | string {
+    try {
+      const json = JSON.parse(input)
+      return {
+        partOfSecret: conversions.expectString(json['part of secret']),
+        partOfHash: conversions.expectStringOrUndefined(json['part of hash']),
+        identifier: conversions.expectStringOrUndefined(json['identifier']),
+      }
+    } catch (e) {
+      return ``
     }
   },
   parseShare: (input: string) => (input.startsWith('{') ? join.parseJsonShare(input) : join.parseTextShare(input)),
