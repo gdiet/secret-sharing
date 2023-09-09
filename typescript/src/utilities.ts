@@ -1,5 +1,5 @@
 namespace util {
-  abstract class Either<L, R> {
+  export abstract class Either<L, R> {
     abstract readonly value: L | R
     abstract fold<T>(f1: (value: L) => T, f2: (value: R) => T): T
 
@@ -32,11 +32,11 @@ namespace util {
     }
   }
 
-  function either<L, R>(ifUndefined: () => L, value: undefined | R): Either<L, R> {
+  export function either<L, R>(ifUndefined: () => L, value: undefined | R): Either<L, R> {
     return value ? new Right(value) : new Left(ifUndefined())
   }
 
-  class Left<L, R> extends Either<L, R> {
+  export class Left<L, R> extends Either<L, R> {
     readonly value: L
     constructor(value: L) {
       super()
@@ -48,7 +48,7 @@ namespace util {
     override toString = () => `Left(${this.value})`
   }
 
-  class Right<L, R> extends Either<L, R> {
+  export class Right<L, R> extends Either<L, R> {
     readonly value: R
     constructor(value: R) {
       super()

@@ -1,7 +1,7 @@
 interface Share {
   partOfSecret: string
-  partOfHash: string | undefined
-  identifier: string | undefined
+  partOfHash: string
+  identifier: string
 }
 
 const join = {
@@ -26,26 +26,14 @@ const join = {
   },
 
   // Parse share input
-  parseTextShare(input: string): Share {
-    return {
-      partOfSecret: input,
-      partOfHash: undefined,
-      identifier: undefined,
-    }
-  },
   parseJsonShare(input: string): Share {
-    try {
-      const json = JSON.parse(input)
-      return {
-        partOfSecret: conversions.expectString(json['part of secret']),
-        partOfHash: conversions.expectStringOrUndefined(json['part of hash']),
-        identifier: conversions.expectStringOrUndefined(json['identifier']),
-      }
-    } catch (e) {
-      return docutils.fail(`'${input}' is not a valid JSON.`)
+    const json = JSON.parse(input)
+    return {
+      partOfSecret: conversions.expectString(json['part of secret']),
+      partOfHash: conversions.expectString(json['part of hash']),
+      identifier: conversions.expectString(json['identifier']),
     }
   },
-  parseShare: (input: string) => (input.startsWith('{') ? join.parseJsonShare(input) : join.parseTextShare(input)),
 
   // The shares currently available
   shares: Array<Share>(256),
@@ -58,11 +46,11 @@ const join = {
       shareInput.className = ''
     } else
       try {
-        const share: Share = join.parseShare(shareInput.value)
+        const share: Share = join.parseJsonShare(shareInput.value)
         join.shares[shareIndex] = share
-        if (share.partOfHash === undefined || share.identifier === undefined) shareInput.className = 'share-warning'
-        else shareInput.className = ''
+        shareInput.className = ''
       } catch (e) {
+        delete join.shares[shareIndex]
         shareInput.className = 'share-problem'
       }
   },
