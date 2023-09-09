@@ -5,10 +5,20 @@ const gf256 = {
     return a ^ b
   },
 
+  /**
+   * The AES GF(256) subtraction is the same 'xor' operation as the addition, because the subtraction must be the
+   * inverse of the addition, and 'xor' is the inverse of itself.
+   */
+  sub: (a: number, b: number) => gf256.add(a, b),
+
   mul(a: number, b: number) {
     gf256._.ensureIsByte(a)
     gf256._.ensureIsByte(b)
     return gf256._.calculateMultiplication(a, b, 0)
+  },
+
+  div: (_a: number, _b: number) => {
+    throw new Error('not yet implemented')
   },
 
   // private methods

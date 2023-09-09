@@ -21,7 +21,8 @@ const shamirShare = {
     if (length < 2) throw new Error('Shares not long enough.')
     const result: number[] = new Array(length - 1)
     for (let index = 0; index < length; index++) {
-      const xy: number[][] = shares.map((share) => [share[0] || 0, share[index] || 0])
+      const points: number[][] = shares.map((share) => [share[0] || 0, share[index] || 0])
+      result[index] = shamirShare._.interpolate(points)
     }
     return result
   },
@@ -48,6 +49,21 @@ const shamirShare = {
       for (const coefficient of Array.from(polynomial).reverse())
         result = gf256.add(gf256.mul(result, share), coefficient)
       return result
+    },
+
+    /** @see https://en.wikipedia.org/wiki/Lagrange_polynomial */
+    interpolate(data: number[][]): number {
+      return data.reduce((r, [x1, y], i) => {
+        const t = data.reduce((t, [x2, _], j) => {
+          // The divisor x2 is (x - x2) which is (0 - x2), and 'minus' being 'xor' is just x2.
+          if (i === j) {
+            return t
+          } else {
+            return gf256.mul(t, gf256.div(x2 || 0, gf256.sub(x1 || 0, x2 || 0)))
+          }
+        }, 1)
+        return gf256.add(r, gf256.mul(t, y || 0))
+      }, 0)
     },
   },
 }
