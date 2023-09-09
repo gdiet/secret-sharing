@@ -61,8 +61,10 @@ const join = {
   currentShares: () => join.shares.filter((share) => share !== undefined),
 
   evaluate() {
-    const shares = join.currentShares().map((share) => conversions.b64ToBytes(share.partOfSecret))
-    console.log(shares)
+    if (join.currentShares().length > 1) {
+      const shares = join.currentShares().map((share) => conversions.b64ToBytes(share.partOfSecret))
+      console.log(shamirShare.joinShares(shares))
+    }
   },
 }
 
