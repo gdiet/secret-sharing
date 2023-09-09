@@ -33,7 +33,7 @@ const join = {
       identifier: undefined,
     }
   },
-  parseJsonShare(input: string): Share | string {
+  parseJsonShare(input: string): Share {
     try {
       const json = JSON.parse(input)
       return {
@@ -42,7 +42,7 @@ const join = {
         identifier: conversions.expectStringOrUndefined(json['identifier']),
       }
     } catch (e) {
-      return ``
+      return docutils.fail(`'${input}' is not a valid JSON.`)
     }
   },
   parseShare: (input: string) => (input.startsWith('{') ? join.parseJsonShare(input) : join.parseTextShare(input)),
