@@ -16,15 +16,9 @@ const conversions = {
     return btoa(bytes.map((byte) => String.fromCodePoint(byte)).join(''))
   },
 
-  // --- currently unused ---
-  // b64ToBytes(base64: string): Uint8Array {
-  //   const binaryString = atob(base64)
-  //   return Uint8Array.from(binaryString, (char) => {
-  //     const codePoint = char.codePointAt(0)
-  //     if (codePoint !== undefined) return codePoint
-  //     else fail(`Decoding base64 '${base64}' failed.`)
-  //   })
-  // },
+  b64ToBytes(base64: string): Uint8Array {
+    return Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))
+  },
 
   cleanMultiline(string: string): string {
     return string

@@ -43,8 +43,9 @@ const join = {
     const shareIndex = join.shareIndex(shareInput.id)
     const shareValue = shareInput.value
     if (shareValue.length === 0) {
+      delete join.shares[shareIndex]
       shareInput.className = ''
-    } else
+    } else {
       try {
         const share: Share = join.parseJsonShare(shareInput.value)
         join.shares[shareIndex] = share
@@ -53,6 +54,15 @@ const join = {
         delete join.shares[shareIndex]
         shareInput.className = 'share-problem'
       }
+    }
+    join.evaluate()
+  },
+
+  currentShares: () => join.shares.filter((share) => share !== undefined),
+
+  evaluate() {
+    const shares = join.currentShares().map((share) => conversions.b64ToBytes(share.partOfSecret))
+    console.log(shares)
   },
 }
 
@@ -77,7 +87,8 @@ join.shareInput(1).value = `{
   "identifier"    : "980363187642"
 }`
 join.updateVisibility()
-join.shareUpdated
+join.shareUpdated(join.shareInput(0))
+join.shareUpdated(join.shareInput(1))
 // FIXME temporary block end
 
 // wire share inputs with events
