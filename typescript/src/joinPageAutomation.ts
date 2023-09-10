@@ -4,65 +4,64 @@ interface Share {
   identifier: string
 }
 
-const join = {
+namespace join {
   // Basic utilities for share input UI elements
-  shareId: (index: number) => `shareInput-${index}`,
-  shareIndex: (shareId: string) => parseInt(shareId.substring(11)),
-  shareInput(index: number): HTMLTextAreaElement {
-    const input = docutils.documentElement(join.shareId(index))
+  export const shareId = (index: number) => `shareInput-${index}`
+  const shareIndex = (shareId: string) => parseInt(shareId.substring(11))
+  export function shareInput(index: number): HTMLTextAreaElement {
+    const input = docutils.documentElement(shareId(index))
     if (input instanceof HTMLTextAreaElement) return input
     else return docutils.fail(`Expected '${input}' to be a HTMLTextAreaElement.`)
-  },
-  shareInputs: () => Array.from(Array(256), (_, index) => join.shareInput(index)),
+  }
+  export const shareInputs = () => Array.from(Array(256), (_, index) => shareInput(index))
 
   // Visibility of share inputs
-  updateVisibility() {
-    const foundIndex = join
-      .shareInputs()
+  export function updateVisibility() {
+    const foundIndex = shareInputs()
       .reverse()
       .findIndex((input) => input.value.length > 0)
     const lastFilled = foundIndex == -1 ? -1 : 255 - foundIndex
-    join.shareInputs().forEach((input, index) => (input.hidden = index > lastFilled + 1))
-  },
+    shareInputs().forEach((input, index) => (input.hidden = index > lastFilled + 1))
+  }
 
   // Parse share input
-  parseJsonShare(input: string): Share {
+  function parseJsonShare(input: string): Share {
     const json = JSON.parse(input)
     return {
       partOfSecret: conversions.expectString(json['part of secret']),
       partOfHash: conversions.expectString(json['part of hash']),
       identifier: conversions.expectString(json['identifier']),
     }
-  },
+  }
 
   // The shares currently available
-  shares: Array<Share>(256),
+  const shares = Array<Share>(256)
 
   // React on share changes
-  shareUpdated(shareInput: HTMLTextAreaElement) {
-    const shareIndex = join.shareIndex(shareInput.id)
+  export function shareUpdated(shareInput: HTMLTextAreaElement) {
+    const shareIdx = shareIndex(shareInput.id)
     const shareValue = shareInput.value
     if (shareValue.length === 0) {
-      delete join.shares[shareIndex]
+      delete shares[shareIdx]
       shareInput.className = ''
     } else {
       try {
-        const share: Share = join.parseJsonShare(shareInput.value)
-        join.shares[shareIndex] = share
+        const share: Share = parseJsonShare(shareInput.value)
+        shares[shareIdx] = share
         shareInput.className = ''
       } catch (e) {
-        delete join.shares[shareIndex]
+        delete shares[shareIdx]
         shareInput.className = 'share-problem'
       }
     }
-    join.evaluate()
-  },
+    evaluate()
+  }
 
-  currentShares: () => join.shares.filter((share) => share !== undefined),
+  const currentShares = () => shares.filter((share) => share !== undefined)
 
-  evaluate() {
-    if (join.currentShares().length > 1) {
-      const shares = join.currentShares().map((share) => conversions.b64ToBytes(share.partOfSecret))
+  function evaluate() {
+    if (currentShares().length > 1) {
+      const shares = currentShares().map((share) => conversions.b64ToBytes(share.partOfSecret))
       const restoredBytes = shamirShare.joinShares(shares)
       const validUntil =
         restoredBytes.length -
@@ -77,7 +76,7 @@ const join = {
       docutils.inputElement('secretInput').value = ''
       docutils.documentElement('hashValidSpan').innerHTML = 'abc'
     }
-  },
+  }
 }
 
 // create share input UI elements
