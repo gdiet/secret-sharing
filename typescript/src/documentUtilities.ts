@@ -11,6 +11,12 @@ const docutils = {
     else return docutils.fail('Sorry, type check in script failed.')
   },
 
+  setClassAndContent(id: string, className: string, innerHTML: string) {
+    const element = docutils.documentElement(id)
+    element.className = className
+    element.innerHTML = innerHTML
+  },
+
   registerListener(id: string, eventType: string, listener: (event: Event) => void): void {
     docutils.documentElement(id).addEventListener(eventType, listener)
   },

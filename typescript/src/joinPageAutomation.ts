@@ -51,7 +51,7 @@ namespace join {
         shareInput.className = ''
       } catch (e) {
         delete shares[shareIdx]
-        shareInput.className = 'share-problem'
+        shareInput.className = 'problem'
       }
     }
     evaluate()
@@ -61,6 +61,7 @@ namespace join {
 
   async function evaluate() {
     if (currentShares().length > 1) {
+      // restore secret
       const shares = currentShares().map((share) => conversions.b64ToBytes(share.partOfSecret))
       const restoredBytes = shamirShare.joinShares(shares)
       const validUntil =
@@ -72,6 +73,7 @@ namespace join {
       const restoredSecret = conversions.bytesToUtf8(restoredValidBytes)
       docutils.inputElement('secretInput').value = restoredSecret
 
+      // restore and validate hash
       const hashFromSecret = Array.from(
         new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(restoredValidBytes))),
       )
@@ -80,14 +82,20 @@ namespace join {
       const hashIsValid =
         hashFromSecret.length === restoredHash.length &&
         hashFromSecret.every((value, index) => value === restoredHash[index])
-      if (hashIsValid) docutils.documentElement('hashValidSpan').innerHTML = 'OK'
-      else docutils.documentElement('hashValidSpan').innerHTML = 'FAILED'
+      if (hashIsValid) docutils.setClassAndContent('hashValidSpan', '', 'OK')
+      else docutils.setClassAndContent('hashValidSpan', 'problem', 'FAILED')
 
-      docutils.documentElement('identifierValidSpan').innerHTML = '???'
+      // validate identifier
+      const identifiers = currentShares().map((share) => share.identifier)
+      const sameIdentifiers = identifiers.every((identifier) => identifier === identifiers[0])
+      if (sameIdentifiers) docutils.setClassAndContent('identifierValidSpan', '', 'OK')
+      else docutils.setClassAndContent('identifierValidSpan', 'problem', 'FAILED')
+      //
     } else {
+      // invalidate output
       docutils.inputElement('secretInput').value = ''
-      docutils.documentElement('hashValidSpan').innerHTML = 'Not validated'
-      docutils.documentElement('identifierValidSpan').innerHTML = 'Not validated'
+      docutils.setClassAndContent('hashValidSpan', '', 'Not validated')
+      docutils.setClassAndContent('identifierValidSpan', '', 'Not validated')
     }
   }
 }
