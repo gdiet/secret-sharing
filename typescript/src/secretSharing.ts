@@ -21,7 +21,7 @@ const shamirShare = {
     if (length < 2) throw new Error('Shares not long enough.')
     const result: number[] = new Array(length - 1)
     for (let index = 0; index < length; index++) {
-      const points: number[][] = shares.map((share) => [share[0] || 0, share[index] || 0])
+      const points: number[][] = shares.map((share) => [share[0] || 0, share[index + 1] || 0])
       result[index] = shamirShare._.interpolate(points)
     }
     return result

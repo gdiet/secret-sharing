@@ -63,7 +63,19 @@ const join = {
   evaluate() {
     if (join.currentShares().length > 1) {
       const shares = join.currentShares().map((share) => conversions.b64ToBytes(share.partOfSecret))
-      console.log(shamirShare.joinShares(shares))
+      const restoredBytes = shamirShare.joinShares(shares)
+      const validUntil =
+        restoredBytes.length -
+        Array.from(restoredBytes)
+          .reverse()
+          .findIndex((num) => num !== 0)
+      const restoredValidBytes = restoredBytes.slice(0, validUntil)
+      const restoredSecret = conversions.bytesToUtf8(restoredValidBytes)
+      docutils.inputElement('secretInput').value = restoredSecret
+      docutils.documentElement('hashValidSpan').innerHTML = 'abc'
+    } else {
+      docutils.inputElement('secretInput').value = ''
+      docutils.documentElement('hashValidSpan').innerHTML = 'abc'
     }
   },
 }
