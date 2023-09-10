@@ -1,10 +1,10 @@
-interface Share {
-  partOfSecret: string
-  partOfHash: string
-  identifier: string
-}
-
 namespace join {
+  interface Share {
+    partOfSecret: string
+    partOfHash: string
+    identifier: string
+  }
+
   // Basic utilities for share input UI elements
   export const shareId = (index: number) => `shareInput-${index}`
   const shareIndex = (shareId: string) => parseInt(shareId.substring(11))
@@ -59,7 +59,7 @@ namespace join {
 
   const currentShares = () => shares.filter((share) => share !== undefined)
 
-  function evaluate() {
+  async function evaluate() {
     if (currentShares().length > 1) {
       const shares = currentShares().map((share) => conversions.b64ToBytes(share.partOfSecret))
       const restoredBytes = shamirShare.joinShares(shares)
@@ -71,10 +71,23 @@ namespace join {
       const restoredValidBytes = restoredBytes.slice(0, validUntil)
       const restoredSecret = conversions.bytesToUtf8(restoredValidBytes)
       docutils.inputElement('secretInput').value = restoredSecret
-      docutils.documentElement('hashValidSpan').innerHTML = 'abc'
+
+      const hashFromSecret = Array.from(
+        new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(restoredValidBytes))),
+      )
+      const hashShares = currentShares().map((share) => conversions.b64ToBytes(share.partOfHash))
+      const restoredHash = shamirShare.joinShares(hashShares)
+      const hashIsValid =
+        hashFromSecret.length === restoredHash.length &&
+        hashFromSecret.every((value, index) => value === restoredHash[index])
+      if (hashIsValid) docutils.documentElement('hashValidSpan').innerHTML = 'OK'
+      else docutils.documentElement('hashValidSpan').innerHTML = 'FAILED'
+
+      docutils.documentElement('identifierValidSpan').innerHTML = '???'
     } else {
       docutils.inputElement('secretInput').value = ''
-      docutils.documentElement('hashValidSpan').innerHTML = 'abc'
+      docutils.documentElement('hashValidSpan').innerHTML = 'Not validated'
+      docutils.documentElement('identifierValidSpan').innerHTML = 'Not validated'
     }
   }
 }

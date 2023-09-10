@@ -17,10 +17,10 @@ const shamirShare = {
     // require(shares.stream().map(share -> share.length).collect(Collectors.toSet()).size() == 1, "Varying lengths of shares.");
     // require(shares.stream().map(Main::toHex).collect(Collectors.toSet()).size() == shares.size(), "Duplicate share detected.");
     if (shares[0] == undefined || shares[1] == undefined) throw new Error('At least two shares needed.')
-    const length = shares[0].length
-    if (length < 2) throw new Error('Shares not long enough.')
-    const result: number[] = new Array(length - 1)
-    for (let index = 0; index < length; index++) {
+    const secretLength = shares[0].length - 1
+    if (secretLength < 1) throw new Error('Shares not long enough.')
+    const result: number[] = new Array(secretLength - 1)
+    for (let index = 0; index < secretLength; index++) {
       const points: number[][] = shares.map((share) => [share[0] || 0, share[index + 1] || 0])
       result[index] = shamirShare._.interpolate(points)
     }
