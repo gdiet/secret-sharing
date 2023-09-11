@@ -21,7 +21,10 @@ const docutils = {
     docutils.documentElement(id).addEventListener(eventType, listener)
   },
 
-  // FIXME use fail only for program failures, input validation should be handled differently.
+  /**
+   * Stops the current execution, displaying an error message. The error thrown here should not be caught.
+   * Only use for program failures, not for input validation.
+   */ // FIXME review usage
   fail(message: string): never {
     alert(message)
     throw Error(message)
