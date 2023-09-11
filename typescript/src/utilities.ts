@@ -1,4 +1,8 @@
 namespace util {
+  /**
+   * Represents a value of one of two possible types. By convention, if the types are a valid/invalid or good/bad pair,
+   * the valid or good type is "Right" and the invalid/bad type is "Left".
+   */
   export abstract class Either<L, R> {
     abstract readonly value: L | R
     abstract fold<T>(f1: (value: L) => T, f2: (value: R) => T): T
