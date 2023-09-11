@@ -36,8 +36,8 @@ class GF256 {
     }
 
     /**
-     * The AES GF(256) multiplication. The constant 0x11b (binary 1.0001.1011, big-endian) represents the AES encryption
-     * `x^8 + x^4 + x^3 + x^1 + x^0` polynomial - the bits 8, 4, 3, 1, 0 are set in 0x11b.
+     * The AES GF(256) multiplication. The constant 0x11b (binary 1.0001.1011, big-endian) represents AES' reducing
+     * polynomial for multiplication `x^8 + x^4 + x^3 + x^1 + x^0` - the bits 8, 4, 3, 1, 0 are set in 0x11b.
      *
      * @see <a href="https://en.wikipedia.org/wiki/Finite_field_arithmetic#C_programming_example">Wikipedia:
      * C programming example</a>
