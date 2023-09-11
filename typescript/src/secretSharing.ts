@@ -1,5 +1,23 @@
 namespace shamirShare {
+  /**
+   * Split a secret into shares using Shamir's secret sharing algorithm.
+   * Use the AES GF(256) operations for calculations and assume that the `x` value of the secret is `0`.
+   * The `x` values of the shares are stored in the shares' first byte.
+   *
+   * @param secretBytes The bytes to create shares for.
+   * @param numOfShares The number of shares to create.
+   * @param threshold The minimum number of shares needed to recreate the secret.
+   * @return The shares created.
+   *
+   * @see https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
+   */
   export function shareSecret(secretBytes: number[], numberOfShares: number, threshold: number): number[][] {
+    // FIXME check
+    // require(numOfShares <= 255, "No more than 255 shares supported.")
+    // require(numOfShares > 1, "At least 2 shares are required.")
+    // require(threshold <= numOfShares, "The threshold can not be larger than the number of shares.")
+    // require(threshold >= 2, "The threshold must be at least 2.")
+    // require(secretBytes.forall(byte => byte >= 0 && byte <= 255), "Secret bytes must be in the range 0..255.")
     const polynomials = generatePolynomials(secretBytes, threshold)
     const result: number[][] = []
     for (let share = 1; share <= numberOfShares; share++)
@@ -7,7 +25,21 @@ namespace shamirShare {
     return result
   }
 
+  /**
+   * Join the given shares using Shamir's secret sharing algorithm to recover the original secret.
+   * Use the AES GF(256) operations for calculations and assume that the `x` value of the secret is `0`.
+   * The 'x' values of the shares are read from the shares' first byte.
+   *
+   * Note: If the shares are incorrect, or their number is less than the threshold value that was used
+   * when generating the shares, the output will be meaningless.
+   *
+   * @param shares The shares to join.
+   * @return The original secret.
+   *
+   * @see https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
+   */
   export function joinShares(shares: Uint8Array[]): number[] {
+    // FIXME check
     // require(shares.stream().map(share -> share.length).collect(Collectors.toSet()).size() == 1, "Varying lengths of shares.");
     // require(shares.stream().map(Main::toHex).collect(Collectors.toSet()).size() == shares.size(), "Duplicate share detected.");
     if (shares[0] == undefined || shares[1] == undefined) throw new Error('At least two shares needed.')
@@ -42,7 +74,9 @@ namespace shamirShare {
     return polynomial
   }
 
-  /** @see https://en.wikipedia.org/wiki/Horner%27s_method */
+  /**
+   * @see https://en.wikipedia.org/wiki/Horner%27s_method
+   */
   function evaluate(polynomial: number[], share: number): number {
     let result = 0
     // Note: ES2023 introduces Array.prototype.toReversed() which is the combination of clone + reverse,
@@ -52,7 +86,9 @@ namespace shamirShare {
     return result
   }
 
-  /** @see https://en.wikipedia.org/wiki/Lagrange_polynomial */
+  /**
+   * @see https://en.wikipedia.org/wiki/Lagrange_polynomial
+   */
   function interpolate(data: number[][]): number {
     return data.reduce((r, [x1, y], i) => {
       const t = data.reduce((t, [x2, _], j) => {
