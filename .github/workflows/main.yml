@@ -11,7 +11,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
+      - run: pwd
       - run: cd typescript/
+      - run: pwd
+      - run: ls -ll
       - run: npm install
       - run: npx tsc
       - uses: actions/upload-pages-artifact@v2
