@@ -6,13 +6,14 @@ on:
 jobs:
   build-pages:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: typescript
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - run: pwd
-      - run: cd typescript/
       - run: pwd
       - run: ls -ll
       - run: npm install
