@@ -56,7 +56,7 @@ namespace shamirShare {
   /**
    * A random generator returning integers between a (inclusive) and b (exclusive).
    */
-  function randomInt(fromInclusive: number, untilExclusive: number) {
+  export function randomInt(fromInclusive: number, untilExclusive: number) {
     const fakerandom = parseInt(new URLSearchParams(document.location.search).get('fakerandom') || '0')
     if (fakerandom != 0) return (fakerandom % (untilExclusive - fromInclusive)) + fromInclusive
     else return Math.floor(Math.random() * (untilExclusive - fromInclusive) + fromInclusive)
