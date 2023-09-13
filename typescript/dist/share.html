@@ -20,20 +20,19 @@
   <p>Number of shares to create: <input id="numberOfSharesInput" type="number" min="2" max="255" step="1" value="3"></p>
   <p>Number of shares (threshold) needed to recover the secret: <input id="thresholdInput" type="number" min="2" max="255" step="1" value="2"></p>
   <p>Optional description of the shares:</p>
-  <p><textarea id="sharesDescriptionInput" value="" rows="3" cols="80">
-    Example description: Mary's 2023 bank account user:password at TheBigBank.boom,
-    shared with her relatives for emergency situations
+  <p><textarea id="sharesDescriptionInput" rows="3" cols="80">
+    Example description: Mary's 2023 bank account user:password at TheBigBank.boom, shared with her relatives for emergency situations
   </textarea></p>
   <p><button id="createSharesButton">Create Shares</button></p>
   <p>Shamir's Secret Sharing, GF256 with polynomial 0x11b, utf-8, lower-endian bytes, first byte of share is the share's x value, secret possibly padded with trailing zeros, share verification SHA-256 hash of unpadded secret, random identifier, timestamp ISO 8601 like 2009-06-30T18:30:00+02:00.</p>
 
-  <div id="shareInfoDiv">
+  <div id="shareInfoDiv" hidden="true">
     <p>Below find the shares for your secret or password. Beneath the shares, there is a proposal how to share them with people so they know what they have received - and have a chance to remember it even ten years from now.</p>
     <hr>
     <div id="sharesDiv"></div>
     <hr>
     <p>The following is an example how you could share these shares with people - modify or abbreviate as needed:</p>
-    <p><i>This is a so-called share of <span id="sharesDescriptionSpan">TEMPLATE Mary's 2023 bank account user:password at TheBigBank.boom, shared with her relatives for emergency situations TEMPLATE</span>. Please store it in a safe location, for example in you password safe. You have received this share so in an emergency you - together with other persons who have received other shares - can reconstruct the secret or password and do whatever is necessary. This is one of <span id="numberOfSharesSpan">TEMPLATE 5 TEMPLATE</span> shares created on <span id="createdDateSpan">TEMPLATE 2023-12-10 TEMPLATE</span>. To reconstruct the secret or password, <span id="thresholdSpan">TEMPLATE 3 TEMPLATE</span> different shares are needed. For the actual reconstruction, this text is not needed - you only need the following data:</i></p>
+    <p><i>This is a so-called share of <span id="sharesDescriptionSpan">TEMPLATE Mary's 2023 bank account user:password at TheBigBank.boom, shared with her relatives for emergency situations TEMPLATE</span>. Please store it in a safe location, for example in your password safe. You have received this share so in an emergency you - together with other persons who have received other shares - can reconstruct the secret or password and do whatever is necessary. This is one of <span id="numberOfSharesSpan">TEMPLATE 5 TEMPLATE</span> shares created on <span id="createdDateSpan">TEMPLATE 2023-12-10 TEMPLATE</span>. To reconstruct the secret or password, <span id="thresholdSpan">TEMPLATE 3 TEMPLATE</span> different shares are needed. For the actual reconstruction, this text is not needed - you only need the following data:</i></p>
     <pre>
 {
   "part number"   : 1,

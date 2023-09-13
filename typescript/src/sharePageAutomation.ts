@@ -1,9 +1,12 @@
-const sharesDescriptionTextArea = docutils.documentElement('sharesDescriptionInput')
-sharesDescriptionTextArea.innerHTML = sharesDescriptionTextArea.innerHTML.replaceAll('  ', '')
+// FIXME validate
+const sharesDescriptionTextArea = docutils.documentElement('sharesDescriptionInput') as HTMLTextAreaElement
+sharesDescriptionTextArea.value = sharesDescriptionTextArea.value.replaceAll('  ', '')
 
 docutils.registerListener('createSharesButton', 'click', createShares)
 
 async function createShares(): Promise<void> {
+  console.log((docutils.documentElement('sharesDescriptionInput') as HTMLTextAreaElement).value)
+
   const secretBytes: Uint8Array = conversions.utf8ToUint8(docutils.inputElement('secretInput').value)
   const padToLength: number = parseInt(docutils.inputElement('padToLengthInput').value)
   const numberOfShares: number = parseInt(docutils.inputElement('numberOfSharesInput').value)
@@ -34,4 +37,15 @@ async function createShares(): Promise<void> {
     })
     .join('\n\n\n')
   docutils.documentElement('sharesDiv').innerHTML = `<pre>${sharesText}</pre>`
+
+  const description = sharesDescriptionTextArea.value.replaceAll('\n', '')
+  docutils.documentElement('sharesDescriptionSpan').innerText = `${description}`
+  docutils.documentElement('numberOfSharesSpan').innerText = `${numberOfShares}`
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  docutils.documentElement('createdDateSpan').innerText = `${year}.${month}.${day}`
+  docutils.documentElement('thresholdSpan').innerText = `${threshold}`
+  docutils.documentElement('shareInfoDiv').hidden = false
 }
