@@ -1,4 +1,4 @@
-const sharesDescriptionTextArea = docutils.documentElement('sharesDescription')
+const sharesDescriptionTextArea = docutils.documentElement('sharesDescriptionInput')
 sharesDescriptionTextArea.innerHTML = sharesDescriptionTextArea.innerHTML.replaceAll('  ', '')
 
 docutils.registerListener('createSharesButton', 'click', createShares)
