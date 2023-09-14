@@ -41,7 +41,10 @@
   "identifier"    : "111111"
 }</pre>
     <p><i>This share was created with the share tool from <a href="https://gdiet.github.io/secret-sharing/">https://gdiet.github.io/secret-sharing/</a>. On the same site, find the tool for reconstructing the secret or password from shares.</i></p>
-  </div>
+    <p><i>Technical description: The "part of secret" is a Base64 encoded byte array. The first byte of the array is the "x" value, all following bytes are "y" values. To reconstruct the original secret's first byte, you combine the "x" value of each "part of secret" share you have with its second byte as "y" value. This gives you a number of "x/y" pairs. Then you do a <a href="https://en.wikipedia.org/wiki/Lagrange_polynomial">Lagrange interpolation</a> to calculate the "y" value for "x = 0". This "y" value is the original secret's first byte. In the same way, you combine the "x" values with the third bytes to calculate the secret's second byte, and so on. Ignore trailing zeros in the reconstructed secret - they were added as a security measure and are not part of the original secret. Note that the Lagrange interpolation must be calculated using the "GF(256)" Galois field with "x^8 + x^4 + x^3 + x^1 + x^0" (or 0x11b) as reducing polynomial. By the way: This is the same field and polynomial as used for calculations by the AES encryption.</i></p>
+    <p><i>From the "part of hash", you can reconstruct in the same way the SHA-256 hash of the original secret (without any zero padding). This can be used to verify that the reconstructed secret is in fact the same as the original.</i></p>
+    <p><i>The "identifier" field can be used to check whether shares can be combined at all: If the identifiers differ, the shares most probably belong to different instances or even different original secrets, and combining them will not yields meaningful results.</i></p>
+    <p><i>The "part number" field is the same as the "x" value of the shares. It is to facilitate (for humans) to check that shares differ - it is not evaluated during reconstruction of the secrets.</i></p>  </div>
 </body>
 
 </html>
