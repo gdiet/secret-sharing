@@ -6,13 +6,9 @@ namespace join {
   }
 
   // Basic utilities for share input UI elements
-  export const shareId = (index: number) => `shareInput-${index}`
   const shareIndex = (shareId: string) => parseInt(shareId.substring(11))
-  export function shareInput(index: number): HTMLTextAreaElement {
-    const input = docutils.documentElement(shareId(index))
-    if (input instanceof HTMLTextAreaElement) return input
-    else return docutils.fail(`Expected '${input}' to be a HTMLTextAreaElement.`)
-  }
+  export const shareId = (index: number) => `shareInput-${index}`
+  export const shareInput = (index: number) => docutils.textAreaElement(shareId(index))
   export const shareInputs = () => Array.from(Array(256), (_, index) => shareInput(index))
 
   // Visibility of share inputs

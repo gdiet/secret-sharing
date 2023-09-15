@@ -2,19 +2,19 @@ namespace docutils {
   export function documentElement(id: string): HTMLElement {
     const maybeElement = document.getElementById(id)
     if (maybeElement !== null) return maybeElement
-    else return fail('Sorry, null check in script failed.')
+    else return fail('Null check in script failed')
   }
 
   export function textAreaElement(id: string): HTMLTextAreaElement {
     const maybeInput = docutils.documentElement(id)
     if (maybeInput instanceof HTMLTextAreaElement) return maybeInput
-    else return fail('Sorry, type check in script failed.')
+    else return fail('Type check in script failed')
   }
 
   export function inputElement(id: string): HTMLInputElement {
     const maybeInput = docutils.documentElement(id)
     if (maybeInput instanceof HTMLInputElement) return maybeInput
-    else return fail('Sorry, type check in script failed.')
+    else return fail('Type check in script failed')
   }
 
   export function setClassAndContent(id: string, className: string, innerHTML: string) {
@@ -39,9 +39,9 @@ namespace docutils {
   /**
    * Stops the current execution, displaying an error message. The error thrown here should not be caught.
    * Only use for program failures, not for input validation.
-   */ // FIXME review usage
+   */
   export function fail(message: string): never {
-    alert(message)
+    alert(`Oh bother: ${message}.`)
     throw new AssertionFailed(message)
   }
 }
