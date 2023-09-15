@@ -5,6 +5,10 @@ namespace util {
    */
   export abstract class Either<L, R> {
     abstract readonly value: L | R
+    abstract get isRight(): boolean
+    get isLeft(): boolean {
+      return !this.isRight
+    }
     abstract fold<T>(f1: (value: L) => T, f2: (value: R) => T): T
 
     flatMap<R2>(f: (value: R) => Either<L, R2>): Either<L, R2> {
@@ -34,13 +38,32 @@ namespace util {
         (r) => new Right(r),
       )
     }
+
+    validate(condition: boolean, orElse: L) {
+      return this.isLeft || condition ? this : new Left<L, R>(orElse)
+    }
+
+    onLeft(f: (value: L) => any): void {
+      this.fold(f, () => {})
+    }
+
+    onRight(f: (value: R) => any): void {
+      this.fold(() => {}, f)
+    }
   }
 
   export function either<L, R>(ifUndefined: () => L, value: undefined | R): Either<L, R> {
     return value ? new Right(value) : new Left(ifUndefined())
   }
 
+  export function validate<L>(condition: boolean, orElse: L): Either<L, undefined> {
+    return condition ? new Right<L, undefined>(undefined) : new Left<L, undefined>(orElse)
+  }
+
   export class Left<L, R> extends Either<L, R> {
+    override get isRight(): boolean {
+      return false
+    }
     readonly value: L
     constructor(value: L) {
       super()
@@ -53,6 +76,9 @@ namespace util {
   }
 
   export class Right<L, R> extends Either<L, R> {
+    override get isRight(): boolean {
+      return true
+    }
     readonly value: R
     constructor(value: R) {
       super()

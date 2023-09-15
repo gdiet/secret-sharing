@@ -8,10 +8,14 @@ async function createShares(): Promise<void> {
   const padToLength: number = parseInt(docutils.inputElement('padToLengthInput').value)
   const numberOfShares: number = parseInt(docutils.inputElement('numberOfSharesInput').value)
   const threshold: number = parseInt(docutils.inputElement('thresholdInput').value)
-  if (numberOfShares > 255) docutils.fail('No more than 255 shares supported.')
-  if (numberOfShares < 2) docutils.fail('At least 2 shares are required.')
-  if (threshold > numberOfShares) docutils.fail('The threshold can not be larger than the number of shares.')
-  if (threshold < 2) docutils.fail('The threshold must be at least 2.')
+  const validation = util
+    .validate(secretBytes.length > 0, 'Please provide a secret to share.')
+    .validate(numberOfShares >= 2, 'At least 2 shares are required.')
+    .validate(numberOfShares <= 255, 'No more than 255 shares can be created.')
+    .validate(threshold >= 2, 'The threshold must be at least 2.')
+    .validate(threshold <= numberOfShares, 'The threshold can not be larger than the number of shares.')
+  validation.onLeft(alert)
+  if (validation.isLeft) return
 
   const secretPadded = [...secretBytes]
   for (let i = secretBytes.length; i < padToLength; i++) secretPadded.push(0)
