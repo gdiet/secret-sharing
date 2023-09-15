@@ -8,6 +8,7 @@ async function createShares(): Promise<void> {
   const padToLength: number = parseInt(docutils.inputElement('padToLengthInput').value)
   const numberOfShares: number = parseInt(docutils.inputElement('numberOfSharesInput').value)
   const threshold: number = parseInt(docutils.inputElement('thresholdInput').value)
+
   const validation = util
     .validate(secretBytes.length > 0, 'Please provide a secret to share.')
     .validate(numberOfShares >= 2, 'At least 2 shares are required.')
