@@ -5,6 +5,12 @@ namespace docutils {
     else return fail('Sorry, null check in script failed.')
   }
 
+  export function textAreaElement(id: string): HTMLTextAreaElement {
+    const maybeInput = docutils.documentElement(id)
+    if (maybeInput instanceof HTMLTextAreaElement) return maybeInput
+    else return fail('Sorry, type check in script failed.')
+  }
+
   export function inputElement(id: string): HTMLInputElement {
     const maybeInput = docutils.documentElement(id)
     if (maybeInput instanceof HTMLInputElement) return maybeInput

@@ -1,12 +1,9 @@
-// FIXME validate
-const sharesDescriptionTextArea = docutils.documentElement('sharesDescriptionInput') as HTMLTextAreaElement
+const sharesDescriptionTextArea = docutils.textAreaElement('sharesDescriptionInput')
 sharesDescriptionTextArea.value = sharesDescriptionTextArea.value.replaceAll('  ', '')
 
 docutils.registerListener('createSharesButton', 'click', createShares)
 
 async function createShares(): Promise<void> {
-  console.log((docutils.documentElement('sharesDescriptionInput') as HTMLTextAreaElement).value)
-
   const secretBytes: Uint8Array = conversions.utf8ToUint8(docutils.inputElement('secretInput').value)
   const padToLength: number = parseInt(docutils.inputElement('padToLengthInput').value)
   const numberOfShares: number = parseInt(docutils.inputElement('numberOfSharesInput').value)
