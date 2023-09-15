@@ -103,23 +103,22 @@ docutils.documentElement('shareInputs').innerHTML = Array.from(
 ).join('\n')
 join.shareInput(0).hidden = false
 
-// FIXME temporary block start
+// Insert demo data
 join.shareInput(0).value = `{
   "part number"   : 3,
   "part of secret": "AzrC3V9NjkS7aC9KombjyDdAJe4d6r4t4e114BmOCbh1",
   "part of hash"  : "A7TXU1gcfr5dI7xV5DRfHza1206IAimy1SLoILE3BYBY",
-  "identifier"    : "980363187642"
+  "identifier"    : "demo share"
 }`
 join.shareInput(1).value = `{
   "part number"   : 1,
   "part of secret": "AWOA4HN5Jnox7+zPlyKoseTJ6loLr2obX1vaqf56B2ja",
   "part of hash"  : "AXf73a3X+G0db2+9Si9ZfGfTkg4rvJkQj7fRfipVcr3c",
-  "identifier"    : "980363187642"
+  "identifier"    : "demo share"
 }`
 join.updateVisibility()
 join.shareUpdated(join.shareInput(0))
 join.shareUpdated(join.shareInput(1))
-// FIXME temporary block end
 
 // wire share inputs with events
 join.shareInputs().forEach((input) => {
