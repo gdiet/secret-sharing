@@ -1,6 +1,14 @@
 const sharesDescriptionTextArea = docutils.textAreaElement('sharesDescriptionInput')
 sharesDescriptionTextArea.value = sharesDescriptionTextArea.value.replaceAll('  ', '')
 
+docutils.registerListener('numberOfSharesInput', 'change', thresholdCheck)
+docutils.registerListener('thresholdInput', 'change', thresholdCheck)
+function thresholdCheck(): void {
+  const numberOfShares: number = parseInt(docutils.inputElement('numberOfSharesInput').value)
+  const threshold: number = parseInt(docutils.inputElement('thresholdInput').value)
+  if (threshold > numberOfShares) docutils.inputElement('thresholdInput').value = `${numberOfShares}`
+}
+
 docutils.registerListener('createSharesButton', 'click', createShares)
 
 async function createShares(): Promise<void> {
