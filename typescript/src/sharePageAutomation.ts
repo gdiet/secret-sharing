@@ -11,6 +11,11 @@ function thresholdCheck(): void {
 
 docutils.registerListener('createSharesButton', 'click', createShares)
 
+docutils.registerListener('includeIndex', 'change', () => {
+  console.log(docutils.inputElement('includeIndex').checked)
+  // FIXME with this information, set 'display' property of class 'indexClass'
+})
+
 async function createShares(): Promise<void> {
   const secretBytes: Uint8Array = conversions.utf8ToUint8(docutils.inputElement('secretInput').value)
   const padToLength: number = parseInt(docutils.inputElement('padToLengthInput').value)
@@ -36,16 +41,13 @@ async function createShares(): Promise<void> {
 
   const sharesText = shares
     .map((share, index) => {
-      return conversions.cleanMultiline(`
-        |{
-        |  "part number"   : ${index + 1},
-        |  "part of secret": "${conversions.bytesToB64(share)}",
-        |  "part of hash"  : "${conversions.bytesToB64(hashShares[index] || [])}",
-        |  "identifier"    : "${sharesIdent}"
-        |}
-      `)
+      const indexStr = `<span class="indexClass">${index + 1}:</span>`
+      const shareStr = `<span class="shareClass">${conversions.bytesToB64(share)}</span>`
+      const hashStr = `<span class="hashClass">.${conversions.bytesToB64(hashShares[index] || [])}</span>`
+      const identStr = `<span class="identClass">:${sharesIdent}</span>`
+      return indexStr + shareStr + hashStr + identStr
     })
-    .join('\n\n\n')
+    .join('\n\n')
   docutils.documentElement('sharesDiv').innerHTML = `<pre>${sharesText}</pre>`
 
   const description = sharesDescriptionTextArea.value.replaceAll('\n', '')
