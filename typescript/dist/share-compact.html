@@ -11,11 +11,17 @@
   <script src="secretSharing.js" defer></script>
   <script src="utilities.js" defer></script>
   <!-- The page automation scripts must be loaded last. -->
-  <script src="sharePageAutomationJSON.js" defer></script>
+  <script src="sharePageAutomationCompact.js" defer></script>
   <script src="sharePageAutomation.js" defer></script>
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
+  <p class="indexClass">will be hidden</p>
   <h1>Securely Sharing Secrets Like Passwords</h1>
   <p><a href="index.html">[Main Page]</a></p>
   <p>For reconstructing secrets or passwords from the shares created with this tool, look <a href="join.html">here</a>.</p>
@@ -29,6 +35,10 @@
 
   <div id="shareInfoDiv" hidden="true">
     <p>Below are the shares for your secret or password. Beneath that is a suggestion for how to share them with people so they know what they have received - and have a chance of remembering it in ten years' time.</p>
+    <input type="checkbox" id="includeIndex" name="indexClass" checked="true"><label for="includeIndexBox">Include index</label> &nbsp;
+    <input type="checkbox" id="includeHash" name="includeHashBox" checked="true"><label for="includeHashBox">Include hash</label> &nbsp;
+    <input type="checkbox" id="includeIdentifier" name="includeIdentifierBox" checked="true"><label for="includeIdentifierBox">Include identifier</label>
+    <br>
     <hr>
     <div id="sharesDiv"></div>
     <hr>
