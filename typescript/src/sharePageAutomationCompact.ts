@@ -3,16 +3,19 @@ docutils.registerListener('createSharesButton', 'click', () => createSharesBase(
 function sharesTextCompact(shares: number[][], hashShares: number[][], sharesIdent: string): string {
   const sharesText = shares
     .map((share, index) => {
-      // FIXME add span class="indexClass" etc.
-      return `${index + 1}::${conversions.bytesToB64(share)}:${conversions.bytesToB64(
-        hashShares[index] || [],
-      )}::${sharesIdent}`
+      const indexString = `<span class="indexClass">${index + 1}::</span>`
+      const shareString = `<span class="shareClass">${conversions.bytesToB64(share)}</span>`
+      const hashString = `<span class="hashClass">:${conversions.bytesToB64(hashShares[index] || [])}</span>`
+      const identString = `<span class="identClass">::${sharesIdent}</span>`
+      return `${indexString}${shareString}${hashString}${identString}`
     })
-    .join('\n\n\n')
+    .join('\n\n')
   return `<pre>${sharesText}</pre>`
 }
 
 registerVisibilitySwitch('includeIndex', 'indexClass')
+registerVisibilitySwitch('includeHash', 'hashClass')
+registerVisibilitySwitch('includeIdentifier', 'identClass')
 
 function registerVisibilitySwitch(checkboxId: string, className: string) {
   docutils.registerListener(checkboxId, 'change', () => {
