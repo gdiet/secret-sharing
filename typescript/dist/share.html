@@ -1,51 +1,117 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secret Sharing</title>
+    <script src="conversionUtilities.js" defer></script>
+    <script src="documentUtilities.js" defer></script>
+    <script src="gf256Math.js" defer></script>
+    <script src="secretSharing.js" defer></script>
+    <script src="utilities.js" defer></script>
+    <!-- The page automation scripts must be loaded last. -->
+    <script src="sharePageAutomation.js" defer></script>
+    <script src="sharePageAutomationJSON.js" defer></script>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Secret Sharing</title>
-  <script src="conversionUtilities.js" defer></script>
-  <script src="documentUtilities.js" defer></script>
-  <script src="gf256Math.js" defer></script>
-  <script src="secretSharing.js" defer></script>
-  <script src="utilities.js" defer></script>
-  <!-- The page automation scripts must be loaded last. -->
-  <script src="sharePageAutomationJSON.js" defer></script>
-  <script src="sharePageAutomation.js" defer></script>
-</head>
+  <body>
+    <h1>Securely Sharing Secrets Like Passwords</h1>
+    <p><a href="index.html">[Main Page]</a></p>
+    <p>
+      For reconstructing secrets or passwords from the shares created with this tool, look <a href="join.html">here</a>.
+    </p>
+    <p>Secret or password: <input id="secretInput" type="text" value="¡secret!" size="50" /></p>
+    <p>
+      Pad secret to length (0 = no padding, max. 64):
+      <input id="padToLengthInput" type="number" min="0" max="64" step="1" value="32" />
+    </p>
+    <p>
+      Number of shares to create (min. 2, max. 255):
+      <input id="numberOfSharesInput" type="number" min="2" max="255" step="1" value="3" />
+    </p>
+    <p>
+      Threshold (number of shares needed to recover the secret):
+      <input id="thresholdInput" type="number" min="2" max="255" step="1" value="2" />
+    </p>
+    <p>Optional description of the shares:</p>
+    <p>
+      <textarea
+        id="sharesDescriptionInput"
+        rows="3"
+        cols="80"
+        placeholder="Example description: It is Mary's 2023 bank account user:password with TheBigBank.boom, which is shared with her relatives in case of an emergency."
+      ></textarea>
+    </p>
+    <p><button id="createSharesButton">Create Shares</button></p>
 
-<body>
-  <h1>Securely Sharing Secrets Like Passwords</h1>
-  <p><a href="index.html">[Main Page]</a></p>
-  <p>For reconstructing secrets or passwords from the shares created with this tool, look <a href="join.html">here</a>.</p>
-  <p>Secret or password: <input id="secretInput" type="text" value="¡secret!" size="50"></p>
-  <p>Pad secret to length (0 = no padding, max. 64): <input id="padToLengthInput" type="number" min="0" max="64" step="1" value="32"></p>
-  <p>Number of shares to create (min. 2, max. 255): <input id="numberOfSharesInput" type="number" min="2" max="255" step="1" value="3"></p>
-  <p>Threshold (number of shares needed to recover the secret): <input id="thresholdInput" type="number" min="2" max="255" step="1" value="2"></p>
-  <p>Optional description of the shares:</p>
-  <p><textarea id="sharesDescriptionInput" rows="3" cols="80" placeholder="Example description: It is Mary's 2023 bank account user:password with TheBigBank.boom, which is shared with her relatives in case of an emergency."></textarea></p>
-  <p><button id="createSharesButton">Create Shares</button></p>
-
-  <div id="shareInfoDiv" hidden="true">
-    <p>Below are the shares for your secret or password. Beneath that is a suggestion for how to share them with people so they know what they have received - and have a chance of remembering it in ten years' time.</p>
-    <hr>
-    <div id="sharesDiv"></div>
-    <hr>
-    <p>The following is an example of how you might share these shares with people - modify or abbreviate as needed.</p>
-    <p>You can also include the <a href="secret-sharing.zip">full distribution package</a> of these pages and their <a href="secret-sharing-sources.zip">Typescript sources</a>.</p>
-    <p><i>This is a so-called share of a secret string, for example a password. 
-      <span id="sharesDescriptionSpan">DYNAMIC TEXT: description</span>
-      Please keep it in a safe place, such as your password safe. You have been given this share so that, in an emergency, you - along with other people who have been given other shares - can reconstruct the secret or password and do whatever is necessary.
-      This is one of <span id="numberOfSharesSpan">DYNAMIC TEXT: number</span> shares
-      created on <span id="createdDateSpan">DYNAMIC TEXT: date</span>.
-      To reconstruct the secret or password, <span id="thresholdSpan">DYNAMIC TEXT: number</span>
-      different shares are needed. For the actual reconstruction, this text is not needed - you only need the following data:
-    </i></p>
-    <p><b><i>[Replace this paragraph with the share from above you want to hand over.]</i></b></p>    <p><i>This share was created using the share tool at <a href="https://gdiet.github.io/secret-sharing/">https://gdiet.github.io/secret-sharing/</a>. On the same site, you will find the tool for recovering the secret or password from shares.</i></p>
-    <p><i>Technical description: The "part of secret" is a Base64 encoded byte array. The first byte of the array is the "x" value, all subsequent bytes are "y" values. To reconstruct the first byte of the original secret, you combine the "x" value of each "part of secret" share you have with its second byte as "y" value. This gives you a number of "x/y" pairs. Then you do a <a href="https://en.wikipedia.org/wiki/Lagrange_polynomial">Lagrangian interpolation</a> to calculate the "y" value for "x = 0". This "y" value is the first byte of the original secret. In the same way, you combine the "x" values with the third bytes to calculate the second byte of the secret, and so on. Ignore any trailing zeros in the reconstructed secret - they have been added as a security measure and are not part of the original secret. Note that the Lagrangian interpolation must be computed in the "GF(256)" Galois field with "x^8 + x^4 + x^3 + x^1 + x^0" (or 0x11b) as the reducing polynomial. By the way: This is the same field and polynomial used for AES encryption calculations.</i></p>
-    <p><i>From the "part of hash", you can reconstruct the SHA-256 hash of the original secret (without any zero padding) in the same way. This can be used to verify that the reconstructed secret is indeed the same as the original. The "identifier" field can be used to check whether the shares can be combined at all: if the identifiers are different, the shares most likely belong to different instances or even different original secrets, and combining them will not yield meaningful results. The "part number" field is the same as the "x" value of the shares. It is there to make it easier for humans to check that the shares are different - it is not evaluated during the reconstruction of the secrets. The approach used to share the secret or password is called "Shamir's Secret Sharing". Strings are converted to byte arrays (and vice versa) using the UTF-8 encoding. Calculations are done in lower-endian order.</i></p>
-    <pre>
+    <div id="shareInfoDiv" hidden="true">
+      <p>
+        Below are the shares for your secret or password. Beneath that is a suggestion for how to share them with people
+        so they know what they have received - and have a chance of remembering it in ten years' time.
+      </p>
+      <hr />
+      <div id="sharesDiv"></div>
+      <hr />
+      <p>
+        The following is an example of how you might share these shares with people - modify or abbreviate as needed.
+      </p>
+      <p>
+        You can also include the <a href="secret-sharing.zip">full distribution package</a> of these pages and their
+        <a href="secret-sharing-sources.zip">Typescript sources</a>.
+      </p>
+      <p>
+        <i
+          >This is a so-called share of a secret string, for example a password.
+          <span id="sharesDescriptionSpan">DYNAMIC TEXT: description</span>
+          Please keep it in a safe place, such as your password safe. You have been given this share so that, in an
+          emergency, you - along with other people who have been given other shares - can reconstruct the secret or
+          password and do whatever is necessary. This is one of
+          <span id="numberOfSharesSpan">DYNAMIC TEXT: number</span> shares created on
+          <span id="createdDateSpan">DYNAMIC TEXT: date</span>. To reconstruct the secret or password,
+          <span id="thresholdSpan">DYNAMIC TEXT: number</span>
+          different shares are needed. For the actual reconstruction, this text is not needed - you only need the
+          following data:
+        </i>
+      </p>
+      <p>
+        <b><i>[Replace this paragraph with the share from above you want to hand over.]</i></b>
+      </p>
+      <p>
+        <i
+          >This share was created using the share tool at
+          <a href="https://gdiet.github.io/secret-sharing/">https://gdiet.github.io/secret-sharing/</a>. On the same
+          site, you will find the tool for recovering the secret or password from shares.</i
+        >
+      </p>
+      <p>
+        <i
+          >Technical description: The "part of secret" is a Base64 encoded byte array. The first byte of the array is
+          the "x" value, all subsequent bytes are "y" values. To reconstruct the first byte of the original secret, you
+          combine the "x" value of each "part of secret" share you have with its second byte as "y" value. This gives
+          you a number of "x/y" pairs. Then you do a
+          <a href="https://en.wikipedia.org/wiki/Lagrange_polynomial">Lagrangian interpolation</a> to calculate the "y"
+          value for "x = 0". This "y" value is the first byte of the original secret. In the same way, you combine the
+          "x" values with the third bytes to calculate the second byte of the secret, and so on. Ignore any trailing
+          zeros in the reconstructed secret - they have been added as a security measure and are not part of the
+          original secret. Note that the Lagrangian interpolation must be computed in the "GF(256)" Galois field with
+          "x^8 + x^4 + x^3 + x^1 + x^0" (or 0x11b) as the reducing polynomial. By the way: This is the same field and
+          polynomial used for AES encryption calculations.</i
+        >
+      </p>
+      <p>
+        <i
+          >From the "part of hash", you can reconstruct the SHA-256 hash of the original secret (without any zero
+          padding) in the same way. This can be used to verify that the reconstructed secret is indeed the same as the
+          original. The "identifier" field can be used to check whether the shares can be combined at all: if the
+          identifiers are different, the shares most likely belong to different instances or even different original
+          secrets, and combining them will not yield meaningful results. The "part number" field is the same as the "x"
+          value of the shares. It is there to make it easier for humans to check that the shares are different - it is
+          not evaluated during the reconstruction of the secrets. The approach used to share the secret or password is
+          called "Shamir's Secret Sharing". Strings are converted to byte arrays (and vice versa) using the UTF-8
+          encoding. Calculations are done in lower-endian order.</i
+        >
+      </p>
+      <pre>
 /* Example Java code for reconstructing a single byte of the secret. */
 
 /** Lagrange interpolate at x = 0 the polynomial defined by the points. */
@@ -93,8 +159,8 @@ for (int n = 1; n <= 255; n++) {
 /** The AES GF(256) division: Multiplication with the inverse `b^-1`. */
 int div(int a, int b) {
   return mul(a, inverseTable[b]);
-}</pre>
-  </div>
-</body>
-
+}</pre
+      >
+    </div>
+  </body>
 </html>

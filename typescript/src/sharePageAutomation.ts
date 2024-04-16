@@ -9,9 +9,7 @@ function thresholdCheck(): void {
   if (threshold > numberOfShares) docutils.inputElement('thresholdInput').value = `${numberOfShares}`
 }
 
-docutils.registerListener('createSharesButton', 'click', createShares)
-
-async function createShares(): Promise<void> {
+async function createSharesBase(shareText: typeof sharesTextJSON): Promise<void> {
   const secretBytes: Uint8Array = conversions.utf8ToUint8(docutils.inputElement('secretInput').value)
   const padToLength: number = parseInt(docutils.inputElement('padToLengthInput').value)
   const numberOfShares: number = parseInt(docutils.inputElement('numberOfSharesInput').value)
@@ -34,19 +32,7 @@ async function createShares(): Promise<void> {
   const hashShares = shamirShare.shareSecret(hashBytes, numberOfShares, threshold)
   const sharesIdent = Array.from(Array(12), () => shamirShare.randomInt(0, 10)).join('')
 
-  const sharesText = shares
-    .map((share, index) => {
-      return conversions.cleanMultiline(`
-        |{
-        |  "part number"   : ${index + 1},
-        |  "part of secret": "${conversions.bytesToB64(share)}",
-        |  "part of hash"  : "${conversions.bytesToB64(hashShares[index] || [])}",
-        |  "identifier"    : "${sharesIdent}"
-        |}
-      `)
-    })
-    .join('\n\n\n')
-  docutils.documentElement('sharesDiv').innerHTML = `<pre>${sharesText}</pre>`
+  docutils.documentElement('sharesDiv').innerHTML = shareText(shares, hashShares, sharesIdent)
 
   const description = sharesDescriptionTextArea.value.replaceAll('\n', '')
   docutils.documentElement('sharesDescriptionSpan').innerText = `${description}`
