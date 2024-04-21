@@ -18,6 +18,28 @@
     <h1>Securely Sharing Secrets Like Passwords</h1>
     <p><a href="index.html">[Main Page]</a></p>
     <p>
+      If you have a password or a similar important secret, and somebody may need<br />
+      access to it when you are not available, then on this page you can 'split' the secret<br />
+      into multiple pieces called 'shares' that you can share e.g. with your friends, so<br />
+      that only if a certain number of shares are combined, the secret can be reconstructed.<br />
+      This is an implementation of
+      <a href="https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing">Shamir's secret sharing</a>
+      with an optional verification<br />
+      extension.
+    </p>
+    <p>This page creates JSON shares that look like this:</p>
+    <pre>
+{
+  "part number"   : 1,
+  "part of secret": "AfBJw7gpZcxCdQ==",
+  "part of hash"  : "AVUZQjFENeWOEypU6MGjpXLUpcwsu/mmHZH5dER6nRmG",
+  "identifier"    : "723966166016"
+}
+    </pre>
+    <p>You can go <a href="share-compact.html">here</a> if you prefer compact shares that look like that:</p>
+    <pre>1::AUdGaXBfJSuesQ==:AYXQQ1vlZS9ABxiYi+rJLuMj2uoOuXzP++v3+vA37DEO::979834518720</pre>
+    <hr />
+    <p>
       For reconstructing secrets or passwords from the shares created with this tool, look <a href="join.html">here</a>.
     </p>
     <p>Secret or password: <input id="secretInput" type="text" value="¡secret!" size="50" /></p>
