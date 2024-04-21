@@ -125,11 +125,22 @@
         </i>
       </p>
       <p>
+        <i>Technical description: The share above can consist of one to four parts concatenated like this:<br /></i>
+        <code>[part number]::[part of secret]:[part of hash]::[identifier]</code>
+      </p>
+      <p>
+        <i> Actually, the share above contains the following field(s):<br /> </i>
+        <code>
+          <span class="indexClass">[part number]::</span>[part of secret]<span class="hashClass">:[part of hash]</span
+          ><span class="identClass">::[identifier]</span>
+        </code>
+      </p>
+      <p>
         <i>
-          Technical description: The "part of secret" is a Base64 encoded byte array. The first byte of the array is the
-          "x" value, all subsequent bytes are "y" values. To reconstruct the first byte of the original secret, you
-          combine the "x" value of each "part of secret" share you have with its second byte as "y" value. This gives
-          you a number of "x/y" pairs. Then you do a
+          The "part of secret" is a Base64 encoded byte array. The first byte of the array is the "x" value, all
+          subsequent bytes are "y" values. To reconstruct the first byte of the original secret, you combine the "x"
+          value of each "part of secret" share you have with its second byte as "y" value. This gives you a number of
+          "x/y" pairs. Then you do a
           <a href="https://en.wikipedia.org/wiki/Lagrange_polynomial">Lagrangian interpolation</a> to calculate the "y"
           value for "x = 0". This "y" value is the first byte of the original secret. In the same way, you combine the
           "x" values with the third bytes to calculate the second byte of the secret, and so on. Ignore any trailing
