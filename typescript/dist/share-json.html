@@ -34,8 +34,8 @@
   "part of secret": "AfBJw7gpZcxCdQ==",
   "part of hash"  : "AVUZQjFENeWOEypU6MGjpXLUpcwsu/mmHZH5dER6nRmG",
   "identifier"    : "723966166016"
-}
-    </pre>
+}</pre
+    >
     <p>You can go <a href="share-compact.html">here</a> if you prefer compact shares that look like that:</p>
     <pre>1::AUdGaXBfJSuesQ==:AYXQQ1vlZS9ABxiYi+rJLuMj2uoOuXzP++v3+vA37DEO::979834518720</pre>
     <hr />
@@ -99,16 +99,19 @@
         <b><i>[Replace this paragraph with the share from above you want to hand over.]</i></b>
       </p>
       <p>
-        <i
-          >This share was created using the share tool at
+        <i>
+          This share was created using the share tool at
           <a href="https://gdiet.github.io/secret-sharing/">https://gdiet.github.io/secret-sharing/</a>. On the same
-          site, you will find the tool for recovering the secret or password from shares.</i
-        >
+          site, you will find the tool for recovering the password or other secret from a number of shares. For sharing
+          and recovering,
+          <a href="https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing">Shamir's secret sharing</a> algorithm with
+          an optional verification extension is used.
+        </i>
       </p>
       <p>
-        <i
-          >Technical description: The "part of secret" is a Base64 encoded byte array. The first byte of the array is
-          the "x" value, all subsequent bytes are "y" values. To reconstruct the first byte of the original secret, you
+        <i>
+          Technical description: The "part of secret" is a Base64 encoded byte array. The first byte of the array is the
+          "x" value, all subsequent bytes are "y" values. To reconstruct the first byte of the original secret, you
           combine the "x" value of each "part of secret" share you have with its second byte as "y" value. This gives
           you a number of "x/y" pairs. Then you do a
           <a href="https://en.wikipedia.org/wiki/Lagrange_polynomial">Lagrangian interpolation</a> to calculate the "y"
@@ -117,12 +120,12 @@
           zeros in the reconstructed secret - they have been added as a security measure and are not part of the
           original secret. Note that the Lagrangian interpolation must be computed in the "GF(256)" Galois field with
           "x^8 + x^4 + x^3 + x^1 + x^0" (or 0x11b) as the reducing polynomial. By the way: This is the same field and
-          polynomial used for AES encryption calculations.</i
-        >
+          polynomial used for AES encryption calculations.
+        </i>
       </p>
       <p>
-        <i
-          >From the "part of hash", you can reconstruct the SHA-256 hash of the original secret (without any zero
+        <i>
+          From the "part of hash", you can reconstruct the SHA-256 hash of the original secret (without any zero
           padding) in the same way. This can be used to verify that the reconstructed secret is indeed the same as the
           original. The "identifier" field can be used to check whether the shares can be combined at all: if the
           identifiers are different, the shares most likely belong to different instances or even different original
@@ -130,8 +133,8 @@
           value of the shares. It is there to make it easier for humans to check that the shares are different - it is
           not evaluated during the reconstruction of the secrets. The approach used to share the secret or password is
           called "Shamir's Secret Sharing". Strings are converted to byte arrays (and vice versa) using the UTF-8
-          encoding. Calculations are done in lower-endian order.</i
-        >
+          encoding. Calculations are done in lower-endian order.
+        </i>
       </p>
       <pre>
 /* Example Java code for reconstructing a single byte of the secret. */
