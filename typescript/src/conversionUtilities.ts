@@ -32,4 +32,8 @@ const conversions = {
     if (typeof maybeString === 'string') return maybeString
     else throw Error(`'${JSON.stringify(maybeString)}' is not a string.`)
   },
+
+  maybeString(maybeString: any): string | undefined {
+    return typeof maybeString === 'string' ? maybeString : undefined
+  },
 }

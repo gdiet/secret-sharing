@@ -1,8 +1,8 @@
 namespace join {
   interface Share {
     partOfSecret: string
-    partOfHash: string
-    identifier: string
+    partOfHash: string | undefined
+    identifier: string | undefined
   }
 
   // Basic utilities for share input UI elements
@@ -25,8 +25,8 @@ namespace join {
     const json = JSON.parse(input)
     return {
       partOfSecret: conversions.expectString(json['part of secret']),
-      partOfHash: conversions.expectString(json['part of hash']),
-      identifier: conversions.expectString(json['identifier']),
+      partOfHash: conversions.maybeString(json['part of hash']),
+      identifier: conversions.maybeString(json['identifier']),
     }
   }
 
@@ -70,16 +70,22 @@ namespace join {
       docutils.inputElement('secretInput').value = restoredSecret
 
       // restore and validate hash
-      const hashFromSecret = Array.from(
-        new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(restoredValidBytes))),
+      const partsOfHash = currentShares().reduce(
+        (acc, share) => (share.partOfHash ? acc.concat(share.partOfHash) : acc),
+        [] as string[],
       )
-      const hashShares = currentShares().map((share) => conversions.b64ToBytes(share.partOfHash))
-      const restoredHash = shamirShare.joinShares(hashShares)
-      const hashIsValid =
-        hashFromSecret.length === restoredHash.length &&
-        hashFromSecret.every((value, index) => value === restoredHash[index])
-      if (hashIsValid) docutils.setClassAndContent('hashValidSpan', '', 'OK')
-      else docutils.setClassAndContent('hashValidSpan', 'problem', 'FAILED')
+      if (partsOfHash.length == currentShares().length) {
+        const hashFromSecret = Array.from(
+          new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(restoredValidBytes))),
+        )
+        const hashShares = partsOfHash.map((partOfHash) => conversions.b64ToBytes(partOfHash))
+        const restoredHash = shamirShare.joinShares(hashShares)
+        const hashIsValid =
+          hashFromSecret.length === restoredHash.length &&
+          hashFromSecret.every((value, index) => value === restoredHash[index])
+        if (hashIsValid) docutils.setClassAndContent('hashValidSpan', '', 'OK')
+        else docutils.setClassAndContent('hashValidSpan', 'problem', 'FAILED')
+      } else docutils.setClassAndContent('hashValidSpan', '', 'INCOMPLETE')
 
       // validate identifier
       const identifiers = currentShares().map((share) => share.identifier)
