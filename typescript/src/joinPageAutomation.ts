@@ -21,8 +21,17 @@ namespace join {
   }
 
   // Parse share input
+  const matcher = /^\s*((\w+)::)?(.+?)(:(.+?))?(::(.+))?\s*$/
   function parseShare(input: string): Share {
-    return parseJsonShare(input)
+    const match = input.match(matcher)
+    if (match && match[3]) {
+      // part number would be match[2]
+      return {
+        partOfSecret: match[3],
+        partOfHash: match[5],
+        identifier: match[7]
+      }
+    } else return parseJsonShare(input)
   }
 
   function parseJsonShare(input: string): Share {
