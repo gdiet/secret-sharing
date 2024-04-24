@@ -26,7 +26,7 @@ namespace join {
     return {
       partOfSecret: conversions.expectString(json['part of secret']),
       partOfHash: conversions.maybeString(json['part of hash']),
-      identifier: conversions.maybeString(json['identifier']),
+      identifier: conversions.maybeString(json['identifier'])
     }
   }
 
@@ -71,12 +71,12 @@ namespace join {
 
       // restore and validate hash
       const partsOfHash = currentShares().reduce(
-        (acc, share) => (share.partOfHash ? acc.concat(share.partOfHash) : acc),
-        [] as string[],
+        (acc, { partOfHash }) => (partOfHash ? acc.concat(partOfHash) : acc),
+        [] as string[]
       )
       if (partsOfHash.length == currentShares().length) {
         const hashFromSecret = Array.from(
-          new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(restoredValidBytes))),
+          new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(restoredValidBytes)))
         )
         const hashShares = partsOfHash.map((partOfHash) => conversions.b64ToBytes(partOfHash))
         const restoredHash = shamirShare.joinShares(hashShares)
@@ -85,14 +85,18 @@ namespace join {
           hashFromSecret.every((value, index) => value === restoredHash[index])
         if (hashIsValid) docutils.setClassAndContent('hashValidSpan', '', 'OK')
         else docutils.setClassAndContent('hashValidSpan', 'problem', 'FAILED')
-      } else docutils.setClassAndContent('hashValidSpan', '', 'INCOMPLETE')
+      } else docutils.setClassAndContent('hashValidSpan', 'problem', 'INCOMPLETE')
 
       // validate identifier
-      const identifiers = currentShares().map((share) => share.identifier)
-      const sameIdentifiers = identifiers.every((identifier) => identifier === identifiers[0])
-      if (sameIdentifiers) docutils.setClassAndContent('identifierValidSpan', '', 'OK')
-      else docutils.setClassAndContent('identifierValidSpan', 'problem', 'FAILED')
-      //
+      const identifiers = currentShares().reduce(
+        (acc, { identifier }) => (identifier ? acc.concat(identifier) : acc),
+        [] as string[]
+      )
+      if (identifiers.length == currentShares().length) {
+        const sameIdentifiers = identifiers.every((identifier) => identifier === identifiers[0])
+        if (sameIdentifiers) docutils.setClassAndContent('identifierValidSpan', '', 'OK')
+        else docutils.setClassAndContent('identifierValidSpan', 'problem', 'FAILED')
+      } else docutils.setClassAndContent('identifierValidSpan', 'problem', 'INCOMPLETE')
     } else {
       // invalidate output
       docutils.inputElement('secretInput').value = ''
@@ -105,7 +109,7 @@ namespace join {
 // create share input UI elements
 docutils.documentElement('shareInputs').innerHTML = Array.from(
   Array(256),
-  (_, index) => `<p><textarea id="${join.shareId(index)}" value="" rows="6" cols="100" hidden="true"></textarea></p>`,
+  (_, index) => `<p><textarea id="${join.shareId(index)}" value="" rows="6" cols="100" hidden="true"></textarea></p>`
 ).join('\n')
 join.shareInput(0).hidden = false
 
