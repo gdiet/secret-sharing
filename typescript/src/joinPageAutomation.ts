@@ -21,6 +21,10 @@ namespace join {
   }
 
   // Parse share input
+  function parseShare(input: string): Share {
+    return parseJsonShare(input)
+  }
+
   function parseJsonShare(input: string): Share {
     const json = JSON.parse(input)
     return {
@@ -42,10 +46,10 @@ namespace join {
       shareInput.className = ''
     } else {
       try {
-        const share: Share = parseJsonShare(shareInput.value)
+        const share: Share = parseShare(shareInput.value)
         shares[shareIdx] = share
         shareInput.className = ''
-      } catch (e) {
+      } catch (_) {
         delete shares[shareIdx]
         shareInput.className = 'problem'
       }
@@ -58,45 +62,63 @@ namespace join {
   async function evaluate() {
     if (currentShares().length > 1) {
       // restore secret
-      const shares = currentShares().map((share) => conversions.b64ToBytes(share.partOfSecret))
-      const restoredBytes = shamirShare.joinShares(shares)
-      const validUntil =
-        restoredBytes.length -
-        Array.from(restoredBytes)
-          .reverse()
-          .findIndex((num) => num !== 0)
-      const restoredValidBytes = restoredBytes.slice(0, validUntil)
-      const restoredSecret = conversions.bytesToUtf8(restoredValidBytes)
-      docutils.inputElement('secretInput').value = restoredSecret
+      try {
+        const shares = currentShares().map((share) => conversions.b64ToBytes(share.partOfSecret))
+        const restoredBytes = shamirShare.joinShares(shares)
+        const validUntil =
+          restoredBytes.length -
+          Array.from(restoredBytes)
+            .reverse()
+            .findIndex((num) => num !== 0)
+        const restoredValidBytes = restoredBytes.slice(0, validUntil)
+        const restoredSecret = conversions.bytesToUtf8(restoredValidBytes)
+        docutils.inputElement('secretInput').value = restoredSecret
+        docutils.setClassAndContent('restoreStatusSpan', '', 'OK')
 
-      // restore and validate hash
-      const partsOfHash = currentShares().reduce(
-        (acc, { partOfHash }) => (partOfHash ? acc.concat(partOfHash) : acc),
-        [] as string[]
-      )
-      if (partsOfHash.length == currentShares().length) {
-        const hashFromSecret = Array.from(
-          new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(restoredValidBytes)))
-        )
-        const hashShares = partsOfHash.map((partOfHash) => conversions.b64ToBytes(partOfHash))
-        const restoredHash = shamirShare.joinShares(hashShares)
-        const hashIsValid =
-          hashFromSecret.length === restoredHash.length &&
-          hashFromSecret.every((value, index) => value === restoredHash[index])
-        if (hashIsValid) docutils.setClassAndContent('hashValidSpan', '', 'OK')
-        else docutils.setClassAndContent('hashValidSpan', 'problem', 'FAILED')
-      } else docutils.setClassAndContent('hashValidSpan', 'problem', 'INCOMPLETE')
+        // restore and validate hash
+        try {
+          const partsOfHash = currentShares().reduce(
+            (acc, { partOfHash }) => (partOfHash ? acc.concat(partOfHash) : acc),
+            [] as string[]
+          )
+          if (partsOfHash.length == currentShares().length) {
+            const hashFromSecret = Array.from(
+              new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(restoredValidBytes)))
+            )
+            const hashShares = partsOfHash.map((partOfHash) => conversions.b64ToBytes(partOfHash))
+            const restoredHash = shamirShare.joinShares(hashShares)
+            const hashIsValid =
+              hashFromSecret.length === restoredHash.length &&
+              hashFromSecret.every((value, index) => value === restoredHash[index])
+            if (hashIsValid) docutils.setClassAndContent('hashValidSpan', '', 'OK')
+            else docutils.setClassAndContent('hashValidSpan', 'problem', 'FAILED')
+          } else docutils.setClassAndContent('hashValidSpan', 'problem', 'INCOMPLETE')
+        } catch (e) {
+          console.warn(e)
+          docutils.setClassAndContent('hashValidSpan', 'problem', 'ERROR')
+        }
 
-      // validate identifier
-      const identifiers = currentShares().reduce(
-        (acc, { identifier }) => (identifier ? acc.concat(identifier) : acc),
-        [] as string[]
-      )
-      if (identifiers.length == currentShares().length) {
-        const sameIdentifiers = identifiers.every((identifier) => identifier === identifiers[0])
-        if (sameIdentifiers) docutils.setClassAndContent('identifierValidSpan', '', 'OK')
-        else docutils.setClassAndContent('identifierValidSpan', 'problem', 'FAILED')
-      } else docutils.setClassAndContent('identifierValidSpan', 'problem', 'INCOMPLETE')
+        // validate identifier
+        try {
+          const identifiers = currentShares().reduce(
+            (acc, { identifier }) => (identifier ? acc.concat(identifier) : acc),
+            [] as string[]
+          )
+          if (identifiers.length == currentShares().length) {
+            const sameIdentifiers = identifiers.every((identifier) => identifier === identifiers[0])
+            if (sameIdentifiers) docutils.setClassAndContent('identifierValidSpan', '', 'OK')
+            else docutils.setClassAndContent('identifierValidSpan', 'problem', 'FAILED')
+          } else docutils.setClassAndContent('identifierValidSpan', 'problem', 'INCOMPLETE')
+        } catch (e) {
+          console.warn(e)
+          docutils.setClassAndContent('identifierValidSpan', 'problem', 'ERROR')
+        }
+
+        // catch restore secret errors
+      } catch (e) {
+        console.error(e)
+        docutils.setClassAndContent('restoreStatusSpan', '', 'ERROR')
+      }
     } else {
       // invalidate output
       docutils.inputElement('secretInput').value = ''
