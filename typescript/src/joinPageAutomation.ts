@@ -126,13 +126,17 @@ namespace join {
         // catch restore secret errors
       } catch (e) {
         console.error(e)
-        docutils.setClassAndContent('restoreStatusSpan', '', 'ERROR')
+        docutils.inputElement('secretInput').value = ''
+        docutils.setClassAndContent('hashValidSpan', '', 'Not validated')
+        docutils.setClassAndContent('identifierValidSpan', '', 'Not validated')
+        docutils.setClassAndContent('restoreStatusSpan', 'problem', 'ERROR')
       }
     } else {
       // invalidate output
       docutils.inputElement('secretInput').value = ''
       docutils.setClassAndContent('hashValidSpan', '', 'Not validated')
       docutils.setClassAndContent('identifierValidSpan', '', 'Not validated')
+      docutils.setClassAndContent('restoreStatusSpan', 'problem', 'INCOMPLETE')
     }
   }
 }
@@ -145,17 +149,13 @@ docutils.documentElement('shareInputs').innerHTML = Array.from(
 join.shareInput(0).hidden = false
 
 // Insert demo data
-join.shareInput(0).value = `{
-  "part number"   : 3,
-  "part of secret": "AzrC3V9NjkS7aC9KombjyDdAJe4d6r4t4e114BmOCbh1",
-  "part of hash"  : "A7TXU1gcfr5dI7xV5DRfHza1206IAimy1SLoILE3BYBY",
-  "identifier"    : "demo share"
-}`
+join.shareInput(0).value =
+  `3::AzrC3V9NjkS7aC9KombjyDdAJe4d6r4t4e114BmOCbh1:A7TXU1gcfr5dI7xV5DRfHza1206IAimy1SLoILE3BYBY::demo`
 join.shareInput(1).value = `{
   "part number"   : 1,
   "part of secret": "AWOA4HN5Jnox7+zPlyKoseTJ6loLr2obX1vaqf56B2ja",
   "part of hash"  : "AXf73a3X+G0db2+9Si9ZfGfTkg4rvJkQj7fRfipVcr3c",
-  "identifier"    : "demo share"
+  "identifier"    : "demo"
 }`
 join.updateVisibility()
 join.shareUpdated(join.shareInput(0))

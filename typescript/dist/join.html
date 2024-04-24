@@ -23,12 +23,12 @@
     <h1>Restoring Shared Secrets Like Passwords</h1>
     <p><a href="index.html">[Main Page]</a></p>
     <p>For a tool to create shares of secrets or passwords, look <a href="share.html">here</a>.</p>
-    <p>Shares data (either the full data record or the part of the secret):</p>
+    <p>Shares data (in compact or JSON notation):</p>
     <div id="shareInputs"><!-- Here, the page automation will generate share input UI elements. --></div>
     <p>
       Shamir's Secret Sharing, GF256 with polynomial 0x11b, utf-8, lower-endian bytes, first byte of share is the
       share's x value, secret possibly padded with trailing zeros, share verification SHA-256 hash of unpadded secret,
-      random identifier, timestamp ISO 8601 like 2009-06-30T18:30:00+02:00.
+      random identifier.
     </p>
     <p>
       Restored secret or password:<br />
