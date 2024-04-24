@@ -1,31 +1,44 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secret Sharing</title>
+    <script src="conversionUtilities.js" defer></script>
+    <script src="documentUtilities.js" defer></script>
+    <script src="gf256Math.js" defer></script>
+    <script src="secretSharing.js" defer></script>
+    <script src="utilities.js" defer></script>
+    <!-- The page automation script must be loaded last. -->
+    <script src="joinPageAutomation.js" defer></script>
+    <style>
+      .problem {
+        border-color: red;
+        color: red;
+      }
+    </style>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Secret Sharing</title>
-  <script src="conversionUtilities.js" defer></script>
-  <script src="documentUtilities.js" defer></script>
-  <script src="gf256Math.js" defer></script>
-  <script src="secretSharing.js" defer></script>
-  <script src="utilities.js" defer></script>
-  <!-- The page automation script must be loaded last. -->
-  <script src="joinPageAutomation.js" defer></script>
-  <style>.problem { border-color: red; color: red; }</style>
-</head>
-
-<body>
-  <h1>Restoring Shared Secrets Like Passwords</h1>
-  <p><a href="index.html">[Main Page]</a></p>
-  <p>For a tool to create shares of secrets or passwords, look <a href="share.html">here</a>.</p>
-  <p>Shares data (either the full data record or the part of the secret):</p>
-  <div id="shareInputs"><!-- Here, the page automation will generate share input UI elements. --></div>
-  <p>Shamir's Secret Sharing, GF256 with polynomial 0x11b, utf-8, lower-endian bytes, first byte of share is the share's x value, secret possibly padded with trailing zeros, share verification SHA-256 hash of unpadded secret, random identifier, timestamp ISO 8601 like 2009-06-30T18:30:00+02:00.</p>
-  <p>Restored secret or password:<br>
-  <input id="secretInput" type="text" value="" size="100" readonly></p>
-  <p>Validation of secret through shared hash: <i><span id="hashValidSpan">Not validated</span></i></p>
-  <p>Share identifiers match: <i><span id="identifierValidSpan">Not validated</span></i></p>
-</body>
-
+  <body>
+    <h1>Restoring Shared Secrets Like Passwords</h1>
+    <p><a href="index.html">[Main Page]</a></p>
+    <p>For a tool to create shares of secrets or passwords, look <a href="share.html">here</a>.</p>
+    <p>Shares data (either the full data record or the part of the secret):</p>
+    <div id="shareInputs"><!-- Here, the page automation will generate share input UI elements. --></div>
+    <p>
+      Shamir's Secret Sharing, GF256 with polynomial 0x11b, utf-8, lower-endian bytes, first byte of share is the
+      share's x value, secret possibly padded with trailing zeros, share verification SHA-256 hash of unpadded secret,
+      random identifier, timestamp ISO 8601 like 2009-06-30T18:30:00+02:00.
+    </p>
+    <p>
+      Restored secret or password:<br />
+      <input id="secretInput" type="text" value="" size="100" readonly />
+    </p>
+    <p>
+      Validation of secret through shared hash: <i><span id="hashValidSpan">Not validated</span></i>
+    </p>
+    <p>
+      Share identifiers match: <i><span id="identifierValidSpan">Not validated</span></i>
+    </p>
+  </body>
 </html>
