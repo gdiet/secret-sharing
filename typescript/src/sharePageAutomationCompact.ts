@@ -13,9 +13,9 @@ function sharesTextCompact(shares: number[][], hashShares: number[][], sharesIde
   return `<pre>${sharesText}</pre>`
 }
 
-registerVisibilitySwitch('includeIndex', 'indexClass')
-registerVisibilitySwitch('includeHash', 'hashClass')
-registerVisibilitySwitch('includeIdentifier', 'identClass')
+registerVisibilitySwitch('includeIndexBox', 'indexClass')
+registerVisibilitySwitch('includeHashBox', 'hashClass')
+registerVisibilitySwitch('includeIdentifierBox', 'identClass')
 
 function registerVisibilitySwitch(checkboxId: string, className: string) {
   docutils.registerListener(checkboxId, 'change', () => {
