@@ -14,10 +14,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: zip -r dist/secret-sharing-sources.zip ./
       - run: npm install
       - run: npx tsc
       - run: zip -r dist/secret-sharing.zip dist/
-      - run: zip -r dist/secret-sharing-sources.zip src/
       - uses: actions/upload-pages-artifact@v2
         with:
           path: typescript/dist/
