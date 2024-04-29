@@ -47,17 +47,20 @@
     <p>
       For reconstructing secrets or passwords from the shares created with this tool, look <a href="join.html">here</a>.
     </p>
-    <p>Secret or password: <input id="secretInput" type="text" value="¡secret!" size="50" /></p>
     <p>
-      Pad secret to length (0 = no padding, max. 64):
+      <label for="secretInput">Secret or password:</label>
+      <input id="secretInput" type="text" value="¡secret!" size="50" />
+    </p>
+    <p>
+      <label for="padToLengthInput">Pad secret to length (0 = no padding, max. 64):</label>
       <input id="padToLengthInput" type="number" min="0" max="64" step="1" value="32" />
     </p>
     <p>
-      Number of shares to create (min. 2, max. 255):
+      <label for="numberOfSharesInput">Number of shares to create (min. 2, max. 255):</label>
       <input id="numberOfSharesInput" type="number" min="2" max="255" step="1" value="3" />
     </p>
     <p>
-      Threshold (number of shares needed to recover the secret):
+      <label for="thresholdInput">Threshold (number of shares needed to recover the secret):</label>
       <input id="thresholdInput" type="number" min="2" max="255" step="1" value="2" />
     </p>
     <p>Optional description of the shares:</p>
@@ -69,9 +72,11 @@
         placeholder="Example description: It is Mary's 2023 bank account user:password with TheBigBank.boom, which is shared with her relatives in case of an emergency."
       ></textarea>
     </p>
-    <p><button id="createSharesButton">Create Shares</button> and then scroll down.</p>
+    <p><button id="createSharesButton" type="button">Create Shares</button> and then scroll down.</p>
     <p>
-      When you create shares and give them to other people, consider including the <a href="secret-sharing.zip">full distribution package</a> of these pages which can simply be unzipped and opened in a browser. It also contains the project's sources (mainly Typescript & HTML).
+      When you create shares and give them to other people, consider including the
+      <a href="secret-sharing.zip">full distribution package</a> of these pages which can simply be unzipped and opened
+      in a browser. It also contains the project's sources (mainly Typescript & HTML).
     </p>
 
     <div id="shareInfoDiv" hidden="true">
