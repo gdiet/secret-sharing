@@ -1,5 +1,9 @@
 const sharesDescriptionTextArea = docutils.textAreaElement('sharesDescriptionInput')
 
+docutils.registerListener('secretInput', 'change', () => {
+  docutils.documentElement('shareInfoDiv').hidden = true
+})
+
 docutils.registerListener('numberOfSharesInput', 'change', thresholdCheck)
 docutils.registerListener('thresholdInput', 'change', thresholdCheck)
 function thresholdCheck(): void {
