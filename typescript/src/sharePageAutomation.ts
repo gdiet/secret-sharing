@@ -33,7 +33,7 @@ async function createSharesBase(shareText: typeof sharesTextJSON): Promise<void>
 
   docutils.documentElement('sharesDiv').innerHTML = shareText(shares, hashShares, sharesIdent)
 
-  const description = sharesDescriptionTextArea.value.replaceAll('\n', '')
+  const description = sharesDescriptionTextArea.value.replaceAll('\n', ' ')
   docutils.documentElement('sharesDescriptionSpan').innerText = `${description}`
   docutils.documentElement('numberOfSharesSpan').innerText = `${numberOfShares}`
   const date = new Date()
