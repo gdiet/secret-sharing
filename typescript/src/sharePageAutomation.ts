@@ -1,5 +1,4 @@
 const sharesDescriptionTextArea = docutils.textAreaElement('sharesDescriptionInput')
-sharesDescriptionTextArea.value = sharesDescriptionTextArea.value.replaceAll('  ', '')
 
 docutils.registerListener('numberOfSharesInput', 'change', thresholdCheck)
 docutils.registerListener('thresholdInput', 'change', thresholdCheck)
