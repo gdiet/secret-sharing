@@ -1,6 +1,10 @@
 {
   "devDependencies": {
     "prettier": "^3.2.5",
+    "serve": "^14.2.3",
     "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "serve": "serve dist/"
   }
 }
