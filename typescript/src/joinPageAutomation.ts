@@ -91,9 +91,7 @@ namespace join {
             [] as string[]
           )
           if (partsOfHash.length == currentShares().length) {
-            const hashFromSecret = Array.from(
-              new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(restoredValidBytes)))
-            )
+            const hashFromSecret = await conversions.sha256(Uint8Array.from(restoredValidBytes))
             const hashShares = partsOfHash.map((partOfHash) => conversions.b64ToBytes(partOfHash))
             const restoredHash = shamirShare.joinShares(hashShares)
             const hashIsValid =

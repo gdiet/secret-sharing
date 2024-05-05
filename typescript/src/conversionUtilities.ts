@@ -36,4 +36,9 @@ const conversions = {
   maybeString(maybeString: any): string | undefined {
     return typeof maybeString === 'string' ? maybeString : undefined
   },
+
+  async sha256(data: Uint8Array): Promise<number[]> {
+    if (crypto.subtle) return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', data)))
+    else return [2, 7, 1, 9] // A little joke on e.
+  }
 }

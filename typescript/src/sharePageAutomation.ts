@@ -31,7 +31,7 @@ async function createSharesBase(shareText: typeof sharesTextJSON): Promise<void>
   for (let i = secretBytes.length; i < padToLength; i++) secretPadded.push(0)
   const shares = shamirShare.shareSecret(secretPadded, numberOfShares, threshold)
 
-  const hashBytes = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', secretBytes)))
+  const hashBytes = await conversions.sha256(secretBytes)
   const hashShares = shamirShare.shareSecret(hashBytes, numberOfShares, threshold)
   const sharesIdent = Array.from(Array(12), () => shamirShare.randomInt(0, 10)).join('')
 
