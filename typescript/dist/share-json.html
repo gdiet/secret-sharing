@@ -12,11 +12,21 @@
     <!-- The page automation scripts must be loaded last. -->
     <script src="sharePageAutomation.js" defer></script>
     <script src="sharePageAutomationJSON.js" defer></script>
+    <style>
+      .problem {
+        border-color: red;
+        color: red;
+      }
+    </style>
   </head>
 
   <body>
     <h1>Securely Sharing Secrets Like Passwords</h1>
     <p><a href="index.html">[Main Page]</a></p>
+    <p id="javascriptWarning" class="problem">
+      Oh bother! This page needs JavaScript, and it seems that JavaScript is not enabled.
+      Maybe you want to use a different browser?
+    </p>
     <p>
       If you have a password or a similar important secret, and somebody may need<br />
       access to it when you are not available, then on this page you can 'split' the secret<br />

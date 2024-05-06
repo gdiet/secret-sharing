@@ -1,4 +1,6 @@
 namespace docutils {
+  documentElement('javascriptWarning').style.display = 'none'
+
   export function documentElement(id: string): HTMLElement {
     const maybeElement = document.getElementById(id)
     if (maybeElement !== null) return maybeElement
