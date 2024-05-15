@@ -4,11 +4,19 @@ docutils.registerListener('secretInput', 'change', () => {
   docutils.documentElement('shareInfoDiv').hidden = true
 })
 
-docutils.registerListener('numberOfSharesInput', 'change', thresholdCheck)
+docutils.registerListener('numberOfSharesInput', 'change', numberOfSharesCheck)
 docutils.registerListener('thresholdInput', 'change', thresholdCheck)
+function numberOfSharesCheck(): void {
+  const numberOfShares: number = parseInt(docutils.inputElement('numberOfSharesInput').value)
+  if (numberOfShares < 2) docutils.inputElement('numberOfSharesInput').value = '2'
+  if (numberOfShares > 255) docutils.inputElement('numberOfSharesInput').value = '255'
+  thresholdCheck()
+}
+
 function thresholdCheck(): void {
   const numberOfShares: number = parseInt(docutils.inputElement('numberOfSharesInput').value)
   const threshold: number = parseInt(docutils.inputElement('thresholdInput').value)
+  if (threshold < 2) docutils.inputElement('thresholdInput').value = '2'
   if (threshold > numberOfShares) docutils.inputElement('thresholdInput').value = `${numberOfShares}`
 }
 
