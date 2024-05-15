@@ -10,7 +10,7 @@ function sharesTextCompact(shares: number[][], hashShares: number[][], sharesIde
       return `${indexString}${shareString}${hashString}${identString}`
     })
     .join('\n\n')
-  return `<pre>${sharesText}</pre>`
+  return `<pre class="scrollable">${sharesText}\n\n==> ==>  you may have to scroll  ==> ==></pre>`
 }
 
 registerVisibilitySwitch('includeIndexBox', 'indexClass')

@@ -69,7 +69,7 @@
     <pre class="scrollable">
 1::AUdGaXBfJSuesQ==:AYXQQ1vlZS9ABxiYi+rJLuMj2uoOuXzP++v3+vA37DEO::979834518720
 
-| =>  you may have to scroll   => => => => => => => => => => => => => => =>  |</pre
+==> ==>  you may have to scroll  ==> ==></pre
     >
     <p>
       You can go
@@ -84,7 +84,7 @@
   "identifier"    : "723966166016"
 }
 
-| =>  you may have to scroll  => => => => => => => => => => => => |</pre
+==> ==>  you may have to scroll  ==> ==></pre
     >
     <hr />
     <p>
@@ -158,12 +158,9 @@
           emergency, you - along with other people who have been given other shares - can reconstruct the secret or
           password and do whatever is necessary. This is one of
           <span id="numberOfSharesSpan">DYNAMIC TEXT: number</span>
-          shares created on
-          <span id="createdDateSpan">DYNAMIC TEXT: date</span>
-          . To reconstruct the secret or password,
-          <span id="thresholdSpan">DYNAMIC TEXT: number</span>
-          different shares are needed. For the actual reconstruction, this text is not needed - you only need the
-          following data:
+          shares created on <span id="createdDateSpan">DYNAMIC TEXT: date</span>. To reconstruct the secret or password,
+          <span id="thresholdSpan">DYNAMIC TEXT: number</span> different shares are needed. For the actual
+          reconstruction, this text is not needed - you only need the following data:
         </i>
       </p>
       <p>
@@ -172,11 +169,11 @@
       <p>
         <i>
           This share was created using the share tool at
-          <a href="https://gdiet.github.io/secret-sharing/">https://gdiet.github.io/secret-sharing/</a>
-          . On the same site, you will find the tool for recovering the password or other secret from a number of
-          shares. For sharing and recovering,
-          <a href="https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing">Shamir's secret sharing</a>
-          algorithm with an optional verification extension is used.
+          <a href="https://gdiet.github.io/secret-sharing/">https://gdiet.github.io/secret-sharing/</a>. On the same
+          site, you will find the tool for recovering the password or other secret from a number of shares. For sharing
+          and recovering,
+          <a href="https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing">Shamir's secret sharing</a> algorithm with
+          an optional verification extension is used.
         </i>
       </p>
       <p>
@@ -192,10 +189,8 @@
           <br />
         </i>
         <code>
-          <span class="indexClass">[part number]::</span>
-          [part of secret]
-          <span class="hashClass">:[part of hash]</span>
-          <span class="identClass">::[identifier]</span>
+          <span class="indexClass">[part number]::</span>[part of secret]<span class="hashClass">:[part of hash]</span
+          ><span class="identClass">::[identifier]</span>
         </code>
       </p>
       <p>
@@ -226,7 +221,7 @@
           encoding. Calculations are done in lower-endian order.
         </i>
       </p>
-      <pre>
+      <pre class="scrollable">
 /* Example Java code for reconstructing a single byte of the secret. */
 
 /** Lagrange interpolate at x = 0 the polynomial defined by the points. */
