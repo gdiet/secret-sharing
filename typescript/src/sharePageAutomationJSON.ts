@@ -13,5 +13,5 @@ function sharesTextJSON(shares: number[][], hashShares: number[][], sharesIdent:
       `)
     })
     .join('\n\n\n')
-  return `<pre>${sharesText}</pre>`
+  return `<pre class="scrollable">${sharesText}\n\n\n==> ==>  you may have to scroll  ==> ==></pre>`
 }
