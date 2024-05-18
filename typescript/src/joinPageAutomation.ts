@@ -145,7 +145,6 @@ docutils.documentElement('shareInputs').innerHTML = Array.from(
   (_, index) =>
     `<p><textarea id="${join.shareId(index)}" class="textinput" value="" rows="6" cols="100" hidden="true" title="Share input ${index + 1}"></textarea></p>`
 ).join('\n')
-join.shareInput(0).hidden = false
 
 // Insert demo data
 join.shareInput(0).value =
