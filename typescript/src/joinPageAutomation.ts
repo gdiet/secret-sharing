@@ -52,15 +52,15 @@ namespace join {
     const shareValue = shareInput.value
     if (shareValue.length === 0) {
       delete shares[shareIdx]
-      shareInput.className = ''
+      shareInput.className = 'textinput'
     } else {
       try {
         const share: Share = parseShare(shareInput.value)
         shares[shareIdx] = share
-        shareInput.className = ''
+        shareInput.className = 'textinput'
       } catch (_) {
         delete shares[shareIdx]
-        shareInput.className = 'problem'
+        shareInput.className = 'textinput problem'
       }
     }
     evaluate()
@@ -143,7 +143,7 @@ namespace join {
 docutils.documentElement('shareInputs').innerHTML = Array.from(
   Array(256),
   (_, index) =>
-    `<p><textarea id="${join.shareId(index)}" value="" rows="6" cols="100" hidden="true" title="Share input ${index + 1}"></textarea></p>`
+    `<p><textarea id="${join.shareId(index)}" class="textinput" value="" rows="6" cols="100" hidden="true" title="Share input ${index + 1}"></textarea></p>`
 ).join('\n')
 join.shareInput(0).hidden = false
 

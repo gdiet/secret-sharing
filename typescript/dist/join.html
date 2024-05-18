@@ -11,12 +11,7 @@
     <script src="utilities.js" defer></script>
     <!-- The page automation script must be loaded last. -->
     <script src="joinPageAutomation.js" defer></script>
-    <style>
-      .problem {
-        border-color: red;
-        color: red;
-      }
-    </style>
+    <link rel="stylesheet" href="common.css" />
   </head>
 
   <body>
@@ -45,7 +40,7 @@
     </p>
     <p>
       <label for="secretInput">Restored secret or password:</label><br />
-      <input id="secretInput" type="text" value="" size="100" readonly />
+      <input id="secretInput" class="textinput" type="text" value="" size="100" readonly />
     </p>
     <p>
       Validation of secret through shared hash: <i><span id="hashValidSpan">Not validated</span></i>
