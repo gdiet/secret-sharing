@@ -28,18 +28,18 @@
       context? Otherwise, you can't verify the secret - restoring the secret itself is not affectd.
     </p>
     <p>
-      For a tool to create shares of secrets or passwords, look
-      <a href="share-compact.html">here (compact notation)</a> or <a href="share-json.html">here (JSON notation)</a>.
+      Hey there! Are you here because you have a number of so-called shares for a secret like a password and you want to
+      re-create the secret from them? If yes, and if the shares were created with
+      <a href="share-compact.html">this (compact notation)</a> or
+      <a href="share-json.html">this (JSON notation)</a> tool, then you are in the right place.
     </p>
-    <p>Shares data (in compact or JSON notation):</p>
+    <p>
+      So you have shares data in compact or JSON notation. Put them in the input fields below, replacing the example
+      shares data there:
+    </p>
     <div id="shareInputs"><!-- Here, the page automation will generate share input UI elements. --></div>
     <p>
-      Shamir's Secret Sharing, GF256 with polynomial 0x11b, utf-8, lower-endian bytes, first byte of share is the
-      share's x value, secret possibly padded with trailing zeros, share verification SHA-256 hash of unpadded secret,
-      random identifier.
-    </p>
-    <p>
-      <label for="secretInput">Restored secret or password:</label><br />
+      <label for="secretInput">Secret or password restored from the above shares:</label><br />
       <input id="secretInput" class="textinput" type="text" value="" size="100" readonly />
     </p>
     <p>
@@ -53,7 +53,14 @@
     </p>
     <hr />
     <p>
-      Instead of 'more information', maybe you'd like to see the
+      For detailed technical information on what is going on here, create any shares on the share-creation pages (see
+      above) and read the information provided with them. If you are a nerd, here is the summary information: Shamir's
+      Secret Sharing, GF256 with polynomial 0x11b, UTF-8, lower-endian bytes, first byte of share is the share's x
+      value, secret possibly padded with trailing zeros, share verification SHA-256 hash of unpadded secret, random
+      identifier.
+    </p>
+    <p>
+      Also, maybe you'd like to see the
       <a href="https://github.com/gdiet/secret-sharing/tree/main/typescript">source code of these pages on GitHub</a> or
       download the <a href="secret-sharing.zip">full distribution package</a> of these pages which can simply be
       unzipped and opened in a browser. It also contains the project's sources (mainly Typescript & HTML).
