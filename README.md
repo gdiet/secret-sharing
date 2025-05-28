@@ -1,35 +1,99 @@
-# Sharing a Secret With Eight Persons
+# Sharing a Secret With Some Persons
 
 ## The Problem
 
-I want to share the password of my password safe with eight persons, so that any three of them can reconstruct the password, but no two of them can do so.
+I want to share the password of my password safe with some persons, so that any three of them can reconstruct the password, but no two of them can do so.
 
-The solution presented here is not as flexible as Shamir's Secret Sharing, but it is much simpler mathematically.
+The solution presented here is not as flexible as Shamir's Secret Sharing, but it is equally secure and much simpler mathematically: It mainly uses addition of small numbers in the decimal system.
 
 ## The Solution: Sharing The Password
 
-Step 1: Map the password to a big number: For each letter in the password, look up the respective 2 digit number in the table below, and concatenate the numbers. The numbers up 90 are the ASCII codes of the letters minus 32, the numbers 91 to 99 have a special mapping. The mapping table is at the end of this document.
+Step 1: Convert the password into a sequence of small decimal "secret" numbers. Two possible approaches are:
 
-Step 2: Select 28 different random numbers of approximately the same size, so the sum of the numbers is the big password number from step 1. Assign indexes 01 to 28 to the numbers.
+1. For each letter in the password, look up the number in the table at the end of this document. Every number can be written as a two-digit number, if necessary by adding a leading zero. Example: "#Hi" would become "03 40 73".
 
-Step 3: Give each of the eight persons 21 of the random numbers according to the following table, together with instructions on how to reconstruct the password.
+2. For each letter in the password, look up the UTF-8 representation written as bytes in decimal. Every number can be written as a three-digit number, if necessary by adding a leading zeros. Example: "#Hi" would become "035 072 105".
+
+Step 2: From the number of persons you want to share the password with, determine the number of "shares" needed:
+
+- 3 persons: 3 shares
+- 4 persons: 6 shares (above +3)
+- 5 persons: 10 shares (above +4)
+- 6 persons: 15 shares (above +5)
+- 7 persons: 21 shares (above +6)
+- 8 persons: 28 shares (above +7)
+
+Step 3: For each of the small secret numbers obtained from the password in step 1, create the shares as follows:
+
+a. For two-digit numbers:
+
+  - Choose 'shares - 1' random two-digit numbers.
+  - Calculate the last number as `(secret number - sum of random numbers) modulo 100` where "modulo 100" means "repeatedly add 100 until the result is positive, then take the last two digits of the result".
+
+b. For three-digit numbers:
+
+  - Choose 'shares - 1' random three-digit numbers.
+  - Calculate the last number as `(secret number - sum of random numbers) modulo 1000` where "modulo 1000" means "repeatedly add 1000 until the result is positive, then take the last three digits of the result".
+
+c. Note the share numbers calculated that way in a table.
+
+Example (shares of "#Hi" for 4 persons, shares 1-5 are random numbers, share 6 contains the calculated numbers):
+
+| secret numbers | 03 | 40 | 73 |
+|----------------|----|----|----|
+| share 01       | 59 | 34 | 88 |
+| share 02       | 47 | 92 | 62 |
+| share 03       | 06 | 68 | 73 |
+| share 04       | 21 | 55 | 25 |
+| share 05       | 76 | 39 | 44 |
+| share 06       | 94 | 52 | 81 |
+
+Step 4: Give the shares to the persons - along with instructions on what they are and how to use them - according to the following table.
 
 ```
-1: -- -- -- -- -- -- -- 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
-2: -- 02 03 04 05 06 07 -- -- -- -- -- -- 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
-3: 01 -- 03 04 05 06 07 -- 09 10 11 12 13 -- -- -- -- -- 19 20 21 22 23 24 25 26 27 28
-4: 01 02 -- 04 05 06 07 08 -- 10 11 12 13 -- 15 16 17 18 -- -- -- -- 23 24 25 26 27 28
-5: 01 02 03 -- 05 06 07 08 09 -- 11 12 13 14 -- 16 17 18 -- 20 21 22 -- -- -- 26 27 28
-6: 01 02 03 04 -- 06 07 08 09 10 -- 12 13 14 15 -- 17 18 19 -- 21 22 -- 24 25 -- -- 28
-7: 01 02 03 04 05 -- 07 08 09 10 11 -- 13 14 15 16 -- 18 19 20 -- 22 23 -- 25 -- 27 --
-8: 01 02 03 04 05 06 -- 08 09 10 11 12 -- 14 15 16 17 -- 19 20 21 -- 23 24 -- 26 -- --
+1: -- -- 03|-- 05 06|-- 08 09 10|-- 12 13 14 15|-- 17 18 19 20 21|-- 23 24 25 26 27 28
+           |        |           |              |                 |                    
+2: -- 02 --|04 -- 06|07 -- 09 10|11 -- 13 14 15|16 -- 18 19 20 21|22 -- 24 25 26 27 28
+           |        |           |              |                 |                    
+3: 01 -- --|04 05 --|07 08 -- 10|11 12 -- 14 15|16 17 -- 19 20 21|22 23 -- 25 26 27 28
+-----------+        |           |              |                 |                    
+4: 01 02 03 -- -- --|07 08 09 --|11 12 13 -- 15|16 17 18 -- 20 21|22 23 24 -- 26 27 28
+--------------------+           |              |                 |                    
+5: 01 02 03 04 05 06 -- -- -- --|11 12 13 14 --|16 17 18 19 -- 21|22 23 24 25 -- 27 28
+--------------------------------+              |                 |                    
+6: 01 02 03 04 05 06 07 08 09 10 -- -- -- -- --|16 17 18 19 20 --|22 23 24 25 26 -- 28
+-----------------------------------------------+                 |                    
+7: 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 -- -- -- -- -- --|22 23 24 25 26 27 --
+-----------------------------------------------------------------+                    
+8: 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 -- -- -- -- -- -- --
 ```
 
-## The Solution: Reconstructing The Password
+In the 4 persons example, the shares would be distributed as follows:
 
-To reconstruct the password, any three persons can combine their numbers. They will find they have 28 different numbers total. The sum of these numbers is the big password number from step 1. To reconstruct the password, they can now split the big number into 2 digit numbers (best right-to-left) and look up the respective letters in the mapping table.
+| person | shares   |
+|--------|----------|
+| 1      | 03 05 06 |
+| 2      | 02 04 06 |
+| 3      | 01 04 05 |
+| 4      | 01 02 03 |
 
-## The Mapping Table
+So person 1 would get the following:
+
+```
+Here is your share of my password. I have given shares to 4 persons. Any three of you can reconstruct the password from the shares you have been given.
+
+share 03: 06, 68, 73
+share 05: 76, 39, 44
+share 06: 94, 52, 81
+
+To reconstruct my password, combine your shares with the shares of any two other persons. You will find you have 6 different shares total. For each column in the shares table, create the sum modulo 100, and look up the resulting letters in the mapping table.
+```
+
+For the other persons, proceed in the same way with the shares assigned to them.
+
+## The Number To Character Mapping Table
+
+The numbers up 90 are the ASCII codes of the letters minus 32, the numbers 91 to 99 are mapped to special characters common in German. If you need a different mapping, create your own, but remember to distribute it to all persons involved.
 
 | number | letter | comment |
 | --- | --- | --- |
@@ -133,8 +197,3 @@ To reconstruct the password, any three persons can combine their numbers. They w
 | 97 | Ü | |
 | 98 | ß | |
 | 99 | € | |
-
-
-
-
-
