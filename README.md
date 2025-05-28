@@ -86,7 +86,7 @@ share 03: 06, 68, 73
 share 05: 76, 39, 44
 share 06: 94, 52, 81
 
-To reconstruct my password, combine your shares with the shares of any two other persons. You will find you have 6 different shares total. For each column in the shares table, create the sum modulo 100, and look up the resulting letters in the mapping table.
+To reconstruct my password, combine your shares with the shares of any two other persons. You will find you have 6 different shares total. Write them into a table. For each column in the shares table, create the sum modulo 100, and look up the resulting letters in the mapping table.
 ```
 
 For the other persons, proceed in the same way with the shares assigned to them.
