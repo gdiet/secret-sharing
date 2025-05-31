@@ -93,7 +93,7 @@ For the other persons, proceed in the same way with the shares assigned to them.
 
 ## The Number To Character Mapping Table
 
-The numbers up 90 are the ASCII codes of the letters minus 32, the numbers 91 to 99 are mapped to special characters common in German. If you need a different mapping, create your own, but remember to distribute it to all persons involved.
+The numbers up 90 are the ASCII codes of the letters minus 32, the numbers 91 to 98 are mapped to special characters common in German. 99 (no character) can be used to pad passwords with additional numbers to hide the original password length. If you need a different mapping, create your own, but remember to distribute it to all persons involved.
 
 | number | letter | comment |
 | --- | --- | --- |
@@ -188,12 +188,12 @@ The numbers up 90 are the ASCII codes of the letters minus 32, the numbers 91 to
 | 88 | x | |
 | 89 | y | |
 | 90 | z | |
-| 91 |  | (undefined) |
-| 92 | ä | |
-| 93 | ö | |
-| 94 | ü | |
-| 95 | Ä | |
-| 96 | Ö | |
-| 97 | Ü | |
-| 98 | ß | |
-| 99 | € | |
+| 91 | Ä | |
+| 92 | Ö | |
+| 93 | Ü | |
+| 94 | ä | |
+| 95 | ö | |
+| 96 | ü | |
+| 97 | ß | |
+| 98 | € | |
+| 99 |  | (no character) |
