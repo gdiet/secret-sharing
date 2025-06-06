@@ -10,8 +10,8 @@ jobs:
       run:
         working-directory: typescript
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v4.4.0
         with:
           node-version: 22
       - run: mkdir secret-sharing
@@ -20,7 +20,7 @@ jobs:
       - run: npx tsc
       - run: cp -r dist/* secret-sharing/
       - run: zip -r dist/secret-sharing.zip secret-sharing/
-      - uses: actions/upload-pages-artifact@v2
+      - uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: typescript/dist/
 
