@@ -2,25 +2,69 @@ package simple;
 
 import java.security.SecureRandom;
 
+/*
+ * If you have a password or a similar important secret, and somebody may need access to it when you are not available,
+ * but you don't want to give it to a single person for safekeeping, or only put it into the strong box, then here is a
+ * recipe how to give pieces of the secret to some of your friends, so that only if three of your friends put their
+ * pieces together, they can reconstruct the secret.
+ *
+ * Let's look at the theory first. If you don't care about the theory, go TODO here.
+ *
+ * Note that for the "only if TWO of your friends put their pieces together" problem there is a simpler approach, (TODO
+ * add link...), and for the "only if N of your friends put their pieces together" (with N > 3), there is the general
+ * approach of Shamir's secret sharing, see e.g. here: https://gdiet.github.io/secret-sharing/share-compact.html
+ *
+ * The idea for "only if three of your friends" is as follows:
+ *
+ * If I have a system of equations with three unknowns, I need three linearly independent equations to solve the system
+ * of equations. In our case, let's call the secret (which is a number for now) "s", and in addition choose two random
+ * numbers p and q. Assuming all a, b, and c values are know, this is such a system of equations:
+ *
+ * a1 * p + b1 * q + c1 = s
+ * a2 * p + b2 * q + c2 = s
+ * a3 * p + b3 * q + c3 = s
+ * a4 * p + b4 * q + c4 = s
+ * a5 * p + b5 * q + c5 = s
+ *
+ * If the a, b, and c values all are chosen in a way that the equations are linearly independent of each other, than any
+ * combination of three equations can be used to calculate s (and p and q, but actually we don't care about them).
+ *
+ * Let's take the first three equations. It's not much fun to solve the equation system, but it CAN be done, and the
+ * result is:
+ *
+ *     a1*c2*b3 + a3*c1*b2 + c3*a2*b1 - a2*c1*b3 - c2*a3*b1 - a1*c3*b2
+ * s = ---------------------------------------------------------------
+ *              a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2
+ *
+ *
+ * TODO continue...
+ *
+ * 1) Split the secret into a sequence of small numbers, e.g. [0..99] or [0..255].
+ * 2) For each number in the sequence, apply the same procedure outlined below, but use new random values each time.
+ *
+ */
 public class Main {
 
   public static void main(String[] args) {
-    // share(101, 11);
-    // 0 1 030
-    // 0 3 068
-    // 3 2 046
+//    // share(101, 11);
+//    // 0 1 030
+//    // 0 3 068
+//    // 3 2 046
     restore(101, new int[]{0,0,3},new int[]{1,3,2},new int[]{30,68,46});
+//
+//    // share(101, 11);
+//    // 1 2 048
+//    // 2 1 028
+//    // 3 2 046
+//    restore(101, new int[]{1,2,3},new int[]{2,1,2},new int[]{48,28,46});
+//
+//    Calc calc = new Calc(101);
+//    println(calc.add(calc.add(calc.mul(0, 1), calc.mul(1, 82)),30));
+//    println(calc.add(calc.add(calc.mul(0, 1), calc.mul(3, 82)),68));
+//    println(calc.add(calc.add(calc.mul(3, 1), calc.mul(2, 82)),46));
 
-    // share(101, 11);
-    // 1 2 048
-    // 2 1 028
-    // 3 2 046
-    restore(101, new int[]{1,2,3},new int[]{2,1,2},new int[]{48,28,46});
-
-    Calc calc = new Calc(101);
-    println(calc.add(calc.add(calc.mul(0, 1), calc.mul(1, 82)),30));
-    println(calc.add(calc.add(calc.mul(0, 1), calc.mul(3, 82)),68));
-    println(calc.add(calc.add(calc.mul(3, 1), calc.mul(2, 82)),46));
+    println("");
+    share(101,11);
   }
 
   /*
@@ -56,8 +100,10 @@ q = 82
     for (int a = 0; a < 4; a++)
       for (int b = 0; b < 4; b++) {
         if (a == b && a != 1) continue;
-        int c = calc.sub(calc.sub(s, calc.mul(a, p)), calc.mul(b, q));
-        System.out.printf("%d * p + %d * q + %03d = s  ||  %d %d %03d%n", a,b,c, a,b,c);
+//        int c = calc.sub(calc.sub(s, calc.mul(a, p)), calc.mul(b, q));
+//        System.out.printf("%d * p + %d * q + %03d = s  ||  %d %d %03d%n", a,b,c, a,b,c);
+        int c2 = calc.mod(s-a*p-b*q);
+        System.out.printf("%d * p + %d * q + %03d = s  ||  %d %d %03d%n", a,b,c2, a,b,c2);
       }
   }
 

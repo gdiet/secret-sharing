@@ -1,15 +1,13 @@
 package simple;
 
 record Calc(int base) {
-
-  private void inRange(int a, int b) {
-    if (a < 0 || a >= base) throw new IllegalArgumentException("a is out of range.");
-    if (b < 0 || b >= base) throw new IllegalArgumentException("b is out of range.");
+  Calc {
+    if (base < 10) throw new IllegalArgumentException("base is too low");
+    if (base > 66000) throw new IllegalArgumentException("base is too high");
+    for (int n = 2; n < base; n++) if (base % n == 0) throw new IllegalArgumentException("base is not prime");
   }
+
   int mod(int a) { return (a % base + base) % base; }
 
-  int add(int a, int b) { inRange(a, b); return mod(a + b); }
-  int sub(int a, int b) { inRange(a, b); return mod(a - b); }
-  int mul(int a, int b) { inRange(a, b); return mod(a * b); }
-  int div(int a, int b) { inRange(a, b); while (a % b != 0) a += base; return a / b; }
+  int div(int a, int b) { while (a % b != 0) { a += base; } return a / b; }
 }
