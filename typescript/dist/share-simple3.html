@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Secret Sharing 3</title>
+    <script src="share-simple3.js" defer></script>
+    <link rel="stylesheet" href="common.css" />
+  </head>
+
+  <body>
+    <h1>Sharing Secrets Using Simple Math</h1>
+    <p><a href="index.html">[Main Page]</a></p>
+    <p id="javascriptWarning" class="problem">
+      What the heck! This page needs JavaScript, and it seems that JavaScript is not enabled. Maybe you want to use a
+      different browser?
+    </p>
+    <p>
+      If you have a password or a similar important secret, and somebody may need access to it when you are not
+      available, then on this page you can 'split' the secret into multiple pieces called 'shares' that you can share
+      e.g. with your friends, so that only if three shares are combined, the secret can be reconstructed.
+    </p>
+    <p>
+      For the theory behind this, see TODO.
+    </p>
+    <p>
+      For reconstructing secrets or passwords from the shares created with this tool, look <a href="join.html">here</a>.
+    </p>
+    <hr />
+    <p>
+      <label for="secretInput">Secret or password:</label>
+      <input id="secretInput" class="textinput" type="text" value="¡secret!" />
+    </p>
+    <p>
+      <label for="padToLengthInput">Pad secret to length (0 = no padding, max. 64):</label>
+      <input id="padToLengthInput" class="textinput" type="number" min="0" max="64" step="1" value="32" />
+    </p>
+    <p>
+      <label for="numberOfSharesInput">Number of shares to create (min. 3, max. 100):</label>
+      <input id="numberOfSharesInput" class="textinput" type="number" min="3" max="100" step="1" value="3" />
+    </p>
+    <p>
+      <label for="sharesDescriptionInput">Optional description of the shares:</label>
+      <textarea
+        id="sharesDescriptionInput"
+        class="textinput"
+        rows="3"
+        placeholder="Example description: It is Mary's 2023 bank account user:password with TheBigBank.boom, which is shared with her relatives in case of an emergency."
+      ></textarea>
+    </p>
+    <p><button id="createSharesButton" type="button">Create Shares</button> and then scroll down.</p>
+    <p>
+      When you give shares to other people, consider including the
+      <a href="secret-sharing.zip">full distribution package</a> of these pages which can simply be unzipped and opened
+      in a browser. It also contains the project's sources (mainly JavaScript & HTML).
+    </p>
+
+    <div id="shareInfoDiv"> <!-- TODO hidden="true" -->
+      <p>
+        Below are the shares for your secret or password. Beneath that is a suggestion for how to share them with people
+        so they know what they have received - and have a chance of remembering it in ten years' time.
+      </p>
+      <p>
+        <input type="checkbox" id="includeHashBox" checked="true" />
+        <label for="includeHashBox">Include hash</label>
+      </p>
+      <hr />
+      <div id="sharesDiv"></div>
+      <hr />
+      <p>
+        The following is an example of how you might share these shares with people - modify or abbreviate as needed.
+      </p>
+      <p>
+        <i>
+          This is a so-called share of a secret string, for example a password.
+          <span id="sharesDescriptionSpan">DYNAMIC TEXT: description</span>
+          Please keep it in a safe place, such as your password safe. You have been given this share so that, in an
+          emergency, you - together with two other people who have been given other shares - can reconstruct the secret or
+          password and do whatever is necessary. This is one of
+          <span id="numberOfSharesSpan">DYNAMIC TEXT: number</span> shares created on
+          <span id="createdDateSpan">DYNAMIC TEXT: date</span>. For the actual
+          reconstruction, this text is not needed - you only need the following data:
+        </i>
+      </p>
+      <p>
+        <b><i>[Replace this paragraph with the share from above you want to hand over.]</i></b>
+      </p>
+      <p>
+        <i>
+          This share was created using the share tool at
+          <a href="https://gdiet.github.io/secret-sharing/">https://gdiet.github.io/secret-sharing/</a>. On the same
+          site, you will find the tool for recovering the password or other secret from a number of shares, and the
+          theory behind it and the formulas used for creating shares and for recovering the secret.
+        </i>
+      </p>
+    </div>
+  </body>
+</html>
