@@ -1,4 +1,5 @@
 // @ts-check
+// TODO inline when ready
 
 documentElement('javascriptWarning').style.display = 'none'
 registerListener('createSharesButton', 'click', () => createShares())
@@ -27,6 +28,14 @@ function createShares() {
     )
   })
   documentElement('sharesSpan').innerHTML = shareText(shares)
+  documentElement('sharesDescriptionSpan').innerText = textAreaElement('sharesDescriptionInput').value.replaceAll(/\r?\n/g, ' ')
+  documentElement('numberOfSharesSpan').innerText = `${numberOfShares}`
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const localizedDate = document.documentElement.lang == 'de' ? `${day}.${month}.${year}` : `${year}-${month}-${day}`
+  documentElement('createdDateSpan').innerText = localizedDate
   documentElement('pqValuesSpan').innerHTML = `p: ${p1}<br />q: ${q1}`
   documentElement('pqValidationValuesSpan').innerHTML = `p: ${p2}<br />q: ${q2}`
   documentElement('shareInfoDiv').hidden = false
@@ -79,6 +88,12 @@ function documentElement(elementIdString) {
 function inputElement(elementIdString) {
   const maybeInput = documentElement(elementIdString)
   if (maybeInput instanceof HTMLInputElement) return maybeInput
+  throw error('Type check in script failed')
+}
+
+function textAreaElement(elementIdString) {
+  const maybeInput = documentElement(elementIdString)
+  if (maybeInput instanceof HTMLTextAreaElement) return maybeInput
   throw error('Type check in script failed')
 }
 
