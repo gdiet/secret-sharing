@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Passwörter teilen, einfache Mathematik</title>
+    <script src="share-simple3.js" defer></script>
+    <link rel="stylesheet" href="common.css" />
+  </head>
+
+  <body>
+    <h1>Passwörter teilen mit einfacher Mathematik</h1>
+    <p><a href="index.html">[Hauptseite]</a></p>
+    <p id="javascriptWarning" class="problem">
+      Oh Mist! Diese Seite braucht JavaScript, und es scheint, dass JavaScript nicht aktiviert ist. Vielleicht möchtest Du einen anderen Browser verwenden?
+    </p>
+    <p>
+      Wenn Du ein Passwort oder ein ähnliches wichtiges Geheimnis hast, und jemand darauf zugreifen können soll wenn Du nicht verfügbar bist, kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Geheimnis rekonstruiert werden.
+    </p>
+    <p>
+      Für die Theorie dahinter siehe TODO.
+    </p>
+    <p>
+      Zum Wiederherstellen des Passworts aus den Teilen siehe TODO.
+    </p>
+    <hr />
+    <p>
+      <label for="secretInput">Passwort oder Geheimnis:</label>
+      <input id="secretInput" class="textinput" type="text" value="¡secret!" />
+    </p>
+    <p>
+      <label for="padToLengthInput">Passwort auf Mindestlänge erweitern (Nicht erweitern: 0, Maximum: 64):</label>
+      <input id="padToLengthInput" class="textinput" type="number" min="0" max="64" step="1" value="32" />
+    </p>
+    <p>
+      <label for="numberOfSharesInput">Anzahl der zu erzeugenden Teile (Minimum: 3, Maximum: 100):</label>
+      <input id="numberOfSharesInput" class="textinput" type="number" min="3" max="100" step="1" value="10" />
+    </p>
+    <p>
+      <label for="sharesDescriptionInput">Optionale Beschreibung der Teile:</label>
+      <textarea
+        id="sharesDescriptionInput"
+        class="textinput"
+        rows="3"
+        placeholder="Beispielbeschreibung: Es handelt sich um Marias Benutzerdaten von 2023 bei ihrer Hausbank, geteilt mit ihren Angehörigen für Notfälle."
+      ></textarea>
+    </p>
+    <p><button id="createSharesButton" type="button">Klicke hier um die Teile zu erzeugen</button> und scrolle dann nach unten.</p>
+    <p>
+      Wenn Du Teile an andere weitergibst, kannst Du das
+      <a href="secret-sharing.zip">komplette Paket dieser Seiten als Zip-Datei "secret-sharing.zip"</a> beilegen. Es enthält diese Seiten, die einfach im Browser geöffnet werden können, und den Quellcode des Projekts (hauptsächlich JavaScript & HTML).
+    </p>
+
+    <div id="shareInfoDiv" hidden="true">
+      <p>
+        Unten findest Du die verschlüsselten Teile deines Passworts. Danach folgt ein Vorschlag, wie Du sie an andere Personen weitergeben kannst, damit diese auch in zehn Jahren noch wissen, was sie da haben.
+      </p>
+      <hr />
+      <div id="sharesDiv"></div>
+      <hr />
+      <p>
+        Im Folgenden findest Du ein Beispiel dafür, wie Du die Teile weitergeben könntest &ndash; passe es nach Bedarf an.
+      </p>
+      <p>
+        <i>
+          Dies ist ein Teil eines geheimen Textes, z.&#x202F;B. eines Passworts.
+          <span id="sharesDescriptionSpan">DYNAMISCHER TEXT: Beschreibung</span>
+          Bitte bewahre ihn an einem sicheren Ort auf, z.&#x202F;B. in deinem Passwort-Programm. Du hast diesen Teil erhalten, damit Du im Notfall &ndash; zusammen mit zwei weiteren Personen, die ebenfalls Teile erhalten haben &ndash; das Passwort rekonstruieren und alles weitere Notwendige veranlassen kannst. Dies ist einer von
+          <span id="numberOfSharesSpan">DYNAMISCHER TEXT: Anzahl</span> Teilen, erstellt am
+          <span id="createdDateSpan">DYNAMISCHER TEXT: Datum</span>. Für die tatsächliche Rekonstruktion wird dieser Text nicht benötigt, nur die folgenden Daten:
+        </i>
+      </p>
+      <p>
+        <b><i>[Ersetze diesen Absatz mit dem Teil, den Du weitergeben möchtest.]</i></b>
+      </p>
+      <p>
+        <i>
+          Dieser Teil wurde mit dem Tool unter
+          <a href="https://gdiet.github.io/secret-sharing/">https://gdiet.github.io/secret-sharing/</a> erstellt. Auf derselben Seite findest Du auch das Tool zur Wiederherstellung des Passworts aus mehreren Teilen sowie die Theorie und die verwendeten Formeln.
+        </i>
+      </p>
+      <hr />
+      <p>
+        Übrigens: Wenn dich die Mathematik der Berechnung interessiert, findest Du hier die p- und q-Werte:
+        <pre class="scrollable"><span id="pqValuesSpan">DYNAMISCHER TEXT: Werte von p und q</span>
+        <br/>==> ==>  you may have to scroll  ==> ==></pre>
+        Und die p- und q-Werte für die Validierung sind:
+        <pre class="scrollable"><span id="pqValidationValuesSpan">DYNAMISCHER TEXT: Werte von p und q (Validierung)
+        <br/>==> ==>  you may have to scroll  ==> ==></pre>
+        Diese Werte werden <b>nicht</b> benötigt, wenn Du das Passowort verschlüsselt teilst.
+        Gib sie <b>nicht</b> an andere Personen weiter. Es ist <b>nicht</b> nötig sie zu speichern.
+      </p>
+    </div>
+  </body>
+</html>
