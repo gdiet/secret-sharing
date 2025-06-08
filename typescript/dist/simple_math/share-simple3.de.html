@@ -11,25 +11,62 @@
   <body>
     <h1>Passwörter teilen mit einfacher Mathematik</h1>
     <p id="javascriptWarning" class="problem">
-      Oh Mist! Diese Seite braucht JavaScript, und es scheint, dass JavaScript nicht aktiviert ist. Vielleicht möchtest Du einen anderen Browser verwenden?
+      Oh Mist! Diese Seite braucht JavaScript, und es scheint, dass JavaScript nicht aktiviert ist. Vielleicht möchtest Du einen anderen Browser verwenden? ... Oder es liegt daran, dass irgendwie der JavaScript Teil abhanden gekommen ist.
     </p>
     <p>
-      Wenn Du ein Passwort oder ein ähnliches wichtiges Geheimnis hast, und jemand darauf zugreifen können soll wenn Du nicht verfügbar bist, kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Geheimnis rekonstruiert werden.
+      Wenn Du ein Passwort oder ein ähnliches wichtiges Geheimnis hast, und jemand darauf zugreifen können soll wenn Du nicht verfügbar bist, kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
+    </p>
+    <nav>
+      <h2>Inhaltsverzeichnis</h2>
+      <ul>
+        <li><a href="#combineSharesNav">Ein Passwort aus drei Teilen wiederherstellen</a></li>
+        <li><a href="#createSharesNav">Ein Passwort verschlüsselt aufteilen</a></li>
+        <li><a href="#theoryNav">Die Theorie hinter dem ganzen</a></li>
+        <li><a href="share-simple3.html">Diese Seite auf Englisch</a></li>
+      </ul>
+    </nav>
+    <hr />
+    <h2 id="combineSharesNav">Ein Passwort aus drei Teilen wiederherstellen</h2>
+    <a href="#">Hier geht es nach oben zum Seitenanfang.</a>
+    <p>
+      Hallo! Bist Du hier, weil Du drei Teile eines verschlüsselt geteilten Passworts vorliegen hast und aus ihnen das Passwort wiederherstellen willst? Wenn diese Teile mit dem unten unter <a href="#createSharesNav">"Ein Passwort verschlüsselt aufteilen"</a> beschreibenen Verfahren erstellt wurden, dann bist Du hier richtig. Gib' die drei Teile in den Eingabefeldern ein. Das Ergebnis der Wiederherstellung wird dir unter den Eingabefeldern angezeigt.
     </p>
     <p>
-      Für die Theorie dahinter siehe 🔴TODO🔴.
-    </p>
-    <p>
-      Zum Wiederherstellen des Passworts aus den Teilen siehe 🔴TODO🔴.
+      <label for="shareInput1">Teil 1</label>
+      <textarea
+        id="sharesDescriptionInput"
+        class="textinput"
+        rows="8"
+        wrap="off"
+        placeholder="Hier kannst Du Teil 1 des verschlüsselt geteilten Passworts eingeben."
+      ></textarea>
+      <label for="shareInput2">Teil 2</label>
+      <textarea
+        id="sharesDescriptionInput"
+        class="textinput"
+        rows="8"
+        wrap="off"
+        placeholder="Hier kannst Du Teil 2 des verschlüsselt geteilten Passworts eingeben."
+      ></textarea>
+      <label for="shareInput3">Teil 3</label>
+      <textarea
+        id="sharesDescriptionInput"
+        class="textinput"
+        rows="8"
+        wrap="off"
+        placeholder="Hier kannst Du Teil 3 des verschlüsselt geteilten Passworts eingeben."
+      ></textarea>
     </p>
     <hr />
+    <h2 id="createSharesNav">Ein Passwort verschlüsselt aufteilen</h2>
+    <a href="#">Hier geht es nach oben zum Seitenanfang.</a>
     <p>
       <label for="secretInput">Passwort oder Geheimnis:</label>
       <input id="secretInput" class="textinput" type="text" value="¡secret!" />
     </p>
     <p>
       <label for="padToLengthInput">Passwort auf Mindestlänge erweitern (nicht erweitern: 0, Maximum: 64):</label>
-      <input id="padToLengthInput" class="textinput" type="number" min="0" max="64" step="1" value="32" />
+      <input id="padToLengthInput" class="textinput" type="number" min="0" max="64" step="1" value="20" />
     </p>
     <p>
       <label for="numberOfSharesInput">Anzahl der zu erzeugenden Teile (Minimum: 3, Maximum: 100):</label>
@@ -57,7 +94,7 @@
       </p>
       <hr />
       <pre class="scrollable"><span id="sharesSpan">DYNAMISCHER TEXT: Die verschlüsselten Teile</span>
-        <br><br>==> ==>  you may have to scroll  ==> ==>
+        <br><br>==> ==>  Eventuell musst Du scrollen  ==> ==>
       </pre>
       <hr />
       <p>
@@ -84,13 +121,16 @@
       <p>
         Übrigens: Wenn dich die Mathematik der Berechnung interessiert, findest Du hier die p- und q-Werte:
         <pre class="scrollable"><span id="pqValuesSpan">DYNAMISCHER TEXT: Werte von p und q</span>
-        <br/>==> ==>  you may have to scroll  ==> ==></pre>
+        <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
         Und die p- und q-Werte für die Validierung sind:
         <pre class="scrollable"><span id="pqValidationValuesSpan">DYNAMISCHER TEXT: Werte von p und q (Validierung)
-        <br/>==> ==>  you may have to scroll  ==> ==></pre>
+        <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
         <b>Wichtig:</b> Die p- und q-Werte werden <b>nicht</b> benötigt, wenn Du das Passowort verschlüsselt teilst.
         Gib sie <b>nicht</b> an andere Personen weiter. Es ist <b>nicht</b> nötig sie zu speichern.
       </p>
     </div>
+    <hr />
+    <h2 id="theoryNav">Die Theorie hinter dem ganzen</h2>
+    <a href="#">Hier geht es nach oben zum Seitenanfang.</a>
   </body>
 </html>
