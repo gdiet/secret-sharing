@@ -2,6 +2,65 @@
 // TODO inline when ready
 
 documentElement('javascriptWarning').style.display = 'none'
+
+// COMBINING SHARES //
+
+registerListener('shareInput1', 'change', () => shareInputChanged())
+registerListener('shareInput2', 'change', () => shareInputChanged())
+registerListener('shareInput3', 'change', () => shareInputChanged())
+
+function shareInputChanged() {
+  const share1 = shareInput(textAreaElement('shareInput1').value, documentElement('shareInput1Status'))
+  const share2 = shareInput(textAreaElement('shareInput2').value, documentElement('shareInput2Status'))
+  const share3 = shareInput(textAreaElement('shareInput3').value, documentElement('shareInput3Status'))
+  // const share1 = textAreaElement('shareInput1').value
+  // const statusSpan1 = documentElement('shareInput1Status')
+  // if (share1 === '') {
+  //   statusSpan1.classList.remove('problem')
+  //   statusSpan1.textContent = 'Leer'
+  //   return
+  // }
+  // try {
+  //   const share1Json = JSON.parse(share1)
+  //   // TODO continue...
+  //   statusSpan1.classList.remove('problem')
+  // } catch (_) {
+  //   statusSpan1.classList.add('problem')
+  //   statusSpan1.textContent = 'Unerwartetes Eingabeformat'
+  // }
+  // // shareInput1.classList.add("problem")
+  // // alert(`${share1}`)
+}
+
+function shareInput(share, statusSpan) {
+  if (share === '') {
+    statusSpan.classList.remove('problem')
+    statusSpan.textContent = 'Leer'
+    return undefined
+  }
+  try {
+    const json = JSON.parse(share)
+    if (!Number.isInteger(json.a) || json.a < 1 || json.a > 10) throw 'a'
+    if (!Number.isInteger(json.b) || json.b < 1 || json.b > 10) throw 'b'
+    if (!Array.isArray(json.c) || json.c.some(n => !Number.isInteger(n) || n < 0 || n > 256)) throw 'c'
+    if (!Array.isArray(json.v) || json.v.some(n => !Number.isInteger(n) || n < 0 || n > 256))
+      statusSpan.textContent = `Unerwartete Eingabe für Feld v`
+    else
+      statusSpan.textContent = `Eingabeformat OK`
+    statusSpan.classList.remove('problem')
+    return json
+  } catch (e) {
+    statusSpan.classList.add('problem')
+    if (typeof e === "string")
+      statusSpan.textContent = `Unerwartete Eingabe für Feld ${e}`
+    else
+      statusSpan.textContent = 'Unerwartetes Eingabeformat'
+    return undefined
+  }
+}
+
+// CREATING SHARES //
+
 registerListener('createSharesButton', 'click', () => createShares())
 registerListener('secretInput', 'change', () => documentElement('shareInfoDiv').hidden = true)
 
@@ -50,10 +109,14 @@ function calculateC(a, b, p, q, s) {
   return mod257(s - a*p - b*q)
 }
 
+// GENERAL MATH FUNCTIONS //
+
 // calculate the always positive modulo
 function mod257(number) {
   return (number % 257 + 257) % 257
 }
+
+// DOCUMENT UTILITIES //
 
 function shareText(shares) {
   const localizedKey = document.documentElement.lang == 'de' ? 'Teil Nummer' : 'share number'
