@@ -83,7 +83,10 @@
     <h2 id="createSharesNav">Ein Passwort verschlüsselt aufteilen</h2>
     <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
     <p>
-      <label for="secretInput">Passwort oder Geheimnis:</label>
+      <b>Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du nicht verfügbar bist,</b> dann kannst Du hier das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
+    </p>
+    <p>
+      <label for="secretInput">Passwort:</label>
       <input id="secretInput" class="textinput" type="text" value="¡secret!" />
     </p>
     <p>
@@ -116,15 +119,14 @@
       </p>
       <hr />
       <pre class="scrollable"><span id="sharesSpan">DYNAMISCHER TEXT: Die verschlüsselten Teile</span>
-        <br><br>==> ==>  Eventuell musst Du scrollen  ==> ==>
-      </pre>
+        <br>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
       <hr />
       <p>
         Im Folgenden findest Du ein Beispiel dafür, wie Du die Teile weitergeben könntest &ndash; passe es nach Bedarf an.
       </p>
       <p>
         <i>
-          Dies ist ein Teil eines geheimen Textes, z.&#x202F;B. eines Passworts.
+          Dies ist ein verschlüsselter Teil eines Passworts.
           <span id="sharesDescriptionSpan">DYNAMISCHER TEXT: Beschreibung</span>
           Bitte bewahre ihn an einem sicheren Ort auf, z.&#x202F;B. in deinem Passwort-Programm. Du hast diesen Teil erhalten, damit Du im Notfall &ndash; zusammen mit zwei weiteren Personen, die ebenfalls Teile erhalten haben &ndash; das Passwort rekonstruieren und alles weitere Notwendige veranlassen kannst. Dies ist einer von
           <span id="numberOfSharesSpan">DYNAMISCHER TEXT: Anzahl</span> Teilen, erstellt am
@@ -137,6 +139,30 @@
       <p>
         <i>
           Dieser Teil wurde mit dem Tool unter 🔴TODO🔴 erstellt. Auf derselben Seite findest Du auch das Tool zur Wiederherstellung des Passworts aus mehreren Teilen sowie die Theorie und die verwendeten Formeln.
+        </i>
+      </p>
+      <p>
+        <i>
+          Bei der Wiederherstellung wird folgendes Verfahren angewendet:<br>
+          * Gegeben sind drei Teile, mit jeweils a, b, und c.<br>
+          * c ist dabei jeweils eine Liste von Zahlen.<br>
+          * Alle c-Werte werden einzeln nacheinander verwendet.<br>
+          Die drei a- und b-Werte sowie den jeweils ersten c-Wert nennen wir im folgenden a1, a2, a3, b1, b2, b3, c1, c2, c3. Für jede Position in der c-Liste ist das folgende Verfahren entsprechend auszuführen:          
+        </i>
+      </p>
+      <p>
+        <i>
+          divisor = a1*c2*b3 + a3*c1*b2 + c3*a2*b1 - a2*c1*b3 - c2*a3*b1 - a1*c3*b2
+        </i>
+      </p>
+      <p>
+        <i>
+          dividend = a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2
+        </i>
+      </p>
+      <p>
+        <i>
+          Als nächstes berechnet man den Modulo 257 von Divisor und Dividend wie folgt:
         </i>
       </p>
       <hr />
