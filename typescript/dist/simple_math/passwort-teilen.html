@@ -152,17 +152,31 @@
       </p>
       <p>
         <i>
-          divisor = a1*c2*b3 + a3*c1*b2 + c3*a2*b1 - a2*c1*b3 - c2*a3*b1 - a1*c3*b2
+          Berechne die Werte m und n.
+          <pre>
+m = a1*c2*b3 + a2*c3*b1 + a3*c1*b2 - a1*c3*b2 - a2*c1*b3 - a3*c2*b1
+n = a1*   b3 + a2*   b1 + a3*   b2 - a1*   b2 - a2*   b3 - a3*   b1
+          </pre>
         </i>
       </p>
       <p>
         <i>
-          dividend = a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2
+          Im folgenden brauchen wir die Rechenoperationen Modulo, die den Rest einer ganzzahligen Division berechnet. Wenn eine Zahl x durch eine Zahl y geteilt wird, ergibt der Ausdruck x mod y den Rest dieser Division. Zum Beispiel ist 5 mod 3 = 2, da 5 geteilt durch 3 einen Rest von 2 lässt. Vorzeichen behandelst Du dabei so:<br>
+          <pre>
+-17 mod -7 = +17 mod +7 =                = 3
+-17 mod +7 = +17 mod -7 = 7 - (17 mod 7) = 4</pre>
+          Der Modulo ist also nie negativ.
         </i>
       </p>
       <p>
         <i>
-          Als nächstes berechnet man den Modulo 257 von Divisor und Dividend wie folgt:
+          Außerdem brauchen wir "div257", die Division im Zahlenraum Modulo 257. x div257 y berechnest Du so: Du prüfst, ob x ohne Rest durch y teilbar ist. Ist es nicht ohne Rest teilbar, dann addiere 257 zu x und prüfe erneut. Wiederhole diesen Vorgang, bis Du eine Zahl erhältst, die ohne Rest durch y teilbar ist. Das Ergebnis dieser Division ist das Ergebnis von "div257". Beispiele:
+          <pre>
+12 div257 4 = 3  ... weil 12 / 4 = 3 ohne Rest teilbar
+15 div257 4 ...  15 / 5 nicht ohne Rest teilbar
+15 div257 4 ...  15 + 257 = 272 ... 272 / 4 ohne Rest teilbar
+15 div257 4 = 272 / 4 = 68
+          </pre>
         </i>
       </p>
       <hr />
