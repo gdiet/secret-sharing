@@ -3,13 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Passwörter teilen, einfache Mathematik</title>
+    <title>Passwörter teilen</title>
     <script src="share-simple3.js" defer></script>
     <link rel="stylesheet" href="common.css" />
   </head>
 
   <body>
-    <h1>Passwörter teilen mit einfacher Mathematik</h1>
+    <h1>Passwörter teilen und wiederherstellen</h1>
+    <p><a href="share-simple3.html">This page in English (🔴TODO🔴)</a></p>
     <p id="javascriptWarning" class="problem">
       Oh Mist! Diese Seite braucht JavaScript, und es scheint, dass JavaScript nicht aktiviert ist. Vielleicht möchtest Du einen anderen Browser verwenden? ... Oder es liegt daran, dass irgendwie der JavaScript Teil abhanden gekommen ist.
     </p>
@@ -19,18 +20,20 @@
     <p>
       <b>Wenn Du ein Passwort hast, und im Notfall jemand darauf zugreifen können soll auch wenn Du nicht verfügbar bist,</b> kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
     </p>
+    <p>
+      <b>Bei dem Verfahren wird nur einfache Mathematik verwendet,</b> so dass man zur Not die Berechnungen sogar mit Stift und Papier durchführen kann. Details dazu und vieles mehr findest Du in dem Abschnitt über die Theorie.
+    </p>
     <nav>
-      <h2>Inhaltsverzeichnis</h2>
+      <h2 id="tocNav">Inhaltsverzeichnis</h2>
       <ul>
         <li><a href="#combineSharesNav">Ein Passwort aus drei Teilen wiederherstellen</a></li>
         <li><a href="#createSharesNav">Ein Passwort verschlüsselt aufteilen</a></li>
         <li><a href="#theoryNav">Die Theorie hinter dem ganzen</a></li>
-        <li><a href="share-simple3.html">Diese Seite auf Englisch</a></li>
       </ul>
     </nav>
     <hr />
     <h2 id="combineSharesNav">Ein Passwort aus drei Teilen wiederherstellen</h2>
-    <a href="#">Hier geht es nach oben zum Seitenanfang.</a>
+    <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
     <p>
       Hallo! Bist Du hier, weil Du drei Teile eines verschlüsselt geteilten Passworts vorliegen hast und aus ihnen das Passwort wiederherstellen willst? Wenn diese Teile mit dem unten unter <a href="#createSharesNav">"Ein Passwort verschlüsselt aufteilen"</a> beschreibenen Verfahren erstellt wurden, dann bist Du hier richtig. Gib' die drei Teile in den Eingabefeldern ein. Das Ergebnis der Wiederherstellung wird dir unter den Eingabefeldern angezeigt.
     </p>
@@ -73,7 +76,7 @@
     </p>
     <hr />
     <h2 id="createSharesNav">Ein Passwort verschlüsselt aufteilen</h2>
-    <a href="#">Hier geht es nach oben zum Seitenanfang.</a>
+    <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
     <p>
       <label for="secretInput">Passwort oder Geheimnis:</label>
       <input id="secretInput" class="textinput" type="text" value="¡secret!" />
@@ -147,6 +150,6 @@
     </div>
     <hr />
     <h2 id="theoryNav">Die Theorie hinter dem ganzen</h2>
-    <a href="#">Hier geht es nach oben zum Seitenanfang.</a>
+    <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
   </body>
 </html>

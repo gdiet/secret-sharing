@@ -1,7 +1,10 @@
 /* TODO review, remove orphans, then inline */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 body {
     max-width: 600px;
-    font-size: large;
+    font-size: 115%;
+    font-family: 'Roboto', serif;
   }
   .hidden {
     display: none;
@@ -25,4 +28,6 @@ body {
     padding-right: 0%;
     width: 100%;
   }
-  
+p {
+    line-height: 140%;
+  }
