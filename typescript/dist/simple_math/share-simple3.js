@@ -39,16 +39,22 @@ function shareInputChanged() {
   const share2 = shareInput(textAreaElement('shareInput2').value, documentElement('shareInput2Status'))
   const share3 = shareInput(textAreaElement('shareInput3').value, documentElement('shareInput3Status'))
   const c = restore(share1, share2, share3, share => share.c)
-  alert(`${c}`)
+  const cString = bytesToUtf8(c.filter(n => n < 256))
+  const v = restore(share1, share2, share3, share => share.v)
+  const vString = bytesToUtf8(v.filter(n => n < 256))
+  inputElement('restoredNumbersC').value = `${c}`
+  inputElement('restoredNumbersV').value = `${v}`
+  inputElement('restoredStringC').value = cString
+  inputElement('restoredStringV').value = vString
 }
 
 function restore(share1, share2, share3, accessor) {
   const length = Math.max(accessor(share1).length, accessor(share2).length, accessor(share3).length)
-  Array.from({ length: length }).map((_, index) =>
+  return Array.from({ length: length }).map((_, index) =>
     calculateShare(
       share1.a, share2.a, share3.a,
       share1.b, share2.b, share3.b,
-      share1.c[index], share2.c[index], share3.c[index]
+      accessor(share1)[index], accessor(share2)[index], accessor(share3)[index]
     )
   )
 }
@@ -91,7 +97,7 @@ function shareInput(share, statusSpan) {
 function calculateShare(a1, a2, a3, b1, b2, b3, c1, c2, c3) {
   if ([a1, a2, a3, b1, b2, b3, c1, c2, c3].some(n =>
     !Number.isInteger(n) || n < 0 || n > 256
-  )) return undefined
+  )) return NaN
   const dividend = mod257(a1*c2*b3 + a3*c1*b2 + c3*a2*b1 - a2*c1*b3 - c2*a3*b1 - a1*c3*b2)
   const divisor = mod257(a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2)
   return divisor == 0 ? NaN : div257(dividend, divisor)
@@ -229,4 +235,8 @@ function error(messageString) {
 
 function utf8ToUint8(text) {
   return new TextEncoder().encode(text)
+}
+
+function bytesToUtf8(bytes) {
+  return new TextDecoder().decode(new Uint8Array(bytes))
 }

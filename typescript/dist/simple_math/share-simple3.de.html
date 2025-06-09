@@ -14,7 +14,10 @@
       Oh Mist! Diese Seite braucht JavaScript, und es scheint, dass JavaScript nicht aktiviert ist. Vielleicht möchtest Du einen anderen Browser verwenden? ... Oder es liegt daran, dass irgendwie der JavaScript Teil abhanden gekommen ist.
     </p>
     <p>
-      Wenn Du ein Passwort oder ein ähnliches wichtiges Geheimnis hast, und jemand darauf zugreifen können soll wenn Du nicht verfügbar bist, kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
+      <b>Wenn Du von jemandem für Notfälle einen verschlüsselten Teil eines Passworts bekommen hast,</b> dann hat derjenige hoffentlich weitere verschlüsselte Teile bei weiteren Personen oder an sinnvollen Orten hinterlegt. Sobald Du drei unterschiedliche Teile hast, kannst Du auf dieser Seite das Passwort rekonstruieren - natürlich nur, wenn es mit dem auf dieser Seite beschriebenen Verfahren verschlüsselt und geteilt wurde.
+    </p>
+    <p>
+      <b>Wenn Du ein Passwort hast, und im Notfall jemand darauf zugreifen können soll auch wenn Du nicht verfügbar bist,</b> kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
     </p>
     <nav>
       <h2>Inhaltsverzeichnis</h2>
@@ -59,9 +62,9 @@
         wrap="off"
         placeholder="Hier kannst Du Teil 3 des verschlüsselt geteilten Passworts eingeben."
       ></textarea>
-      <label for="restoredNumbersC">Wiederhergestellt - Bytes</label><br />
+      <label for="restoredNumbersC">Wiederhergestellt - Zahlen</label><br />
       <input id="restoredNumbersC" class="textinput" type="text" value="" size="100" readonly />
-      <label for="restoredNumbersV">Validierung  - Bytes</label><br />
+      <label for="restoredNumbersV">Validierung  - Zahlen</label><br />
       <input id="restoredNumbersV" class="textinput" type="text" value="" size="100" readonly />
       <label for="restoredStringC">Wiederhergestellt - String</label><br />
       <input id="restoredStringC" class="textinput" type="text" value="" size="100" readonly />
@@ -129,6 +132,8 @@
         </i>
       </p>
       <hr />
+      <!-- TODO Überschrift "Wenn dich die Mathematik" -->
+      <!-- TODO Ausgabe der Zahlen des Shares -->
       <p>
         Übrigens: Wenn dich die Mathematik der Berechnung interessiert, findest Du hier die p- und q-Werte:
         <pre class="scrollable"><span id="pqValuesSpan">DYNAMISCHER TEXT: Werte von p und q</span>
