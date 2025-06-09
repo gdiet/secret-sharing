@@ -44,8 +44,12 @@ function shareInputChanged() {
   const vString = bytesToUtf8(v.filter(n => n < 256))
   inputElement('restoredNumbersC').value = `${c}`
   inputElement('restoredNumbersV').value = `${v}`
+  if (`${c}` == `${v}`) inputElement('restoredNumbersV').classList.remove('problem')
+  else inputElement('restoredNumbersV').classList.add('problem')
   inputElement('restoredStringC').value = cString
   inputElement('restoredStringV').value = vString
+  if (cString == vString) inputElement('restoredStringV').classList.remove('problem')
+  else inputElement('restoredStringV').classList.add('problem')
 }
 
 function restore(share1, share2, share3, accessor) {

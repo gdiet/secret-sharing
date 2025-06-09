@@ -15,10 +15,10 @@
       Oh Mist! Diese Seite braucht JavaScript, und es scheint, dass JavaScript nicht aktiviert ist. Vielleicht möchtest Du einen anderen Browser verwenden? ... Oder es liegt daran, dass irgendwie der JavaScript Teil abhanden gekommen ist.
     </p>
     <p>
-      <b>Wenn Du von jemandem für Notfälle einen verschlüsselten Teil eines Passworts bekommen hast,</b> dann hat derjenige hoffentlich weitere verschlüsselte Teile bei weiteren Personen oder an sinnvollen Orten hinterlegt. Sobald Du drei unterschiedliche Teile hast, kannst Du auf dieser Seite das Passwort rekonstruieren - natürlich nur, wenn es mit dem auf dieser Seite beschriebenen Verfahren verschlüsselt und geteilt wurde.
+      <b>Wenn Du von jemandem für Notfälle einen verschlüsselten Teil eines Passworts bekommen hast,</b> dann hat derjenige hoffentlich weitere Teile bei weiteren Personen oder an sinnvollen Orten hinterlegt. Sobald Du drei unterschiedliche Teile hast, kannst Du auf dieser Seite das Passwort rekonstruieren - natürlich nur, wenn es mit dem auf dieser Seite beschriebenen Verfahren verschlüsselt und geteilt wurde.
     </p>
     <p>
-      <b>Wenn Du ein Passwort hast, und im Notfall jemand darauf zugreifen können soll auch wenn Du nicht verfügbar bist,</b> kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
+      <b>Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du nicht verfügbar bist,</b> dann kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
     </p>
     <p>
       <b>Bei dem Verfahren wird nur einfache Mathematik verwendet,</b> so dass man zur Not die Berechnungen sogar mit Stift und Papier durchführen kann. Details dazu und vieles mehr findest Du in dem Abschnitt über die Theorie.
@@ -35,7 +35,7 @@
     <h2 id="combineSharesNav">Ein Passwort aus drei Teilen wiederherstellen</h2>
     <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
     <p>
-      Hallo! Bist Du hier, weil Du drei Teile eines verschlüsselt geteilten Passworts vorliegen hast und aus ihnen das Passwort wiederherstellen willst? Wenn diese Teile mit dem unten unter <a href="#createSharesNav">"Ein Passwort verschlüsselt aufteilen"</a> beschreibenen Verfahren erstellt wurden, dann bist Du hier richtig. Gib' die drei Teile in den Eingabefeldern ein. Das Ergebnis der Wiederherstellung wird dir unter den Eingabefeldern angezeigt.
+      <b>Wenn Du von jemandem für Notfälle einen verschlüsselten Teil eines Passworts bekommen hast,</b> dann hat derjenige hoffentlich weitere Teile bei weiteren Personen oder an sinnvollen Orten hinterlegt. Wenn Du drei unterschiedliche Teile hast, kannst Du hier das Passwort rekonstruieren - natürlich nur, wenn es mit dem auf dieser Seite beschriebenen Verfahren verschlüsselt und geteilt wurde.
     </p>
     <p>
       <button id="fillExampleSharesButton" type="button">Wenn Du hier klickst, werden Beispielwerte eingetragen.</button>
@@ -65,14 +65,19 @@
         wrap="off"
         placeholder="Hier kannst Du Teil 3 des verschlüsselt geteilten Passworts eingeben."
       ></textarea>
-      <label for="restoredNumbersC">Wiederhergestellt - Zahlen</label><br />
+    </p>
+    <p>
+      <label for="restoredNumbersC">Wiederhergestelles Passwort als Zahlen:</label><br />
       <input id="restoredNumbersC" class="textinput" type="text" value="" size="100" readonly />
-      <label for="restoredNumbersV">Validierung  - Zahlen</label><br />
+      <label for="restoredNumbersV">Validierung der Wiederherstellung als Zahlen:</label><br />
       <input id="restoredNumbersV" class="textinput" type="text" value="" size="100" readonly />
-      <label for="restoredStringC">Wiederhergestellt - String</label><br />
+      <label for="restoredStringC">Wiederhergestelles Passwort als String:</label><br />
       <input id="restoredStringC" class="textinput" type="text" value="" size="100" readonly />
-      <label for="restoredStringV">Validierung - String</label><br />
+      <label for="restoredStringV">Validierung der Wiederherstellung als String:</label><br />
       <input id="restoredStringV" class="textinput" type="text" value="" size="100" readonly />
+    </p>
+    <p>
+      <b>Wenn es Unterschiede gibt zwischen Passwort-Daten und Validierungs-Daten, dann ist das angezeigte wiederhergestellte Passwort möglicherweise nicht das richtige.</b> Mögliche Gründ für die Unterschiede sind, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.
     </p>
     <hr />
     <h2 id="createSharesNav">Ein Passwort verschlüsselt aufteilen</h2>
