@@ -45,7 +45,88 @@ import java.security.SecureRandom;
  */
 public class Main {
 
+  static int a(int n) { return (n%10) + 1; }
+  static int b(int n) { return (n/10) + 1; }
+/*
+   1  2  3  4  5  6  7  8  9  0
+1  X  X  -  -  -  -  -  -  -  -
+2  X  X  -  -  -  -  -  -  -  -
+3  -  -  -  X  .  .  .  .  .  .
+4  -  -  X  -  .  -  -  .  .  .
+5  -  -  .  .  -  -  -  -  .  -
+6  -  -  .  .  .  -  .  .  .  -
+7  -  -  .  -  -  .  -  -  .  -
+8  -  -  .  .  .  .  .  -  .  .
+9  -  -  .  .  .  .  .  .  -  -
+0  -  -  .  .  -  .  -  .  .  -
+ */
   public static void main(String[] args) {
+    int[][] ints = {
+        {1,1},
+        {1,2},
+        {2,1},
+        {2,2},
+        {3,4},
+        {4,3},
+        {3,5},
+        {5,3},
+        {6,9},
+        {9,6},
+        {7,9},
+        {9,7},
+        {4,10},
+        {10,4},
+    };
+    for (int a = 0; a < ints.length; a++)
+      for (int b = 0; b < ints.length; b++)
+        for (int c = 0; c < ints.length; c++) {
+          if (a == b || a == c || b == c) continue;
+          int a1 = ints[a][0];
+          int b1 = ints[a][1];
+          int a2 = ints[b][0];
+          int b2 = ints[b][1];
+          int a3 = ints[c][0];
+          int b3 = ints[c][1];
+          int d = a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2;
+          if (d == 0) System.out.printf("%d %d %d%n", a, b, c);
+          // a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2
+        }
+    println("fertig.");
+
+
+
+//    int x1 = 13;
+//    int x2 = 17;
+//    for (int x3 = 0; x3 < 100; x3++) {
+//      if (x3 == x1 || x3 == x2) {
+//        System.out.print("X");
+//      } else {
+//        int d = a(x1)*b(x3) + a(x3)*b(x2) + a(x2)*b(x1) - a(x2)*b(x3) - a(x3)*b(x1) - a(x1)*b(x2);
+//        if (d == 0)
+//          System.out.print("*");
+//        else
+//          System.out.print("-");
+//      }
+//      System.out.print("  ");
+//      if (x3 % 10 == 9) System.out.println();
+//    }
+//    int x1 = 0;
+//    int x2 = 23;
+//    for (int x3 = 0; x3 < 100; x3++) {
+//      if (x3 == x1 || x3 == x2) {
+//        System.out.printf("%d - %d%n", x3, 0);
+//        continue;
+//      }
+//      int d = a(x1)*b(x3) + a(x3)*b(x2) + a(x2)*b(x1) - a(x2)*b(x3) - a(x3)*b(x1) - a(x1)*b(x2);
+//      System.out.printf("%d - %d%n", x3, d);
+//    }
+//    for (int a1 = 1; a1 <= 10; a1++)
+//      for (int b1 = 1; a1 <= 10; a1++)
+//        for (int c1 = 1; a1 <= 10; a1++) {
+//          System.out.printf("%d %d %d - %d%n",       a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2)
+//        }
+
+    System.exit(0);
 //    // share(101, 11);
 //    // 0 1 030
 //    // 0 3 068
