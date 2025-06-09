@@ -94,8 +94,23 @@ function createShares() {
   const q1 = secretPadded.map(() => Math.floor(Math.random() * 257))
   const p2 = secretPadded.map(() => Math.floor(Math.random() * 257))
   const q2 = secretPadded.map(() => Math.floor(Math.random() * 257))
-  const shares = Array.from({ length: numberOfShares })
-                      .map((_, index) => factorAB(index, maxFactorAB))
+  const shares = [
+    {"a":  1, "b":  1},   //  1, 1    X X - - - - - - - - 
+    {"a":  1, "b":  2},   //  1, 2    X X - - - - - - - - 
+    {"a":  2, "b":  1},   //  2, 1    - - - X X - - - - - 
+    {"a":  2, "b":  2},   //  2, 2    - - X - - - - - - X 
+    {"a":  3, "b":  4},   //  3, 4    - - X - - - - - - - 
+    {"a":  4, "b":  3},   //  4, 3    - - - - - - - - X - 
+    {"a":  3, "b":  5},   //  3, 5    - - - - - - - - X - 
+    {"a":  5, "b":  3},   //  5, 3    - - - - - - - - - - 
+    {"a":  6, "b":  9},   //  6, 9    - - - - - X X - - - 
+    {"a":  9, "b":  6},   //  9, 6    - - - X - - - - - - 
+    {"a":  7, "b":  9},   //  7, 9
+    {"a":  9, "b":  7},   //  9, 7
+    {"a":  4, "b": 10},   //  4,10
+    {"a": 10, "b":  4},   // 10, 4
+  ];
+  shares.length = numberOfShares;
   shares.forEach(ab => {
     ab.c = secretPadded.map((s, index) =>
       calculateC(ab.a, ab.b, p1[index], q1[index], s)
