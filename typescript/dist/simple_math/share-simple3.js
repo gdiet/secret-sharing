@@ -49,7 +49,8 @@ function shareInputChanged() {
 }
 
 function restore(share1, share2, share3, accessor) {
-  const length = Math.max(accessor(share1).length, accessor(share2).length, accessor(share3).length)
+  const length =
+    Math.max(accessor(share1).length?.length ?? 0, accessor(share2).length?.length ?? 0, accessor(share3)?.length ?? 0)
   return Array.from({ length: length }).map((_, index) =>
     calculateShare(
       share1.a, share2.a, share3.a,
