@@ -164,6 +164,7 @@ function createShares() {
   const day = String(date.getDate()).padStart(2, '0')
   const localizedDate = document.documentElement.lang == 'de' ? `${day}.${month}.${year}` : `${year}-${month}-${day}`
   documentElement('createdDateSpan').innerText = localizedDate
+  documentElement('secretNumbersSpan').innerHTML = `s: ${secretPadded}`
   documentElement('pqValuesSpan').innerHTML = `p: ${p1}<br />q: ${q1}`
   documentElement('pqValidationValuesSpan').innerHTML = `p: ${p2}<br />q: ${q2}`
   documentElement('shareInfoDiv').hidden = false
