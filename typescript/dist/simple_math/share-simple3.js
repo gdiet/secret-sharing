@@ -69,7 +69,7 @@ function calculateShare(a1, a2, a3, b1, b2, b3, c1, c2, c3) {
   )) return undefined
   const dividend = mod257(a1*c2*b3 + a3*c1*b2 + c3*a2*b1 - a2*c1*b3 - c2*a3*b1 - a1*c3*b2)
   const divisor = mod257(a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2)
-  return div257(dividend, divisor)
+  return divisor == 0 ? NaN : div257(dividend, divisor)
 }
 
 function div257(a, b) {
