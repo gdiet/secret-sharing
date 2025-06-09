@@ -13,23 +13,19 @@ function shareInputChanged() {
   const share1 = shareInput(textAreaElement('shareInput1').value, documentElement('shareInput1Status'))
   const share2 = shareInput(textAreaElement('shareInput2').value, documentElement('shareInput2Status'))
   const share3 = shareInput(textAreaElement('shareInput3').value, documentElement('shareInput3Status'))
-  // const share1 = textAreaElement('shareInput1').value
-  // const statusSpan1 = documentElement('shareInput1Status')
-  // if (share1 === '') {
-  //   statusSpan1.classList.remove('problem')
-  //   statusSpan1.textContent = 'Leer'
-  //   return
-  // }
-  // try {
-  //   const share1Json = JSON.parse(share1)
-  //   // TODO continue...
-  //   statusSpan1.classList.remove('problem')
-  // } catch (_) {
-  //   statusSpan1.classList.add('problem')
-  //   statusSpan1.textContent = 'Unerwartetes Eingabeformat'
-  // }
-  // // shareInput1.classList.add("problem")
-  // // alert(`${share1}`)
+  const c = restore(share1, share2, share3, share => share.c)
+  alert(`${c}`)
+}
+
+function restore(share1, share2, share3, accessor) {
+  const length = Math.max(share1.c.length, share2.c.length, share3.c.length)
+  Array.from({ length: length }).map((_, index) =>
+    calculateShare(
+      share1.a, share2.a, share3.a,
+      share1.b, share2.b, share3.b,
+      share1.c[index], share2.c[index], share3.c[index]
+    )
+  )
 }
 
 function shareInput(share, statusSpan) {
@@ -57,6 +53,28 @@ function shareInput(share, statusSpan) {
       statusSpan.textContent = 'Unerwartetes Eingabeformat'
     return undefined
   }
+}
+
+/* a1 * p + b1 * q + c1 = s
+ * a2 * p + b2 * q + c2 = s
+ * a3 * p + b3 * q + c3 = s
+ * 
+ *     a1*c2*b3 + a3*c1*b2 + c3*a2*b1 - a2*c1*b3 - c2*a3*b1 - a1*c3*b2
+ * s = ---------------------------------------------------------------
+ *              a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2
+ */
+function calculateShare(a1, a2, a3, b1, b2, b3, c1, c2, c3) {
+  if ([a1, a2, a3, b1, b2, b3, c1, c2, c3].some(n =>
+    !Number.isInteger(n) || n < 0 || n > 256
+  )) return undefined
+  const dividend = mod257(a1*c2*b3 + a3*c1*b2 + c3*a2*b1 - a2*c1*b3 - c2*a3*b1 - a1*c3*b2)
+  const divisor = mod257(a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2)
+  return div257(dividend, divisor)
+}
+
+function div257(a, b) {
+  while (a % b !== 0) a += 257
+  return a / b;
 }
 
 // CREATING SHARES //
@@ -126,8 +144,8 @@ function shareText(shares) {
       |  "${localizedKey}": ${index + 1},
       |  "a": ${share.a},
       |  "b": ${share.b},
-      |  "c": ${JSON.stringify(share.c)}"
-      |  "v": ${JSON.stringify(share.validation)}"
+      |  "c": ${JSON.stringify(share.c)},
+      |  "v": ${JSON.stringify(share.validation)}
       |}
     `)
   })
