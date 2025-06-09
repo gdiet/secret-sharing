@@ -5,6 +5,31 @@ documentElement('javascriptWarning').style.display = 'none'
 
 // COMBINING SHARES //
 
+registerListener('fillExampleSharesButton', 'click', () => {
+  textAreaElement('shareInput1').value = `{
+  "Teil Nummer": 4,
+  "a": 2,
+  "b": 2,
+  "c": [62,256,90,164,90,206,221,134,95,84,215,214,30,151,161,202,209,141,221,49],
+  "v": [141,83,12,116,122,74,154,110,44,157,126,188,24,148,237,250,6,110,69,228]
+}`
+  textAreaElement('shareInput2').value = `{
+  "Teil Nummer": 2,
+  "a": 1,
+  "b": 2,
+  "c": [168,252,203,200,169,12,143,107,187,164,112,98,39,211,44,143,46,199,123,140],
+  "v": [1,72,164,129,170,93,107,229,227,83,87,36,15,132,103,225,158,235,110,255]
+}`
+  textAreaElement('shareInput3').value = `{
+  "Teil Nummer": 5,
+  "a": 3,
+  "b": 4,
+  "c": [36,90,178,6,160,104,6,125,249,249,71,56,70,106,206,89,256,84,88,190],
+  "v": [205,251,61,144,193,53,160,223,238,241,214,225,40,24,84,219,165,89,180,227]
+}`
+  shareInputChanged()
+})
+
 registerListener('shareInput1', 'change', () => shareInputChanged())
 registerListener('shareInput2', 'change', () => shareInputChanged())
 registerListener('shareInput3', 'change', () => shareInputChanged())
@@ -18,7 +43,7 @@ function shareInputChanged() {
 }
 
 function restore(share1, share2, share3, accessor) {
-  const length = Math.max(share1.c.length, share2.c.length, share3.c.length)
+  const length = Math.max(accessor(share1).length, accessor(share2).length, accessor(share3).length)
   Array.from({ length: length }).map((_, index) =>
     calculateShare(
       share1.a, share2.a, share3.a,
