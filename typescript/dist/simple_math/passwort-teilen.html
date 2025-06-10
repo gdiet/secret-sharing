@@ -154,8 +154,8 @@
           <i>
             Berechne die Werte m und n.
             <pre>
-m = a1*c2*b3 + a2*c3*b1 + a3*c1*b2 - a1*c3*b2 - a2*c1*b3 - a3*c2*b1
-n = a1*   b3 + a2*   b1 + a3*   b2 - a1*   b2 - a2*   b3 - a3*   b1</pre>
+m = a1*b3*c2 + a2*b1*c3 + a3*b2*c1 - a1*b2*c3 - a2*b3*c1 - a3*b1*c2
+n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
           </i>
         </p>
         <p>
@@ -181,7 +181,7 @@ n = a1*   b3 + a2*   b1 + a3*   b2 - a1*   b2 - a2*   b3 - a3*   b1</pre>
           <i>
             Aus m und n berechnet sich die Zahl des Passworts an der aktuellen Position:
             <pre>s = (m mod 257) div257 (n mod 257)</pre>
-            s ist eine Zahl zwischen 0 und 256. Sämtliche Zahlen s = 256 werden ignoriert, die übrigen Zahlen werden als UTF-8 Zeichenkette interpretiert werden. Häufig verwendete UTF-8 Zeichen sind:
+            s ist eine Zahl zwischen 0 und 256. Sämtliche Zahlen s = 256 werden ignoriert, die übrigen Zahlen werden als UTF-8 Zeichenkette interpretiert. Häufig verwendete UTF-8 Zeichen sind:
             <pre>      32: Leerzeichen
 48 -  57: Ziffern 0-9
 65 -  90: Großbuchstaben A-Z
