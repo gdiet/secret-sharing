@@ -218,7 +218,7 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
       Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du selbst nicht erreichbar bist, dann gibt es Möglichkeiten, das Passwort in mehrere Teile verschlüsselt aufzuteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens eine bestimmte Anzahl von Teilen zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
     </p>
     <p>
-      Hier geht es um ein Verfahren und die Theorie dahinter, wenn zur Rekonstruktion <b>drei</b> Teile benötigt werden. Es gibt auch Verfahren, bei denen nur <b>zwei</b> Teile benötigt werden, und es gibt Verfahren, bei denen man die benötigte Anzahl der Teile <b>frei wählen</b> kann. Diese Verfahren sind aber nicht Thema dieser Seite. Ein bekannter Ansatz für "beliebige Anzahl" ist übrigens Shamirs Secret Sharing - weitere Informationen und eine Implementierung findest Du zum Beispiel hier <a href="https://gdiet.github.io/secret-sharing/share-compact.html">https://gdiet.github.io/secret-sharing/share-compact.html</a>.
+      Auf dieser Seite geht es um ein Verfahren und die Theorie dahinter, wenn zur Rekonstruktion <b>drei</b> Teile benötigt werden. Es gibt auch Verfahren, bei denen nur <b>zwei</b> Teile benötigt werden, und es gibt Verfahren, bei denen man die benötigte Anzahl der Teile <b>frei wählen</b> kann. Diese Verfahren sind aber nicht Thema dieser Seite. Ein bekannter Ansatz für "beliebige Anzahl" ist übrigens Shamirs Secret Sharing - weitere Informationen und eine Implementierung findest Du zum Beispiel hier: <a href="https://gdiet.github.io/secret-sharing/share-compact.html">https://gdiet.github.io/secret-sharing/share-compact.html</a>
     </p>
     <h3>Ein Gleichungsystem mit drei Unbekannten</h3>
     <p>
@@ -269,7 +269,9 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
       Jetzt kommt die Bedingung der "drei voneinander linear unabhängige Gleichungen" ins Spiel: Wenn zum Beispiel <i>a1</i> = <i>a2</i> = <i>a3</i> ist, dann ist der Nenner 0, und bei der Division haben wir ein Problem. Nur wenn der Nenner ungleich 0 ist, können wir <i>s</i> berechnen.
     </p>
     <p>
-      Folgende vierzehn <i>a</i>/<i>b</i>-Werte habe zum Beispiel die Eigenschaft, dass jede beliebige Kombination von drei <i>a</i>/<i>b</i>-Werten voneinander linear unabhängig ist: 1/1, 1/2, 2/1, 2/2, 3/4, 4/3, 3/5, 5/3, 6/9, 9/6, 7/9, 9/7, 4/10, 10/4.
+      Folgende vierzehn <i>a</i>/<i>b</i>-Werte haben die Eigenschaft, dass jede beliebige Kombination von drei <i>a</i>/<i>b</i>-Werten voneinander linear unabhängig ist:<br>
+      1/1, 1/2, 2/1, 2/2, 3/4, 4/3, 3/5, 5/3, 6/9, 9/6, 7/9, 9/7, 4/10, 10/4.<br>
+      Weitere Wertepaare lassen sich ermitteln, interessieren hier aber erst mal nicht.
     </p>
     <p>
       Das sieht soweit doch schon mal gut aus. Wir können bis zu 14 Personen je einen Satz voneinander unabhängiger <i>a</i> / <i>b</i> / <i>c</i> Werte geben, so dass es stets drei Personen braucht, um <i>s</i> zu rekonstruieren. Oder nicht?
@@ -278,9 +280,12 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
     <p>
       Braucht es wirklich drei Personen, um Informationen über die geheime Zahl <i>s</i> zu bekommen? In der echten Welt ist das leider nicht immer der Fall. Das liegt daran, dass die Personen möglicherweise zusätzliches Wissen über <i>p</i>, <i>q</i> und <i>s</i> verwenden können. Wenn beispielsweise bekannt ist, dass <i>p</i>, <i>q</i> und <i>s</i> Bytes sind, also Zahlen im Bereich <i>[0..255]</i>, und wenn ein <i>c</i>-Wert <i>255</i> ist, dann müssen die zugehörigen <i>p</i>/<i>q</i> Werte <i>0</i> sein und <i>s&nbsp;=&nbsp;c</i>. Oder wenn bekannt ist, dass nur ganze Zahlen in der Berechnung verwendet werden, und wenn bei einer Person <i>a</i>, <i>b</i> und <i>c</i> gerade sind, dann weiß diese Person, dass auch <i>s</i> gerade ist. Diese und ähnliche Überlegungen können verwendet werden, um aus nur einer oder zwei Gleichungen zumindest einige Erkenntnisse über den geheimen Wert <i>s</i> zu gewinnen.
     </p>
-    <h3>Der Zahlenraum mod 257</h3>
-    <p>      
-      Der Trick, den wir hier anwenden, ist, dass wir alle Berechnungen $modulo$ $257$ durchführen, was uns den Zahlenbereich $[0..256]$ gibt, in dem wir arbeiten können. (Hinweis: Anstelle von $257$ kann man auch eine beliebige Primzahl verwenden. Mit $101$ hätten wir zum Beispiel den Zahlenbereich $[0..100]$, was auch sehr praktisch sein kann, wenn man es braucht). Lassen Sie mich das näher erläutern:
+    <h3>Der Zahlenraum <i>mod&nbsp;257</i></h3>
+    <p>
+      Deshalb wenden wir einen Trick an: Wir führen alle Berechnungen <i>modulo&nbsp;257</i> - oder kurz: <i>mod&nbsp;257</i> - durch, was uns den Zahlenbereich <i>[0..256]</i> zum Arbeiten gibt - ein praktischer Raum, wenn wir mit Bytes arbeiten wollen.
+    </p>
+    <p>
+      Anstelle von <i>257</i> kann man eine beliebige andere Primzahl verwenden. Mit <i>mod&nbsp;101</i> hätten wir zum Beispiel den Zahlenbereich <i>[0..100]</i>, was je nach Anwendung auch sehr praktisch sein kann...
     </p>
   </body>
 </html>
