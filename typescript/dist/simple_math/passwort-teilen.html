@@ -9,200 +9,201 @@
   </head>
 
   <body>
-    <h1>Passwörter teilen und wiederherstellen</h1>
-    <p><a href="share-simple3.html">This page in English (🔴TODO🔴)</a></p>
-    <p id="javascriptWarning" class="problem">
-      Ups! Diese Seite braucht JavaScript, und es scheint, dass JavaScript nicht aktiviert ist. Vielleicht möchtest Du einen anderen Browser verwenden? Oder es liegt daran, dass irgendwie der JavaScript Teil abhanden gekommen ist.
-    </p>
-    <p>
-      <b>Wenn Du von jemandem für Notfälle einen verschlüsselten Teil eines Passworts bekommen hast,</b> dann hat diese Person hoffentlich weitere Teile bei weiteren Personen oder an sinnvollen Orten hinterlegt. Sobald Du drei unterschiedliche Teile hast, kannst Du auf dieser Seite das Passwort rekonstruieren - natürlich nur, wenn es mit dem auf dieser Seite beschriebenen Verfahren verschlüsselt und geteilt wurde.
-    </p>
-    <p>
-      <b>Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du selbst nicht erreichbar bist,</b> dann kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
-    </p>
-    <p>
-      <b>Bei dem Verfahren wird nur einfache Mathematik verwendet,</b> so dass man zur Not die Berechnungen sogar mit Stift und Papier durchführen kann. Details und weitere Informationen findest Du im Abschnitt zur theoretischen Grundlage.
-    </p>
-    <nav>
-      <h2 id="tocNav">Inhaltsverzeichnis</h2>
-      <ul>
-        <li><a href="#combineSharesNav">Ein Passwort aus drei Teilen wiederherstellen</a></li>
-        <li><a href="#createSharesNav">Ein Passwort verschlüsselt aufteilen</a></li>
-        <li><a href="#theoryNav">Die Theorie hinter dem Ganzen</a></li>
-      </ul>
-    </nav>
-    <hr />
-    <h2 id="combineSharesNav">Ein Passwort aus drei Teilen wiederherstellen</h2>
-    <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
-    <p>
-      <b>Wenn Du von jemandem für Notfälle einen verschlüsselten Teil eines Passworts bekommen hast,</b> dann hat derjenige hoffentlich weitere Teile bei weiteren Personen oder an sinnvollen Orten hinterlegt. Wenn Du drei unterschiedliche Teile hast, kannst Du hier das Passwort rekonstruieren - natürlich nur, wenn es mit dem auf dieser Seite beschriebenen Verfahren verschlüsselt und geteilt wurde.
-    </p>
-    <p>
-      <button id="fillExampleSharesButton" type="button">Wenn Du hier klickst, werden Beispielwerte eingetragen.</button>
-    </p>
-    <p>
-      <label for="shareInput1">Teil 1</label> - Status: <span id="shareInput1Status">Leer</span>
-      <textarea
-        id="shareInput1"
-        class="textinput"
-        rows="8"
-        wrap="off"
-        placeholder="Hier kannst Du Teil 1 des verschlüsselt geteilten Passworts eingeben."
-      ></textarea>
-      <label for="shareInput2">Teil 2</label> - Status: <span id="shareInput2Status">Leer</span>
-      <textarea
-        id="shareInput2"
-        class="textinput"
-        rows="8"
-        wrap="off"
-        placeholder="Hier kannst Du Teil 2 des verschlüsselt geteilten Passworts eingeben."
-      ></textarea>
-      <label for="shareInput3">Teil 3</label> - Status: <span id="shareInput3Status">Leer</span>
-      <textarea
-        id="shareInput3"
-        class="textinput"
-        rows="8"
-        wrap="off"
-        placeholder="Hier kannst Du Teil 3 des verschlüsselt geteilten Passworts eingeben."
-      ></textarea>
-    </p>
-    <p>
-      <label for="restoredNumbersC">Wiederhergestelltes Passwort als Zahlen:</label><br />
-      <input id="restoredNumbersC" class="textinput" type="text" value="" size="100" readonly />
-      <label for="restoredNumbersV">Validierung der Wiederherstellung als Zahlen:</label><br />
-      <input id="restoredNumbersV" class="textinput" type="text" value="" size="100" readonly />
-      <label for="restoredStringC">Wiederhergestelltes Passwort als String:</label><br />
-      <input id="restoredStringC" class="textinput" type="text" value="" size="100" readonly />
-      <label for="restoredStringV">Validierung der Wiederherstellung als String:</label><br />
-      <input id="restoredStringV" class="textinput" type="text" value="" size="100" readonly />
-    </p>
-    <p>
-      <b>Wenn sich Passwort-Daten und Validierungs-Daten unterscheiden, ist das angezeigte wiederhergestellte Passwort möglicherweise nicht korrekt.</b> Mögliche Gründe für die Unterschiede sind, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.
-    </p>
-    <hr />
-    <h2 id="createSharesNav">Ein Passwort verschlüsselt aufteilen</h2>
-    <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
-    <p>
-      <b>Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du nicht verfügbar bist,</b> dann kannst Du hier das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
-    </p>
-    <p>
-      <label for="secretInput">Passwort:</label>
-      <input id="secretInput" class="textinput" type="text" value="¡secret!" />
-    </p>
-    <p>
-      <label for="padToLengthInput">Passwort auf Mindestlänge erweitern (nicht erweitern: 0, Maximum: 64):</label>
-      <input id="padToLengthInput" class="textinput" type="number" min="0" max="64" step="1" value="20" />
-    </p>
-    <p>
-      <label for="numberOfSharesInput">Anzahl der zu erzeugenden Teile (Minimum: 3, Maximum: 14):</label>
-      <input id="numberOfSharesInput" class="textinput" type="number" min="3" max="14" step="1" value="8" />
-    </p>
-    <p>
-      <label for="sharesDescriptionInput">Optionale Beschreibung der Teile:</label>
-      <textarea
-        id="sharesDescriptionInput"
-        class="textinput"
-        rows="3"
-        placeholder="Hier kannst Du die Beschreibung eingeben."
-      ></textarea>
-      Beispielbeschreibung:<br>
-      <i>Es handelt sich um Marias Benutzerdaten von 2023 bei ihrer Hausbank, geteilt mit ihren Angehörigen für Notfälle.</i>
-    </p>
-    <p><button id="createSharesButton" type="button">Klicke hier um die Teile zu erzeugen</button> und scrolle dann nach unten.</p>
-    <p>
-      Wenn Du Teile an andere weitergibst, dann gib' am besten eine Kopie dieser Seite mit. Sie ist so gestaltet, dass man sie 🔴TODO🔴 einfach abspeichern kann und sie auch ohne Internetverbindung funktioniert.
-    </p>
+    <main>
+      <h1>Passwörter teilen und wiederherstellen</h1>
+      <p><a href="share-simple3.html">This page in English (🔴TODO🔴)</a></p>
+      <p id="javascriptWarning" class="problem">
+        Ups! Diese Seite braucht JavaScript, und es scheint, dass JavaScript nicht aktiviert ist. Vielleicht möchtest Du einen anderen Browser verwenden? Oder es liegt daran, dass irgendwie der JavaScript Teil abhanden gekommen ist.
+      </p>
+      <p>
+        <b>Wenn Du von jemandem für Notfälle einen verschlüsselten Teil eines Passworts bekommen hast,</b> dann hat diese Person hoffentlich weitere Teile bei weiteren Personen oder an sinnvollen Orten hinterlegt. Sobald Du drei unterschiedliche Teile hast, kannst Du auf dieser Seite das Passwort rekonstruieren - natürlich nur, wenn es mit dem auf dieser Seite beschriebenen Verfahren verschlüsselt und geteilt wurde.
+      </p>
+      <p>
+        <b>Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du selbst nicht erreichbar bist,</b> dann kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
+      </p>
+      <p>
+        <b>Bei dem Verfahren wird nur einfache Mathematik verwendet,</b> so dass man zur Not die Berechnungen sogar mit Stift und Papier durchführen kann. Details und weitere Informationen findest Du im Abschnitt zur theoretischen Grundlage.
+      </p>
+      <nav aria-label="Inhaltsverzeichnis">
+        <h2 id="tocNav">Inhaltsverzeichnis</h2>
+        <ul>
+          <li><a href="#combineSharesNav">Ein Passwort aus drei Teilen wiederherstellen</a></li>
+          <li><a href="#createSharesNav">Ein Passwort verschlüsselt aufteilen</a></li>
+          <li><a href="#theoryNav">Die Theorie hinter dem Ganzen</a></li>
+        </ul>
+      </nav>
+      <hr />
+      <h2 id="combineSharesNav">Ein Passwort aus drei Teilen wiederherstellen</h2>
+      <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
+      <p>
+        <b>Wenn Du von jemandem für Notfälle einen verschlüsselten Teil eines Passworts bekommen hast,</b> dann hat derjenige hoffentlich weitere Teile bei weiteren Personen oder an sinnvollen Orten hinterlegt. Wenn Du drei unterschiedliche Teile hast, kannst Du hier das Passwort rekonstruieren - natürlich nur, wenn es mit dem auf dieser Seite beschriebenen Verfahren verschlüsselt und geteilt wurde.
+      </p>
+      <p>
+        <button id="fillExampleSharesButton" type="button" aria-label="Beispielwerte eintragen">Wenn Du hier klickst, werden Beispielwerte eingetragen.</button>
+      </p>
+      <div>
+        <label for="shareInput1">Teil 1</label> - Status: <span id="shareInput1Status">Leer</span>
+        <textarea
+          id="shareInput1"
+          class="textinput"
+          rows="8"
+          wrap="off"
+          placeholder="Hier kannst Du Teil 1 des verschlüsselt geteilten Passworts eingeben."
+        ></textarea>
+        <label for="shareInput2">Teil 2</label> - Status: <span id="shareInput2Status">Leer</span>
+        <textarea
+          id="shareInput2"
+          class="textinput"
+          rows="8"
+          wrap="off"
+          placeholder="Hier kannst Du Teil 2 des verschlüsselt geteilten Passworts eingeben."
+        ></textarea>
+        <label for="shareInput3">Teil 3</label> - Status: <span id="shareInput3Status">Leer</span>
+        <textarea
+          id="shareInput3"
+          class="textinput"
+          rows="8"
+          wrap="off"
+          placeholder="Hier kannst Du Teil 3 des verschlüsselt geteilten Passworts eingeben."
+        ></textarea>
+      </div>
+      <div>
+        <br>
+        <label for="restoredNumbersC">Wiederhergestelltes Passwort als Zahlen:</label><br />
+        <input id="restoredNumbersC" class="textinput" type="text" value="" size="100" readonly />
+        <label for="restoredNumbersV">Validierung der Wiederherstellung als Zahlen:</label><br />
+        <input id="restoredNumbersV" class="textinput" type="text" value="" size="100" readonly />
+        <br><br>
+        <label for="restoredStringC">Wiederhergestelltes Passwort als String:</label><br />
+        <input id="restoredStringC" class="textinput" type="text" value="" size="100" readonly />
+        <label for="restoredStringV">Validierung der Wiederherstellung als String:</label><br />
+        <input id="restoredStringV" class="textinput" type="text" value="" size="100" readonly />
+      </div>
+      <p>
+        <b>Wenn sich Passwort-Daten und Validierungs-Daten unterscheiden, ist das angezeigte wiederhergestellte Passwort möglicherweise nicht korrekt.</b> Mögliche Gründe für die Unterschiede sind, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.
+      </p>
+      <hr />
+      <h2 id="createSharesNav">Ein Passwort verschlüsselt aufteilen</h2>
+      <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
+      <p>
+        <b>Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du nicht verfügbar bist,</b> dann kannst Du hier das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
+      </p>
+      <div>
+        <label for="secretInput">Passwort:</label>
+        <input id="secretInput" class="textinput" type="text" value="¡secret!" />
+        <br><br>
+        <label for="padToLengthInput">Passwort auf Mindestlänge erweitern (nicht erweitern: 0, Maximum: 64):</label>
+        <input id="padToLengthInput" class="textinput" type="number" min="0" max="64" step="1" value="20" />
+        <br><br>
+        <label for="numberOfSharesInput">Anzahl der zu erzeugenden Teile (Minimum: 3, Maximum: 14):</label>
+        <input id="numberOfSharesInput" class="textinput" type="number" min="3" max="14" step="1" value="8" />
+        <br><br>
+        <label for="sharesDescriptionInput">Optionale Beschreibung der Teile:</label>
+        <textarea
+          id="sharesDescriptionInput"
+          class="textinput"
+          rows="3"
+          placeholder="Hier kannst Du die Beschreibung eingeben."
+        ></textarea>
+        Beispielbeschreibung:<br>
+        <i>Es handelt sich um Marias Benutzerdaten von 2023 bei ihrer Hausbank, geteilt mit ihren Angehörigen für Notfälle.</i>
+      </div>
+      <p><button id="createSharesButton" type="button">Klicke hier um die Teile zu erzeugen</button> und scrolle dann nach unten.</p>
+      <p>
+        Wenn Du Teile an andere weitergibst, dann gib' am besten eine Kopie dieser Seite mit. Sie ist so gestaltet, dass man sie 🔴TODO🔴 einfach abspeichern kann und sie auch ohne Internetverbindung funktioniert.
+      </p>
 
-    <div id="shareInfoDiv" hidden="true">
-      <p>
-        Unten findest Du die verschlüsselten Teile deines Passworts. Danach folgt ein Vorschlag, wie Du die Teile an andere Personen weitergeben kannst, damit diese auch in zehn Jahren noch wissen, was sie da haben.
-      </p>
-      <hr />
-      <pre class="scrollable"><span id="sharesSpan">DYNAMISCHER TEXT: Die verschlüsselten Teile</span>
-        <br>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
-      <hr />
-      <p>
-        Im Folgenden findest Du ein Beispiel dafür, wie Du die Teile weitergeben könntest &ndash; passe es nach Bedarf an.
-      </p>
-      <p>
-        <i>
-          Dies ist ein verschlüsselter Teil eines Passworts.
-          <span id="sharesDescriptionSpan">DYNAMISCHER TEXT: Beschreibung</span>
-          Bitte bewahre ihn an einem sicheren Ort auf, z.&#x202F;B. in deinem Passwort-Programm. Du hast diesen Teil erhalten, damit Du im Notfall &ndash; zusammen mit zwei weiteren Personen, die ebenfalls Teile erhalten haben &ndash; das Passwort rekonstruieren und alles weitere Notwendige veranlassen kannst. Dies ist einer von
-          <span id="numberOfSharesSpan">DYNAMISCHER TEXT: Anzahl</span> Teilen, erstellt am
-          <span id="createdDateSpan">DYNAMISCHER TEXT: Datum</span>. Für die tatsächliche Rekonstruktion wird dieser Text nicht benötigt, nur die folgenden Daten:
-        </i>
-      </p>
-      <p>
-        <b><i>[Ersetze diesen Absatz mit dem Teil, den Du weitergeben möchtest.]</i></b>
-      </p>
-      <p>
-        <i>
-          Dieser Teil wurde mithilfe der Webseite <a href="https://gdiet.github.io/secret-sharing/simple_math/passwort-teilen.html">https://gdiet.github.io/secret-sharing/simple_math/passwort-teilen.html</a> erstellt, von der Dir eine Kopie zusammen mit diesem Text übergeben wurde. Diese Webseite kann ohne Internetverbindung genutzt werden und hat auch eine Funktion zur Wiederherstellung des Passworts aus mehreren Teilen.
-        </i>
-      </p>
-      <p>
-        <i>
-          Für den Fall, dass Du die Webseite nicht verwenden kannst oder die Funktion der Webseite manuell verifizieren möchtest, ist hier eine kurze Beschreibung des Verfahrens zur Wiederherstellung des Passworts aus den drei Teilen:<br>
-          * Gegeben sind drei Teile, jeweils mit den Feldern a, b, c und v.<br>
-          * c und v sind dabei jeweils eine Liste von Zahlen.<br>
-          * Alle c-Werte werden einzeln nacheinander verwendet.<br>
-          Die drei a- und b-Werte sowie den jeweils ersten c-Wert nennen wir im folgenden a1, a2, a3, b1, b2, b3, c1, c2, c3. Für jede Position in der c-Liste ist das folgende Verfahren entsprechend auszuführen:
-        </i>
-      </p>
-      <p>
-        <i>
-          Berechne die Werte m und n.
-          <pre>
+      <div id="shareInfoDiv" hidden>
+        <p>
+          Unten findest Du die verschlüsselten Teile deines Passworts. Danach folgt ein Vorschlag, wie Du die Teile an andere Personen weitergeben kannst, damit diese auch in zehn Jahren noch wissen, was sie da haben.
+        </p>
+        <hr />
+        <pre class="scrollable"><span id="sharesSpan">DYNAMISCHER TEXT: Die verschlüsselten Teile</span>
+          <br>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
+        <hr />
+        <p>
+          Im Folgenden findest Du ein Beispiel dafür, wie Du die Teile weitergeben könntest &ndash; passe es nach Bedarf an.
+        </p>
+        <p>
+          <i>
+            Dies ist ein verschlüsselter Teil eines Passworts.
+            <span id="sharesDescriptionSpan">DYNAMISCHER TEXT: Beschreibung</span>
+            Bitte bewahre ihn an einem sicheren Ort auf, z.&#x202F;B. in deinem Passwort-Programm. Du hast diesen Teil erhalten, damit Du im Notfall &ndash; zusammen mit zwei weiteren Personen, die ebenfalls Teile erhalten haben &ndash; das Passwort rekonstruieren und alles weitere Notwendige veranlassen kannst. Dies ist einer von
+            <span id="numberOfSharesSpan">DYNAMISCHER TEXT: Anzahl</span> Teilen, erstellt am
+            <span id="createdDateSpan">DYNAMISCHER TEXT: Datum</span>. Für die tatsächliche Rekonstruktion wird dieser Text nicht benötigt, nur die folgenden Daten:
+          </i>
+        </p>
+        <p>
+          <b><i>[Ersetze diesen Absatz mit dem Teil, den Du weitergeben möchtest.]</i></b>
+        </p>
+        <p>
+          <i>
+            Dieser Teil wurde mithilfe der Webseite <a href="https://gdiet.github.io/secret-sharing/simple_math/passwort-teilen.html">https://gdiet.github.io/secret-sharing/simple_math/passwort-teilen.html</a> erstellt, von der Dir eine Kopie zusammen mit diesem Text übergeben wurde. Diese Webseite kann ohne Internetverbindung genutzt werden und hat auch eine Funktion zur Wiederherstellung des Passworts aus mehreren Teilen.
+          </i>
+        </p>
+        <p>
+          <i>
+            Für den Fall, dass Du die Webseite nicht verwenden kannst oder die Funktion der Webseite manuell verifizieren möchtest, ist hier eine kurze Beschreibung des Verfahrens zur Wiederherstellung des Passworts aus den drei Teilen:<br>
+            * Gegeben sind drei Teile, jeweils mit den Feldern a, b, c und v.<br>
+            * c und v sind dabei jeweils eine Liste von Zahlen.<br>
+            * Alle c-Werte werden einzeln nacheinander verwendet.<br>
+            Die drei a- und b-Werte sowie den jeweils ersten c-Wert nennen wir im folgenden a1, a2, a3, b1, b2, b3, c1, c2, c3. Für jede Position in der c-Liste ist das folgende Verfahren entsprechend auszuführen:
+          </i>
+        </p>
+        <p>
+          <i>
+            Berechne die Werte m und n.
+            <pre>
 m = a1*c2*b3 + a2*c3*b1 + a3*c1*b2 - a1*c3*b2 - a2*c1*b3 - a3*c2*b1
 n = a1*   b3 + a2*   b1 + a3*   b2 - a1*   b2 - a2*   b3 - a3*   b1</pre>
-        </i>
-      </p>
-      <p>
-        <i>
-          Im folgenden brauchen wir die Rechenoperationen Modulo, die den Rest einer ganzzahligen Division berechnet. Wenn eine Zahl x durch eine Zahl y geteilt wird, ergibt der Ausdruck x mod y den Rest dieser Division. Zum Beispiel ist 5 mod 3 = 2, da 5 geteilt durch 3 einen Rest von 2 lässt. Vorzeichen behandelst Du dabei so:<br>
-          <pre>
+          </i>
+        </p>
+        <p>
+          <i>
+            Im folgenden brauchen wir die Rechenoperationen Modulo, die den Rest einer ganzzahligen Division berechnet. Wenn eine Zahl x durch eine Zahl y geteilt wird, ergibt der Ausdruck x mod y den Rest dieser Division. Zum Beispiel ist 5 mod 3 = 2, da 5 geteilt durch 3 einen Rest von 2 lässt. Vorzeichen behandelst Du dabei so:<br>
+            <pre>
 -17 mod -7 = +17 mod +7 =                = 3
 -17 mod +7 = +17 mod -7 = 7 - (17 mod 7) = 4</pre>
-          Der Modulo ist also nie negativ.
-        </i>
-      </p>
-      <p>
-        <i>
-          Außerdem brauchen wir "div257", die Division im Zahlenraum Modulo 257. x div257 y berechnest Du so: Du prüfst, ob x ohne Rest durch y teilbar ist. Ist es nicht ohne Rest teilbar, dann addiere 257 zu x und prüfe erneut. Wiederhole diesen Vorgang, bis Du eine Zahl erhältst, die ohne Rest durch y teilbar ist. Das Ergebnis dieser Division ist das Ergebnis von "div257". Beispiele:
-          <pre>
+            Der Modulo ist also nie negativ.
+          </i>
+        </p>
+        <p>
+          <i>
+            Außerdem brauchen wir "div257", die Division im Zahlenraum Modulo 257. x div257 y berechnest Du so: Du prüfst, ob x ohne Rest durch y teilbar ist. Ist es nicht ohne Rest teilbar, dann addiere 257 zu x und prüfe erneut. Wiederhole diesen Vorgang, bis Du eine Zahl erhältst, die ohne Rest durch y teilbar ist. Das Ergebnis dieser Division ist das Ergebnis von "div257". Beispiele:
+            <pre>
 12 div257 4 = 3  ... 12 / 4 = 3 ist ohne Rest teilbar
 15 div257 4      ... 15 / 4 ist nicht ohne Rest teilbar
 15 div257 4      ... 15 + 257 = 272
 15 div257 4 = 68 ... 272 / 4 = 68 ist ohne Rest teilbar</pre>
-        </i>
-      </p>
-      <p>
-        <i>
-          Aus m und n berechnet sich die Zahl des Passworts an der aktuellen Position:
-          <pre>s = (m mod 257) div257 (n mod 257)</pre>
-          s ist eine Zahl zwischen 0 und 256. Sämtliche Zahlen s = 256 werden ignoriert, die übrigen Zahlen werden als UTF-8 Zeichenkette interpretiert werden. Häufig verwendete UTF-8 Zeichen sind:
-          <pre>      32: Leerzeichen
+          </i>
+        </p>
+        <p>
+          <i>
+            Aus m und n berechnet sich die Zahl des Passworts an der aktuellen Position:
+            <pre>s = (m mod 257) div257 (n mod 257)</pre>
+            s ist eine Zahl zwischen 0 und 256. Sämtliche Zahlen s = 256 werden ignoriert, die übrigen Zahlen werden als UTF-8 Zeichenkette interpretiert werden. Häufig verwendete UTF-8 Zeichen sind:
+            <pre>      32: Leerzeichen
 48 -  57: Ziffern 0-9
 65 -  90: Großbuchstaben A-Z
 97 - 122: Kleinbuchstaben a-z</pre>
-        </i>
-      </p>
-      <hr />
-      <h4>Wenn dich die Mathematik der Berechnung interessiert...</h4>
-      <p>
-        ... findest Du hier die UTF-8 Zahlenwerte (s-Werte), die das Passwort darstellen:
-        <pre class="scrollable"><span id="secretNumbersSpan">DYNAMISCHER TEXT: Passwort als Zahlen (UTF-8)</span>
-        <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
-        Folgendes sind die p- und q-Werte (siehe <a href="#theoryNav">Die Theorie hinter dem Ganzen</a>), die für die Berechnung der c-Werte verwendet wurden:
-        <pre class="scrollable"><span id="pqValuesSpan">DYNAMISCHER TEXT: Werte von p und q</span>
-        <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
-        Und folgendes sind die p- und q-Werte, die für die Berechnung der v-Werte für die Validierung verwendet wurden:
-        <pre class="scrollable"><span id="pqValidationValuesSpan">DYNAMISCHER TEXT: Werte von p und q (Validierung)
-        <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
-        <b>Wichtig:</b> Die s-, p- und q-Werte werden <b>nicht</b> benötigt, wenn Du das Passwort verschlüsselt teilst. Gib sie <b>auf keinen Fall</b> an andere Personen weiter. Es ist <b>nicht</b> nötig sie zu speichern.
-      </p>
-    </div>
+          </i>
+        </p>
+        <hr />
+        <h4>Wenn dich die Mathematik der Berechnung interessiert...</h4>
+        <p>
+          ... findest Du hier die UTF-8 Zahlenwerte (s-Werte), die das Passwort darstellen:
+          <pre class="scrollable"><span id="secretNumbersSpan">DYNAMISCHER TEXT: Passwort als Zahlen (UTF-8)</span>
+          <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
+          Folgendes sind die p- und q-Werte (siehe <a href="#theoryNav">Die Theorie hinter dem Ganzen</a>), die für die Berechnung der c-Werte verwendet wurden:
+          <pre class="scrollable"><span id="pqValuesSpan">DYNAMISCHER TEXT: Werte von p und q</span>
+          <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
+          Und folgendes sind die p- und q-Werte, die für die Berechnung der v-Werte für die Validierung verwendet wurden:
+          <pre class="scrollable"><span id="pqValidationValuesSpan">DYNAMISCHER TEXT: Werte von p und q (Validierung)
+          <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
+          <b>Wichtig:</b> Die s-, p- und q-Werte werden <b>nicht</b> benötigt, wenn Du das Passwort verschlüsselt teilst. Gib sie <b>auf keinen Fall</b> an andere Personen weiter. Es ist <b>nicht</b> nötig sie zu speichern.
+        </p>
+      </div>
+    </main>
     <hr />
     <h2 id="theoryNav">Die Theorie hinter dem Ganzen</h2>
     <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
