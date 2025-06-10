@@ -44,17 +44,17 @@ function shareInputChanged() {
   const vString = bytesToUtf8(v.filter(n => n < 256))
   inputElement('restoredNumbersC').value = `${c}`
   inputElement('restoredNumbersV').value = `${v}`
-  if (`${c}` == `${v}`) inputElement('restoredNumbersV').classList.remove('problem')
+  if (`${c}` === `${v}`) inputElement('restoredNumbersV').classList.remove('problem')
   else inputElement('restoredNumbersV').classList.add('problem')
   inputElement('restoredStringC').value = cString
   inputElement('restoredStringV').value = vString
-  if (cString == vString) inputElement('restoredStringV').classList.remove('problem')
+  if (cString === vString) inputElement('restoredStringV').classList.remove('problem')
   else inputElement('restoredStringV').classList.add('problem')
 }
 
 function restore(share1, share2, share3, accessor) {
   const length =
-    Math.max(accessor(share1).length?.length ?? 0, accessor(share2).length?.length ?? 0, accessor(share3)?.length ?? 0)
+    Math.max(accessor(share1)?.length ?? 0, accessor(share2)?.length ?? 0, accessor(share3)?.length ?? 0)
   return Array.from({ length: length }).map((_, index) =>
     calculateShare(
       share1.a, share2.a, share3.a,
@@ -105,12 +105,14 @@ function calculateShare(a1, a2, a3, b1, b2, b3, c1, c2, c3) {
   )) return NaN
   const dividend = mod257(a1*c2*b3 + a3*c1*b2 + c3*a2*b1 - a2*c1*b3 - c2*a3*b1 - a1*c3*b2)
   const divisor = mod257(a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2)
-  return divisor == 0 ? NaN : div257(dividend, divisor)
+  return div257(dividend, divisor)
 }
 
 function div257(a, b) {
-  while (a % b !== 0) a += 257
-  return a / b;
+  if (b === 0) return NaN
+  let counter = 0
+  while (a % b !== 0 && counter++ < 257) a += 257
+  return a % b === 0 ? a / b : NaN
 }
 
 // CREATING SHARES //
@@ -162,7 +164,7 @@ function createShares() {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
-  const localizedDate = document.documentElement.lang == 'de' ? `${day}.${month}.${year}` : `${year}-${month}-${day}`
+  const localizedDate = document.documentElement.lang === 'de' ? `${day}.${month}.${year}` : `${year}-${month}-${day}`
   documentElement('createdDateSpan').innerText = localizedDate
   documentElement('secretNumbersSpan').innerHTML = `s: ${secretPadded}`
   documentElement('pqValuesSpan').innerHTML = `p: ${p1}<br />q: ${q1}`
@@ -189,7 +191,7 @@ function mod257(number) {
 // DOCUMENT UTILITIES //
 
 function shareText(shares) {
-  const localizedKey = document.documentElement.lang == 'de' ? 'Teil Nummer' : 'share number'
+  const localizedKey = document.documentElement.lang === 'de' ? 'Teil Nummer' : 'share number'
   return shares.map((share, index) => {
     return cleanMultiline(`
       |{
