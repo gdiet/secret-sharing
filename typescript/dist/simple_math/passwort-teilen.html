@@ -193,8 +193,10 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
             Wenn Du aus den c-Werten das Passwort rekonstruiert hast, dann kannst Du es mit den v-Werten validieren. Dazu berechnest Du für jeden v-Wert die Zahl s wie oben beschrieben und vergleichst sie mit dem entsprechenden c-Wert. Wenn sich Passwort-Daten und Validierungs-Daten unterscheiden, ist das wiederhergestellte Passwort möglicherweise nicht korrekt. Mögliche Gründe für die Unterschiede sind, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.
           </i>
         </p>
-        <hr />
-        <h4>Wenn dich die Mathematik der Berechnung interessiert...</h4>
+        <p>
+          (Ende des Beispiels für einen Text, wie Du die Teile an andere weitergeben kannst.)
+        </p>
+        <h3>Wenn dich die Mathematik der Berechnung interessiert...</h3>
         <p>
           ... findest Du hier die UTF-8 Zahlenwerte (s-Werte), die das Passwort darstellen:
           <pre class="scrollable"><span id="secretNumbersSpan">DYNAMISCHER TEXT: Passwort als Zahlen (UTF-8)</span>
@@ -212,5 +214,73 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
     <hr />
     <h2 id="theoryNav">Die Theorie hinter dem Ganzen</h2>
     <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
+    <p>
+      Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du selbst nicht erreichbar bist, dann gibt es Möglichkeiten, das Passwort in mehrere Teile verschlüsselt aufzuteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens eine bestimmte Anzahl von Teilen zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
+    </p>
+    <p>
+      Hier geht es um ein Verfahren und die Theorie dahinter, wenn zur Rekonstruktion <b>drei</b> Teile benötigt werden. Es gibt auch Verfahren, bei denen nur <b>zwei</b> Teile benötigt werden, und es gibt Verfahren, bei denen man die benötigte Anzahl der Teile <b>frei wählen</b> kann. Diese Verfahren sind aber nicht Thema dieser Seite. Ein bekannter Ansatz für "beliebige Anzahl" ist übrigens Shamirs Secret Sharing - weitere Informationen und eine Implementierung findest Du zum Beispiel hier <a href="https://gdiet.github.io/secret-sharing/share-compact.html">https://gdiet.github.io/secret-sharing/share-compact.html</a>.
+    </p>
+    <h3>Ein Gleichungsystem mit drei Unbekannten</h3>
+    <p>
+      Nehmen wir zunächst an, dass es nicht um ein Passwort geht, sondern um eine geheime Zahl <i>s</i>. Wenn ich ein Gleichungssystem mit drei Unbekannten habe, und davon ist eine <i>s</i>, dann kann ich das Gleichungssystem nach <i>s</i> auflösen, wenn ich drei voneinander linear unabhängige Gleichungen habe.
+    </p>
+    <p>
+      Wenn <i>p</i> und <i>q</i> zwei Zufallszahlen sind, und die jeweils drei <i>a</i>, <i>b</i> und <i>c</i> Werte bekannt sind, dann kann man das folgende Gleichungssystem nach <i>s</i> auflösen:
+    </p>
+    <p>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <msub><mi>a</mi><mn>1</mn></msub>
+        <mo>∗</mo><mi>p</mi><mo>+</mo>
+        <msub><mi>b</mi><mn>1</mn></msub>
+        <mo>∗</mo><mi>q</mi><mo>+</mo>
+        <msub><mi>c</mi><mn>1</mn></msub>
+        <mo>=</mo><mi>s</mi>
+      </math>
+      <br>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <msub><mi>a</mi><mn>2</mn></msub>
+        <mo>∗</mo><mi>p</mi><mo>+</mo>
+        <msub><mi>b</mi><mn>2</mn></msub>
+        <mo>∗</mo><mi>q</mi><mo>+</mo>
+        <msub><mi>c</mi><mn>2</mn></msub>
+        <mo>=</mo><mi>s</mi>
+      </math>
+      <br>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <msub><mi>a</mi><mn>3</mn></msub>
+        <mo>∗</mo><mi>p</mi><mo>+</mo>
+        <msub><mi>b</mi><mn>3</mn></msub>
+        <mo>∗</mo><mi>q</mi><mo>+</mo>
+        <msub><mi>c</mi><mn>3</mn></msub>
+        <mo>=</mo><mi>s</mi>
+      </math>
+    </p>
+    <p>
+      Mit etwas Mühe oder einem Mathe-Programm erhältst Du folgende Lösung für <i>s</i>:
+    </p>
+    <p>
+      <!--
+      https://tools.simonwillison.net/markdown-math
+      $$s = \frac{a_1b_3c_2 + a_2b_1c_3 + a_3b_2c_1 - a_1b_2c_3 - a_2b_3c_1 - a_3b_1c_2}{a_1b_3 + a_2b_1 + a_3b_2 - a_1b_2 - a_2b_3 - a_3b_1}$$
+      -->
+      <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-size: 130%;"><semantics><mrow><mi>s</mi><mo>=</mo><mfrac><mrow><msub><mi>a</mi><mn>1</mn></msub><msub><mi>b</mi><mn>3</mn></msub><msub><mi>c</mi><mn>2</mn></msub><mo>+</mo><msub><mi>a</mi><mn>2</mn></msub><msub><mi>b</mi><mn>1</mn></msub><msub><mi>c</mi><mn>3</mn></msub><mo>+</mo><msub><mi>a</mi><mn>3</mn></msub><msub><mi>b</mi><mn>2</mn></msub><msub><mi>c</mi><mn>1</mn></msub><mo>−</mo><msub><mi>a</mi><mn>1</mn></msub><msub><mi>b</mi><mn>2</mn></msub><msub><mi>c</mi><mn>3</mn></msub><mo>−</mo><msub><mi>a</mi><mn>2</mn></msub><msub><mi>b</mi><mn>3</mn></msub><msub><mi>c</mi><mn>1</mn></msub><mo>−</mo><msub><mi>a</mi><mn>3</mn></msub><msub><mi>b</mi><mn>1</mn></msub><msub><mi>c</mi><mn>2</mn></msub></mrow><mrow><msub><mi>a</mi><mn>1</mn></msub><msub><mi>b</mi><mn>3</mn></msub><mo>+</mo><msub><mi>a</mi><mn>2</mn></msub><msub><mi>b</mi><mn>1</mn></msub><mo>+</mo><msub><mi>a</mi><mn>3</mn></msub><msub><mi>b</mi><mn>2</mn></msub><mo>−</mo><msub><mi>a</mi><mn>1</mn></msub><msub><mi>b</mi><mn>2</mn></msub><mo>−</mo><msub><mi>a</mi><mn>2</mn></msub><msub><mi>b</mi><mn>3</mn></msub><mo>−</mo><msub><mi>a</mi><mn>3</mn></msub><msub><mi>b</mi><mn>1</mn></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">s = \frac{a_1b_3c_2 + a_2b_1c_3 + a_3b_2c_1 - a_1b_2c_3 - a_2b_3c_1 - a_3b_1c_2}{a_1b_3 + a_2b_1 + a_3b_2 - a_1b_2 - a_2b_3 - a_3b_1}</annotation></semantics></math>      
+    </p>
+    <p>
+      Jetzt kommt die Bedingung der "drei voneinander linear unabhängige Gleichungen" ins Spiel: Wenn zum Beispiel <i>a1</i> = <i>a2</i> = <i>a3</i> ist, dann ist der Nenner 0, und bei der Division haben wir ein Problem. Nur wenn der Nenner ungleich 0 ist, können wir <i>s</i> berechnen.
+    </p>
+    <p>
+      Folgende vierzehn <i>a</i>/<i>b</i>-Werte habe zum Beispiel die Eigenschaft, dass jede beliebige Kombination von drei <i>a</i>/<i>b</i>-Werten voneinander linear unabhängig ist: 1/1, 1/2, 2/1, 2/2, 3/4, 4/3, 3/5, 5/3, 6/9, 9/6, 7/9, 9/7, 4/10, 10/4.
+    </p>
+    <p>
+      Das sieht soweit doch schon mal gut aus. Wir können bis zu 14 Personen je einen Satz voneinander unabhängiger <i>a</i> / <i>b</i> / <i>c</i> Werte geben, so dass es stets drei Personen braucht, um <i>s</i> zu rekonstruieren. Oder nicht?
+    </p>
+    <h3>Zusätzliches Wissen</h3>
+    <p>
+      Braucht es wirklich drei Personen, um Informationen über die geheime Zahl <i>s</i> zu bekommen? In der echten Welt ist das leider nicht immer der Fall. Das liegt daran, dass die Personen möglicherweise zusätzliches Wissen über <i>p</i>, <i>q</i> und <i>s</i> verwenden können. Wenn beispielsweise bekannt ist, dass <i>p</i>, <i>q</i> und <i>s</i> Bytes sind, also Zahlen im Bereich <i>[0..255]</i>, und wenn ein <i>c</i>-Wert <i>255</i> ist, dann müssen die zugehörigen <i>p</i>/<i>q</i> Werte <i>0</i> sein und <i>s&nbsp;=&nbsp;c</i>. Oder wenn bekannt ist, dass nur ganze Zahlen in der Berechnung verwendet werden, und wenn bei einer Person <i>a</i>, <i>b</i> und <i>c</i> gerade sind, dann weiß diese Person, dass auch <i>s</i> gerade ist. Diese und ähnliche Überlegungen können verwendet werden, um aus nur einer oder zwei Gleichungen zumindest einige Erkenntnisse über den geheimen Wert <i>s</i> zu gewinnen.
+    </p>
+    <h3>Der Zahlenraum mod 257</h3>
+    <p>      
+      Der Trick, den wir hier anwenden, ist, dass wir alle Berechnungen $modulo$ $257$ durchführen, was uns den Zahlenbereich $[0..256]$ gibt, in dem wir arbeiten können. (Hinweis: Anstelle von $257$ kann man auch eine beliebige Primzahl verwenden. Mit $101$ hätten wir zum Beispiel den Zahlenbereich $[0..100]$, was auch sehr praktisch sein kann, wenn man es braucht). Lassen Sie mich das näher erläutern:
+    </p>
   </body>
 </html>
