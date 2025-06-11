@@ -22,7 +22,7 @@ def main(): Unit =
     result
   }
   println(s"b: ${currentTimeMillis() - startTime}")
-  println(s"${x.length} of ${total} found in ${currentTimeMillis() - startTime} ms")
+  println(s"${x.length} of $total found in ${currentTimeMillis() - startTime} ms")
 
 
 //  val triplets = tuples.combinations(3).filter { case Seq((a1, b1), (a2, b2), (a3, b3)) =>
