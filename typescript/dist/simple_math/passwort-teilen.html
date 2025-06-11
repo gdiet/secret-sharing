@@ -285,7 +285,20 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
       Deshalb wenden wir einen Trick an: Wir führen alle Berechnungen <i>modulo&nbsp;257</i> - oder kurz: <i>mod&nbsp;257</i> - durch, was uns den Zahlenbereich <i>[0..256]</i> zum Arbeiten gibt - ein praktischer Raum, wenn wir mit Bytes arbeiten wollen.
     </p>
     <p>
-      Anstelle von <i>257</i> kann man eine beliebige andere Primzahl verwenden. Mit <i>mod&nbsp;101</i> hätten wir zum Beispiel den Zahlenbereich <i>[0..100]</i>, was je nach Anwendung auch sehr praktisch sein kann...
+      Anstelle von <i>257</i> könnte man auch eine beliebige andere Primzahl verwenden. Mit <i>mod&nbsp;101</i> hätten wir zum Beispiel den Zahlenbereich <i>[0..100]</i>, was je nach Anwendung auch sehr praktisch sein kann...
+    </p>
+    <p>
+      Für negative Zahlen bei Modulo verwenden wir hier die Regeln, dass
+      <pre>-x mod -y = +x mod +y
+-x mod +y = +x mod -y = y - (x mod y)</pre>
+      ist, so dass der Modulo nie negativ ist. Beispiel:
+      <pre>-17 mod -7 = +17 mod +7 = 3
+-17 mod +7 = +17 mod -7 = 7 - (17 mod 7) = 4</pre>
+    </p>
+    <p>
+      Wenn jetzt jemand zum Beispiel die Werte <i>a</i> = 2, <i>b</i> = 2, <i>c</i> = 2 kennt, dann hat er über <i>s</i> trotzdem keine zusätzlichen Informationen, weil
+      <pre>s = (a*p + b*q + c) mod 257</pre>
+      je nach dem Wert von <i>p</i> und <i>q</i> jeden Wert zwischen <i>0</i> und <i>256</i> haben kann.
     </p>
   </body>
 </html>
