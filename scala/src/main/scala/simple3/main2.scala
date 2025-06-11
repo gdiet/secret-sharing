@@ -1,26 +1,14 @@
 package simple3
 
-import java.lang.System.currentTimeMillis
-import scala.util.Random
-
 @main
 def main2(): Unit =
-  val startTime = currentTimeMillis()
-  val tuples = for {
-    i <- 1 to 9
-    j <- 1 to 9
-  } yield (i, j)
-  // a_1*b_3 + a_2*b_1 + a_3*b_2 - a_1*b_2 - a_2*b_3 - a_3*b_1
-  println(s"a: ${currentTimeMillis() - startTime}")
-  var total = 0
+  val tuples = for {i <- 1 to 9; j <- 1 to 9} yield (i, j)
   while (true)
-    total += 1
-    if (total % 1000000 == 1) println(s"$total - ${currentTimeMillis() - startTime} ms")
-    val selection = Random.shuffle(tuples).take(15)
-    val result = !selection.combinations(3).exists { case Seq((a1, b1), (a2, b2), (a3, b3)) =>
-      a1 * b3 + a2 * b1 + a3 * b2 - a1 * b2 - a2 * b3 - a3 * b1 == 0
-    }
-    if (result) println(s"$total - ${currentTimeMillis() - startTime} ms - ${selection.sorted}")
+    val selection = scala.util.Random.shuffle(tuples).take(14)
+    if selection.combinations(3).forall {
+      case Seq((a1, b1), (a2, b2), (a3, b3)) =>
+        a1*b3 + a2*b1 + a3*b2 - a1*b2 - a2*b3 - a3*b1 != 0
+    } then println(selection)
 
 
 /*
@@ -34,9 +22,27 @@ def main2(): Unit =
 (1,2), (1,4), (2,3), (2,6), (3,3), (3,9), (4,7), (4,8), (6,1), (7,6), (7,9), (8,1), (8,8), (9,4), (9,5)
 (1,3), (1,6), (2,5), (2,7), (3,1), (3,9), (5,3), (6,6), (6,8), (7,2), (7,8), (8,5), (8,7), (9,4), (9,9)
 
+
 umsortiert:
 (1,2), (2,1), (2,4), (1,5), (5,2), (6,3), (3,7), (4,7), (7,5), (3,8), (7,8), (4,9), (6,9), (9,1), (9,3)
-(todo)
+(3,2), (1,4), (4,2), (1,5), (5,3), (5,6), (6,1), (2,7), (7,1), (2,8), (8,3), (8,8), (6,9), (9,6), (9,9)
+
+
+(1,2), 
+(2,1), 
+(2,4), 
+(1,5), 
+(5,2), 
+(6,3), 
+(3,7), 
+(4,7), 
+(7,5), 
+(3,8), 
+(7,8), 
+(4,9), 
+(6,9), 
+(9,1), 
+(9,3)
 
 
   1..4 und 8: 11 Lösungen (für 9 keine Lösungen)

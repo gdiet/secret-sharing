@@ -95,8 +95,8 @@
         <label for="padToLengthInput">Passwort auf Mindestlänge erweitern (nicht erweitern: 0, Maximum: 64):</label>
         <input id="padToLengthInput" class="textinput" type="number" min="0" max="64" step="1" value="20" />
         <br><br>
-        <label for="numberOfSharesInput">Anzahl der zu erzeugenden Teile (Minimum: 3, Maximum: 14):</label>
-        <input id="numberOfSharesInput" class="textinput" type="number" min="3" max="14" step="1" value="8" />
+        <label for="numberOfSharesInput">Anzahl der zu erzeugenden Teile (Minimum: 3, Maximum: 15):</label>
+        <input id="numberOfSharesInput" class="textinput" type="number" min="3" max="15" step="1" value="8" />
         <br><br>
         <label for="sharesDescriptionInput">Optionale Beschreibung der Teile:</label>
         <textarea
@@ -269,12 +269,20 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
       Jetzt kommt die Bedingung der "drei voneinander linear unabhängige Gleichungen" ins Spiel: Wenn zum Beispiel <i>a1</i> = <i>a2</i> = <i>a3</i> ist, dann ist der Nenner 0, und bei der Division haben wir ein Problem. Nur wenn der Nenner ungleich 0 ist, können wir <i>s</i> berechnen.
     </p>
     <p>
-      Folgende vierzehn <i>a</i>/<i>b</i>-Werte haben die Eigenschaft, dass jede beliebige Kombination von drei <i>a</i>/<i>b</i>-Werten voneinander linear unabhängig ist:<br>
-      1/1, 1/2, 2/1, 2/2, 3/4, 4/3, 3/5, 5/3, 6/9, 9/6, 7/9, 9/7, 4/10, 10/4.<br>
-      Weitere Wertepaare lassen sich ermitteln, interessieren hier aber erst mal nicht.
+      Folgende fünfzehn <i>a</i>/<i>b</i>-Werte haben die Eigenschaft, dass jede beliebige Kombination von drei <i>a</i>/<i>b</i>-Werten voneinander linear unabhängig ist:
+      <pre>1/2 2/1 2/4 1/5 5/2 6/3 3/7 4/7 7/5 3/8 7/8 4/9 6/9 9/1 9/3</pre>
+      Diese Wertepaare habe ich mittels eines Programms ermittelt, das zufällige Kombinationen auf ihre Unabhängigkeit prüft:
+      <pre>val tuples = for {i <- 1 to 9; j <- 1 to 9} yield (i, j)
+while (true)
+  val selection = scala.util.Random.shuffle(tuples).take(15)
+  if selection.combinations(3).forall {
+    case Seq((a1, b1), (a2, b2), (a3, b3)) =>
+      a1*b3 + a2*b1 + a3*b2 - a1*b2 - a2*b3 - a3*b1 != 0
+  } then println(selection)</pre>
+    Weitere Wertepaare lassen sich ermitteln, interessieren hier aber erst mal nicht.
     </p>
     <p>
-      Das sieht soweit doch schon mal gut aus. Wir können bis zu 14 Personen je einen Satz voneinander unabhängiger <i>a</i> / <i>b</i> / <i>c</i> Werte geben, so dass es stets drei Personen braucht, um <i>s</i> zu rekonstruieren. Oder nicht?
+      Das sieht soweit doch schon mal gut aus. Wir können bis zu 15 Personen je einen Satz voneinander unabhängiger <i>a</i> / <i>b</i> / <i>c</i> Werte geben, so dass es stets drei Personen braucht, um <i>s</i> zu rekonstruieren. Oder nicht?
     </p>
     <h3>Zusätzliches Wissen</h3>
     <p>
@@ -299,6 +307,14 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
       Wenn jetzt jemand zum Beispiel die Werte <i>a</i> = 2, <i>b</i> = 2, <i>c</i> = 2 kennt, dann hat er über <i>s</i> trotzdem keine zusätzlichen Informationen, weil
       <pre>s = (a*p + b*q + c) mod 257</pre>
       je nach dem Wert von <i>p</i> und <i>q</i> jeden Wert zwischen <i>0</i> und <i>256</i> haben kann.
+    </p>
+    <h3>Rechnen im Zahlenraum <i>mod&nbsp;257</i></h3>
+    <p>
+      <pre>Addition      : a + b im Zahlenraum mod 257 = (a + b) mod 257
+Subtraktion   : a - b im Zahlenraum mod 257 = (a - b) mod 257
+Multiplikation: a * b im Zahlenraum mod 257 = (a * b) mod 257
+Division      : a / b im Zahlenraum mod 257 = ... ?</pre>
+      Die Division ist die einzige Operation, die etwas komplizierter ist. Es soll die Inverse der Multiplikation sein, also "finde die Zahl <i>c</i>, für die gilt: <i>(a&nbsp;*&nbsp;b)&nbsp;mod&nbsp;257&nbsp;=&nbsp;c</i>. Das berechnest Du am einfachsten so: Prüfe, ob <i>a</i> ohne Rest durch <i>b</i> teilbar ist. Ist es nicht ohne Rest teilbar, dann addiere <i>257</i> zu <i>a</i> und prüfe erneut. Wiederhole diesen Vorgang, bis Du eine Zahl erhältst, die ohne Rest durch <i>b</i> teilbar ist. Das Ergebnis dieser Division ist die gesuchte Zahl <i>c</i>.
     </p>
   </body>
 </html>
