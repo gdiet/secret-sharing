@@ -172,7 +172,7 @@ function createShares() {
     )
   })
   documentElement('sharesSpan').innerHTML = shareText(shares)
-  documentElement('sharesDescriptionSpan').innerText = textAreaElement('sharesDescriptionInput').value.replaceAll(/\r?\n/g, ' ')
+  documentElement('sharesDescriptionSpan').innerText = textAreaElement('sharesDescriptionInput').value.replace(/\r?\n/g, ' ')
   documentElement('numberOfSharesSpan').innerText = `${numberOfShares}`
   const date = new Date()
   const year = date.getFullYear()
