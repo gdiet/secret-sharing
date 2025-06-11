@@ -3,6 +3,6 @@ lazy val shamir = project
   .settings(
     name := "Shamir's Secret Sharing",
     version := "current",
-    scalaVersion := "3.3.0",
+    scalaVersion := "3.3.6",
     scalacOptions ++= Seq("-deprecation", "-unchecked"),
   )
