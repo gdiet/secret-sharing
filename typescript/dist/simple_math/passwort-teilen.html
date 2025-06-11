@@ -268,30 +268,38 @@ function bytesToUtf8(bytes) {
 
 /* TODO review & remove orphans */
 body {
-    max-width: 600px;
-    font-size: 115%;
-    font-family: system-ui, sans-serif, serif;
-  }
-  .problem {
-    border-color: red;
-    color: red;
-  }
-  .scrollable {
-    width: auto;
-    overflow-x: auto;
-    border: 1px solid #cccccc;
-    padding: 10px;
-  }
-  .textinput {
-    background-color: #fbfbfb;
-    border-color: #cccccc;
-    border-left: none;
-    border-right: none;
-    padding-left: 0%;
-    padding-right: 0%;
-    width: 100%;
-  }
-p { line-height: 140%; }
+  max-width: 600px;
+  font-size: 115%;
+  font-family: system-ui, sans-serif, serif;
+}
+.problem {
+  border-color: red;
+  color: red;
+}
+.scrollable {
+  width: auto;
+  overflow-x: auto;
+  border: 1px solid #cccccc;
+  padding: 10px;
+}
+.textinput {
+  background-color: #fbfbfb;
+  border-color: #cccccc;
+  border-left: none;
+  border-right: none;
+  padding-left: 0%;
+  padding-right: 0%;
+  width: 100%;
+}
+p {
+  line-height: 140%;
+}
+ol {
+  margin-left: -1.2em;
+}
+ul {
+  margin-left: -1em;
+}
 
     </style>
   </head>
@@ -602,7 +610,50 @@ while (true)
 Subtraktion   : a - b im Zahlenraum mod 257 = (a - b) mod 257
 Multiplikation: a * b im Zahlenraum mod 257 = (a * b) mod 257
 Division      : a / b im Zahlenraum mod 257 = ... ?</pre>
-      Die Division ist die einzige Operation, die etwas komplizierter ist. Es soll die Inverse der Multiplikation sein, also "finde die Zahl <i>c</i>, für die gilt: <i>(a&nbsp;*&nbsp;b)&nbsp;mod&nbsp;257&nbsp;=&nbsp;c</i>. Das berechnest Du am einfachsten so: Prüfe, ob <i>a</i> ohne Rest durch <i>b</i> teilbar ist. Ist es nicht ohne Rest teilbar, dann addiere <i>257</i> zu <i>a</i> und prüfe erneut. Wiederhole diesen Vorgang, bis Du eine Zahl erhältst, die ohne Rest durch <i>b</i> teilbar ist. Das Ergebnis dieser Division ist die gesuchte Zahl <i>c</i>.
+      Die Division ist etwas aufwändiger: Es ist die Inverse der Multiplikation, also "finde die Zahl <i>c</i>, für die gilt: <i>(b&nbsp;*&nbsp;c)&nbsp;mod&nbsp;257&nbsp;=&nbsp;a</i>". Du berechnest <i>c</i> am einfachsten so: Prüfe, ob <i>a</i> ohne Rest durch <i>b</i> teilbar ist. Ist es nicht ohne Rest teilbar, dann addiere <i>257</i> zu <i>a</i> und prüfe erneut. Wiederhole diesen Vorgang, bis Du eine Zahl erhältst, die ohne Rest durch <i>b</i> teilbar ist. Das Ergebnis dieser Division ist die gesuchte Zahl <i>c</i>.<br>
+      Für negative Zahlen gilt dabei:
+      <pre>-a / -b = +a / +b                      | im Zahlenraum mod 257
+-a / +b = +a / -b = 257 - ( +a / +b )  | im Zahlenraum mod 257</pre>
     </p>
+    <h3>Passwörter teilen</h3>
+    <p>
+      Richtig, das wollen wir ja eigentlich. Mit dem obigen Handwerkszeug geht das so:
+    </p>
+    <ol>
+      <li>Passwort in Zahlen umwandeln: Ermittle den UTF-8 Code des Passworts. Du erhältst eine Sequenz von Zahlen <i>s</i> zwischen <i>0</i> und <i>255</i>.</li>
+      <li>Passwort auf Mindestlänge erweitern: Falls Du die Länge des Passworts verheimlichen willst, füge an beliebiger Stelle der Sequenz, zum Beispiel am Schluss, so oft Du möchtest <i>256</i> in die Sequenz ein.</li>
+      <li>Wähle für jede Zahl aus der Sequenz zwei neue Zufallszahlen <i>p</i> und <i>q</i> aus dem Bereich <i>[0..256]</i>.</li>
+      <li>Berechne für jeden Teil, den Du erstellen willst, für jede Zahl <i>s</i> der Sequenz die Zahl <i>c</i>. Rechne dabei im <i>mod 257</i> Raum und verwende die oben genannten <i>a</i>/<i>b</i>-Paare.</li>
+    </ol>
+    <p>
+      Wenn Du zum Beispiel folgende Werte hast
+      <pre>a = 4, b = 7, p = 23, q = 218, s = 65</pre>
+      dann berechne
+      <pre>a * p + b * q + c = s     | mod 257
+c = s - a * p - b * q     | mod 257
+c = (65 - 4 * 23 - 7 * 218) mod 257
+c = (-1553) mod 257
+c = 257 - (1553 mod 257)
+c = 257 - 11
+c = 246</pre>
+    </p>
+    <ol>
+      <li value="5">Damit man später das rekonstruierte Passwort validieren kann, wiederhole das Verfahren mit neuen Zufallszahlen <i>p</i> und <i>q</i> und erstelle dabei die <i>v</i>-Werte.</li>
+      <li>Gib als Teil die Werte <i>a</i> und <i>b</i> sowie die Liste der <i>c</i>- und <i>v</i>-Werte weiter. Der Teil kann dann so aussehen:</li>
+    </ol>
+    <p><pre>{
+  "a": 4,
+  "b": 7,
+  "c": [236,6,124,109,87],
+  "v": [125,177,78,85,40]
+}</pre></p>
+    <h3>Passwörter wiederherstellen</h3>
+    <ol>
+      <li>Du hast drei Teile, jeweils mit <i>a</i> und <i>b</i> sowie die Liste der <i>c</i>- und <i>v</i>-Werte.</li>
+      <li>Berechne aus diesen Zahlen die zwei Listen der <i>s</i>-Werte - die erste Liste aus den <i>c</i>-Werten, die zweite aus den <i>v</i>-Werten. Verwende die Formel für <i>s</i>, die wir oben aus dem Gleichungssystem mit drei Gleichungen hergeleitet haben, und rechne dabei im <i>mod 257</i> Zahlenraum.</li>
+      <li>Vergleiche die zwei Listen von <i>s</i>-Werten. Wenn sie sich unterscheiden, ist das wiederhergestellte Passwort möglicherweise nicht korrekt. Mögliche Gründe für die Unterschiede sind, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.</li>
+      <li>Entferne alle Zahlen <i>256</i> aus der Liste.</li>
+      <li>Interpretiere die resultierende Liste von Bytes als UTF-8 Zeichenkette.</li>
+    </ol>
   </body>
 </html>
