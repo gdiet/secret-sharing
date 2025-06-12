@@ -294,9 +294,6 @@ body {
 p {
   line-height: 140%;
 }
-ol {
-  margin-left: -1.2em;
-}
 ul {
   margin-left: -1em;
 }
@@ -619,12 +616,12 @@ Division      : a / b im Zahlenraum mod 257 = ... ?</pre>
     <p>
       Richtig, das wollen wir ja eigentlich. Mit dem obigen Handwerkszeug geht das so:
     </p>
-    <ol>
+    <ul>
       <li>Passwort in Zahlen umwandeln: Ermittle den UTF-8 Code des Passworts. Du erhältst eine Sequenz von Zahlen <i>s</i> zwischen <i>0</i> und <i>255</i>.</li>
       <li>Passwort auf Mindestlänge erweitern: Falls Du die Länge des Passworts verheimlichen willst, füge an beliebiger Stelle der Sequenz, zum Beispiel am Schluss, so oft Du möchtest <i>256</i> in die Sequenz ein.</li>
       <li>Wähle für jede Zahl <i>s</i> aus der Sequenz zwei neue Zufallszahlen <i>p</i> und <i>q</i> aus dem Bereich <i>[0..256]</i>.</li>
       <li>Berechne für jeden Teil, den Du erstellen willst, für jede Zahl <i>s</i> der Sequenz die Zahl <i>c</i>. Rechne dabei im <i>mod 257</i> Raum und verwende die oben genannten <i>a</i>/<i>b</i>-Paare.</li>
-    </ol>
+    </ul>
     <p>
       Wenn Du zum Beispiel folgende Werte hast
       <pre>a = 4, b = 7, p = 23, q = 218, s = 65</pre>
@@ -637,10 +634,10 @@ c = 257 - (1553 mod 257)
 c = 257 - 11
 c = 246</pre>
     </p>
-    <ol>
+    <ul>
       <li value="5">Damit man später das rekonstruierte Passwort validieren kann, wiederhole das Verfahren mit neuen Zufallszahlen <i>p</i> und <i>q</i> und erstelle dabei die <i>v</i>-Werte.</li>
       <li>Gib als Teil die Werte <i>a</i> und <i>b</i> sowie die Liste der <i>c</i>- und <i>v</i>-Werte weiter. Der Teil kann dann so aussehen:</li>
-    </ol>
+    </ul>
     <p><pre>{
   "a": 4,
   "b": 7,
@@ -648,12 +645,12 @@ c = 246</pre>
   "v": [125,177,78,85,40]
 }</pre></p>
     <h3>Passwörter wiederherstellen</h3>
-    <ol>
+    <ul>
       <li>Du hast drei Teile, jeweils mit <i>a</i> und <i>b</i> sowie die Liste der <i>c</i>- und <i>v</i>-Werte.</li>
       <li>Berechne aus diesen Zahlen die zwei Listen der <i>s</i>-Werte - die erste Liste aus den <i>c</i>-Werten, die zweite aus den <i>v</i>-Werten. Verwende die Formel für <i>s</i>, die wir oben aus dem Gleichungssystem mit drei Gleichungen hergeleitet haben, und rechne dabei im <i>mod 257</i> Zahlenraum.</li>
       <li>Vergleiche die zwei Listen von <i>s</i>-Werten. Wenn sie sich unterscheiden, ist das wiederhergestellte Passwort möglicherweise nicht korrekt. Mögliche Gründe für die Unterschiede sind neben Rechenfehlern, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.</li>
       <li>Entferne alle Zahlen <i>256</i> aus der Liste.</li>
       <li>Interpretiere die resultierende Liste von Bytes als UTF-8 Zeichenkette.</li>
-    </ol>
+    </ul>
   </body>
 </html>
