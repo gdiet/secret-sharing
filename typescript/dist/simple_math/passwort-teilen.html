@@ -514,11 +514,11 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
       Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du selbst nicht erreichbar bist, dann gibt es Möglichkeiten, das Passwort in mehrere Teile verschlüsselt aufzuteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens eine bestimmte Anzahl von Teilen zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
     </p>
     <p>
-      Auf dieser Seite geht es um ein Verfahren und die Theorie dahinter, wenn zur Rekonstruktion <b>drei</b> Teile benötigt werden. Es gibt auch Verfahren, bei denen nur <b>zwei</b> Teile benötigt werden, und es gibt Verfahren, bei denen man die benötigte Anzahl der Teile <b>frei wählen</b> kann. Diese Verfahren sind aber nicht Thema dieser Seite. Ein bekannter Ansatz für "beliebige Anzahl" ist übrigens Shamirs Secret Sharing - weitere Informationen und eine Implementierung findest Du zum Beispiel hier: <a href="https://gdiet.github.io/secret-sharing/share-compact.html">https://gdiet.github.io/secret-sharing/share-compact.html</a>
+      Auf dieser Seite geht es um ein Verfahren und die Theorie dahinter, wenn zur Rekonstruktion <b>drei</b> Teile benötigt werden. Es gibt auch Verfahren, bei denen nur <b>zwei</b> Teile benötigt werden, und es gibt Verfahren, bei denen man die benötigte Anzahl der Teile <b>frei wählen</b> kann. Diese Verfahren sind aber nicht Thema dieser Seite. Ein bekannter Ansatz für "beliebige Anzahl" ist übrigens Shamir's Secret Sharing - weitere Informationen und eine Implementierung findest Du zum Beispiel hier: <a href="https://gdiet.github.io/secret-sharing/share-compact.html">https://gdiet.github.io/secret-sharing/share-compact.html</a>
     </p>
     <h3>Ein Gleichungsystem mit drei Unbekannten</h3>
     <p>
-      Nehmen wir zunächst an, dass es nicht um ein Passwort geht, sondern um eine geheime Zahl <i>s</i>. Wenn ich ein Gleichungssystem mit drei Unbekannten habe, und davon ist eine <i>s</i>, dann kann ich das Gleichungssystem nach <i>s</i> auflösen, wenn ich drei voneinander linear unabhängige Gleichungen habe.
+      Nehmen wir zunächst an, dass es nicht um ein Passwort geht, sondern um eine geheime Zahl <i>s</i>. Wenn ich ein Gleichungssystem mit drei Unbekannten habe, und davon ist eine <i>s</i>, dann kann ich ohne <i>p</i> und <i>q</i> zu kennen das Gleichungssystem nach <i>s</i> auflösen, wenn ich drei voneinander linear unabhängige Gleichungen habe.
     </p>
     <p>
       Wenn <i>p</i> und <i>q</i> zwei Zufallszahlen sind, und die jeweils drei <i>a</i>, <i>b</i> und <i>c</i> Werte bekannt sind, dann kann man das folgende Gleichungssystem nach <i>s</i> auflösen:
@@ -622,7 +622,7 @@ Division      : a / b im Zahlenraum mod 257 = ... ?</pre>
     <ol>
       <li>Passwort in Zahlen umwandeln: Ermittle den UTF-8 Code des Passworts. Du erhältst eine Sequenz von Zahlen <i>s</i> zwischen <i>0</i> und <i>255</i>.</li>
       <li>Passwort auf Mindestlänge erweitern: Falls Du die Länge des Passworts verheimlichen willst, füge an beliebiger Stelle der Sequenz, zum Beispiel am Schluss, so oft Du möchtest <i>256</i> in die Sequenz ein.</li>
-      <li>Wähle für jede Zahl aus der Sequenz zwei neue Zufallszahlen <i>p</i> und <i>q</i> aus dem Bereich <i>[0..256]</i>.</li>
+      <li>Wähle für jede Zahl <i>s</i> aus der Sequenz zwei neue Zufallszahlen <i>p</i> und <i>q</i> aus dem Bereich <i>[0..256]</i>.</li>
       <li>Berechne für jeden Teil, den Du erstellen willst, für jede Zahl <i>s</i> der Sequenz die Zahl <i>c</i>. Rechne dabei im <i>mod 257</i> Raum und verwende die oben genannten <i>a</i>/<i>b</i>-Paare.</li>
     </ol>
     <p>
@@ -651,7 +651,7 @@ c = 246</pre>
     <ol>
       <li>Du hast drei Teile, jeweils mit <i>a</i> und <i>b</i> sowie die Liste der <i>c</i>- und <i>v</i>-Werte.</li>
       <li>Berechne aus diesen Zahlen die zwei Listen der <i>s</i>-Werte - die erste Liste aus den <i>c</i>-Werten, die zweite aus den <i>v</i>-Werten. Verwende die Formel für <i>s</i>, die wir oben aus dem Gleichungssystem mit drei Gleichungen hergeleitet haben, und rechne dabei im <i>mod 257</i> Zahlenraum.</li>
-      <li>Vergleiche die zwei Listen von <i>s</i>-Werten. Wenn sie sich unterscheiden, ist das wiederhergestellte Passwort möglicherweise nicht korrekt. Mögliche Gründe für die Unterschiede sind, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.</li>
+      <li>Vergleiche die zwei Listen von <i>s</i>-Werten. Wenn sie sich unterscheiden, ist das wiederhergestellte Passwort möglicherweise nicht korrekt. Mögliche Gründe für die Unterschiede sind neben Rechenfehlern, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.</li>
       <li>Entferne alle Zahlen <i>256</i> aus der Liste.</li>
       <li>Interpretiere die resultierende Liste von Bytes als UTF-8 Zeichenkette.</li>
     </ol>
