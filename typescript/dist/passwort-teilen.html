@@ -7,6 +7,8 @@
     <script>
 // @ts-check
 
+// FIXME remove the language switch - the page is only in German
+
 window.addEventListener('DOMContentLoaded', () => {
   documentElement('javascriptWarning').style.display = 'none'
 })
@@ -306,7 +308,7 @@ ul {
   <body>
     <main>
       <h1>Passwörter teilen und wiederherstellen</h1>
-      <p><a href="share-simple3.html">This page in English (🔴TODO🔴)</a></p>
+      <p><a href="sharing-passwords.html">This page in English</a></p>
       <p id="javascriptWarning" class="problem">
         Ups! Diese Seite braucht JavaScript, und es scheint, dass JavaScript nicht aktiviert ist. Vielleicht möchtest Du einen anderen Browser verwenden? Oder es liegt daran, dass irgendwie der JavaScript Teil abhanden gekommen ist.
       </p>
@@ -317,7 +319,7 @@ ul {
         <b>Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du selbst nicht erreichbar bist,</b> dann kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens drei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
       </p>
       <p>
-        <b>Bei dem Verfahren wird nur einfache Mathematik verwendet,</b> so dass man zur Not die Berechnungen sogar mit Stift und Papier durchführen kann. Details und weitere Informationen findest Du im Abschnitt zur theoretischen Grundlage.
+        <b>Bei dem Verfahren wird nur einfache Mathematik verwendet,</b> so dass man zur Not die Berechnungen sogar mit Stift und Papier durchführen kann. Details und weitere Informationen findest Du im Abschnitt zur Theorie.
       </p>
       <nav aria-label="Inhaltsverzeichnis">
         <h2 id="tocNav">Inhaltsverzeichnis</h2>
@@ -433,7 +435,7 @@ ul {
         </p>
         <p>
           <i>
-            Dieser Teil wurde mithilfe der Webseite <a href="https://gdiet.github.io/secret-sharing/simple_math/passwort-teilen.html">https://gdiet.github.io/secret-sharing/simple_math/passwort-teilen.html</a> erstellt, von der Dir eine Kopie zusammen mit diesem Text übergeben wurde. Diese Webseite kann ohne Internetverbindung genutzt werden und hat auch eine Funktion zur Wiederherstellung des Passworts aus mehreren Teilen.
+            Dieser Teil wurde mithilfe der Webseite <a href="https://gdiet.github.io/secret-sharing/passwort-teilen.html">https://gdiet.github.io/secret-sharing/passwort-teilen.html</a> erstellt, von der Dir eine Kopie zusammen mit diesem Text übergeben wurde. Diese Webseite kann ohne Internetverbindung genutzt werden und hat auch eine Funktion zur Wiederherstellung des Passworts aus mehreren Teilen.
           </i>
         </p>
         <p>
@@ -493,7 +495,7 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
         </p>
         <h3>Wenn dich die Mathematik der Berechnung interessiert...</h3>
         <p>
-          ... findest Du hier die UTF-8 Zahlenwerte (s-Werte), die das Passwort darstellen:
+          ... findest Du hier die (möglicherweise durch <i>256</i> Werte erweiterten) UTF-8 Zahlenwerte (s-Werte), die das Passwort darstellen:
           <pre class="scrollable"><span id="secretNumbersSpan">DYNAMISCHER TEXT: Passwort als Zahlen (UTF-8)</span>
           <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
           Folgendes sind die p- und q-Werte (siehe <a href="#theoryNav">Die Theorie hinter dem Ganzen</a>), die für die Berechnung der c-Werte verwendet wurden:
@@ -561,10 +563,10 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
       <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-size: 130%;"><semantics><mrow><mi>s</mi><mo>=</mo><mfrac><mrow><msub><mi>a</mi><mn>1</mn></msub><msub><mi>b</mi><mn>3</mn></msub><msub><mi>c</mi><mn>2</mn></msub><mo>+</mo><msub><mi>a</mi><mn>2</mn></msub><msub><mi>b</mi><mn>1</mn></msub><msub><mi>c</mi><mn>3</mn></msub><mo>+</mo><msub><mi>a</mi><mn>3</mn></msub><msub><mi>b</mi><mn>2</mn></msub><msub><mi>c</mi><mn>1</mn></msub><mo>−</mo><msub><mi>a</mi><mn>1</mn></msub><msub><mi>b</mi><mn>2</mn></msub><msub><mi>c</mi><mn>3</mn></msub><mo>−</mo><msub><mi>a</mi><mn>2</mn></msub><msub><mi>b</mi><mn>3</mn></msub><msub><mi>c</mi><mn>1</mn></msub><mo>−</mo><msub><mi>a</mi><mn>3</mn></msub><msub><mi>b</mi><mn>1</mn></msub><msub><mi>c</mi><mn>2</mn></msub></mrow><mrow><msub><mi>a</mi><mn>1</mn></msub><msub><mi>b</mi><mn>3</mn></msub><mo>+</mo><msub><mi>a</mi><mn>2</mn></msub><msub><mi>b</mi><mn>1</mn></msub><mo>+</mo><msub><mi>a</mi><mn>3</mn></msub><msub><mi>b</mi><mn>2</mn></msub><mo>−</mo><msub><mi>a</mi><mn>1</mn></msub><msub><mi>b</mi><mn>2</mn></msub><mo>−</mo><msub><mi>a</mi><mn>2</mn></msub><msub><mi>b</mi><mn>3</mn></msub><mo>−</mo><msub><mi>a</mi><mn>3</mn></msub><msub><mi>b</mi><mn>1</mn></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">s = \frac{a_1b_3c_2 + a_2b_1c_3 + a_3b_2c_1 - a_1b_2c_3 - a_2b_3c_1 - a_3b_1c_2}{a_1b_3 + a_2b_1 + a_3b_2 - a_1b_2 - a_2b_3 - a_3b_1}</annotation></semantics></math>      
     </p>
     <p>
-      Jetzt kommt die Bedingung der "drei voneinander linear unabhängige Gleichungen" ins Spiel: Wenn zum Beispiel <i>a1</i> = <i>a2</i> = <i>a3</i> ist, dann ist der Nenner 0, und bei der Division haben wir ein Problem. Nur wenn der Nenner ungleich 0 ist, können wir <i>s</i> berechnen.
+      Jetzt kommt die Bedingung der "drei voneinander linear unabhängige Gleichungen" ins Spiel: Wenn zum Beispiel <i>a1</i> = <i>a2</i> = <i>a3</i> ist, dann ist der Nenner <i>0</i>, und bei der Division haben wir ein Problem. Nur wenn der Nenner ungleich <i>0</i> ist, können wir <i>s</i> berechnen.
     </p>
     <p>
-      Folgende fünfzehn <i>a</i>/<i>b</i>-Werte haben die Eigenschaft, dass jede beliebige Kombination von drei <i>a</i>/<i>b</i>-Werten voneinander linear unabhängig ist:
+      Folgende fünfzehn <i>a</i>/<i>b</i>-Paare haben die Eigenschaft, dass jede beliebige Kombination von drei <i>a</i>/<i>b</i>-Paaren voneinander linear unabhängig ist:
       <pre>1/2 2/1 2/4 1/5 5/2 6/3 3/7 4/7 7/5 3/8 7/8 4/9 6/9 9/1 9/3</pre>
       Diese Wertepaare habe ich mittels eines Programms ermittelt, das zufällige Kombinationen auf ihre Unabhängigkeit prüft:
       <pre>val tuples = for {i <- 1 to 9; j <- 1 to 9} yield (i, j)
