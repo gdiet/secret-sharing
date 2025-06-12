@@ -131,12 +131,14 @@ function div257(a, b) {
 window.addEventListener('DOMContentLoaded', () => {
   registerListener('createSharesButton', 'click', () => createShares())
   registerListener('secretInput', 'change', () => documentElement('shareInfoDiv').hidden = true)
+  registerListener('padToLengthInput', 'change', () => documentElement('shareInfoDiv').hidden = true)
+  registerListener('numberOfSharesInput', 'change', () => documentElement('shareInfoDiv').hidden = true)
 })
 
 function createShares() {
   const secretBytes = utf8ToUint8(inputElement('secretInput').value)
   const padToLength = parseInt(inputElement('padToLengthInput').value)
-  const numberOfShares = parseInt(inputElement('numberOfSharesInput').value)
+  const numberOfShares = Math.min(+inputElement('numberOfSharesInput').value, +inputElement('numberOfSharesInput').max)
   const maxFactorAB = Math.ceil(Math.sqrt(numberOfShares))
   const paddingLength = Math.max(padToLength - secretBytes.length, 0)
   const secretPadded = [...secretBytes, ...new Array(paddingLength).fill(256)]
