@@ -474,7 +474,7 @@ n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
           <i>
             Aus m und n berechnet sich die Zahl des Passworts an der aktuellen Position:
             <pre>s = (m mod 257) div257 (n mod 257)</pre>
-            s ist eine Zahl zwischen 0 und 256. Sämtliche Zahlen s = 256 werden ignoriert, die übrigen Zahlen werden als UTF-8 Zeichenkette interpretiert. Häufig verwendete UTF-8 Zeichen sind:
+            s ist eine Zahl im Bereich von 0 bis 256. Sämtliche Zahlen s = 256 werden ignoriert, die übrigen Zahlen werden als UTF-8 Zeichenkette interpretiert. Häufig verwendete UTF-8 Zeichen sind:
             <pre>      32: Leerzeichen
 48 -  57: Ziffern 0-9
 65 -  90: Großbuchstaben A-Z
@@ -599,7 +599,7 @@ while (true)
     <p>
       Wenn jetzt jemand zum Beispiel die Werte <i>a</i> = 2, <i>b</i> = 2, <i>c</i> = 2 kennt, dann hat er über <i>s</i> trotzdem keine zusätzlichen Informationen, weil
       <pre>s = (a*p + b*q + c) mod 257</pre>
-      je nach dem Wert von <i>p</i> und <i>q</i> jeden Wert zwischen <i>0</i> und <i>256</i> haben kann.
+      je nach dem Wert von <i>p</i> und <i>q</i> jeden Zahl im Bereich <i>[0..256]</i> sein kann.
     </p>
     <h3>Rechnen im Zahlenraum <i>mod&nbsp;257</i></h3>
     <p>
@@ -617,7 +617,7 @@ Division      : a / b im Zahlenraum mod 257 = ... ?</pre>
       Richtig, das wollen wir ja eigentlich. Mit dem obigen Handwerkszeug geht das so:
     </p>
     <ul>
-      <li>Passwort in Zahlen umwandeln: Ermittle den UTF-8 Code des Passworts. Du erhältst eine Sequenz von Zahlen <i>s</i> zwischen <i>0</i> und <i>255</i>.</li>
+      <li>Passwort in Zahlen umwandeln: Ermittle den UTF-8 Code des Passworts. Du erhältst eine Sequenz von Zahlen <i>s</i> im Bereich <i>[0..255]</i>.</li>
       <li>Passwort auf Mindestlänge erweitern: Falls Du die Länge des Passworts verheimlichen willst, füge an beliebiger Stelle der Sequenz, zum Beispiel am Schluss, so oft Du möchtest <i>256</i> in die Sequenz ein.</li>
       <li>Wähle für jede Zahl <i>s</i> aus der Sequenz zwei neue Zufallszahlen <i>p</i> und <i>q</i> aus dem Bereich <i>[0..256]</i>.</li>
       <li>Berechne für jeden Teil, den Du erstellen willst, für jede Zahl <i>s</i> der Sequenz die Zahl <i>c</i>. Rechne dabei im <i>mod 257</i> Raum und verwende die oben genannten <i>a</i>/<i>b</i>-Paare.</li>
