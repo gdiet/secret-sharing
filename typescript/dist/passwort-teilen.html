@@ -114,8 +114,8 @@ function calculateShare(a1, a2, a3, b1, b2, b3, c1, c2, c3) {
   if ([a1, a2, a3, b1, b2, b3, c1, c2, c3].some(n =>
     !Number.isInteger(n) || n < 0 || n > 256
   )) return NaN
-  const dividend = mod257(a1*c2*b3 + a3*c1*b2 + c3*a2*b1 - a2*c1*b3 - c2*a3*b1 - a1*c3*b2)
-  const divisor = mod257(a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2)
+  const dividend = mod257(a1*b3*c2 + a2*b1*c3 + a3*b2*c1 - a1*b2*c3 - a2*b3*c1 - a3*b1*c2)
+  const divisor  = mod257(a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   )
   return div257(dividend, divisor)
 }
 
@@ -442,11 +442,23 @@ ul {
             * c und v sind dabei jeweils eine Liste von Zahlen.<br>
             * Alle c-Werte werden einzeln nacheinander verwendet.<br>
             Die drei a- und b-Werte sowie den jeweils ersten c-Wert nennen wir im folgenden a1, a2, a3, b1, b2, b3, c1, c2, c3. Für jede Position in der c-Liste ist das folgende Verfahren entsprechend auszuführen:
+            <pre>
+function calculateSecret(a1, a2, a3, b1, b2, b3, c1, c2, c3) {
+  let dividend = mod257(a1*b3*c2 + a2*b1*c3 + a3*b2*c1 - a1*b2*c3 - a2*b3*c1 - a3*b1*c2)
+  let divisor  = mod257(a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   )
+  if (divisor === 0) return NaN
+  while (dividend % divisor !== 0) dividend += 257
+  return dividend / divisor
+}
+
+function mod257(number) {
+  return (number % 257 + 257) % 257
+}</pre>
           </i>
         </p>
         <p>
           <i>
-            Berechne die Werte m und n.
+            Oder in Worten: Berechne die Werte m und n.
             <pre>
 m = a1*b3*c2 + a2*b1*c3 + a3*b2*c1 - a1*b2*c3 - a2*b3*c1 - a3*b1*c2
 n = a1*b3    + a2*b1    + a3*b2    - a1*b2    - a2*b3    - a3*b1   </pre>
