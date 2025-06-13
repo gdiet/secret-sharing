@@ -7,8 +7,6 @@
     <script>
 // @ts-check
 
-// FIXME remove the language switch - the page is only in German
-
 window.addEventListener('DOMContentLoaded', () => {
   documentElement('javascriptWarning').style.display = 'none'
 })
@@ -182,11 +180,10 @@ function createShares() {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
-  const localizedDate = document.documentElement.lang === 'de' ? `${day}.${month}.${year}` : `${year}-${month}-${day}`
-  documentElement('createdDateSpan').innerText = localizedDate
+  documentElement('createdDateSpan').innerText = `${day}.${month}.${year}`
   documentElement('secretNumbersSpan').innerHTML = `s: ${secretPadded}`
-  documentElement('pqValuesSpan').innerHTML = `p: ${p1}<br />q: ${q1}`
-  documentElement('pqValidationValuesSpan').innerHTML = `p: ${p2}<br />q: ${q2}`
+  documentElement('pqValuesSpan').innerHTML = `p: ${p1}<br>q: ${q1}`
+  documentElement('pqValidationValuesSpan').innerHTML = `p: ${p2}<br>q: ${q2}`
   documentElement('shareInfoDiv').hidden = false
 }
 
@@ -209,11 +206,10 @@ function mod257(number) {
 // DOCUMENT UTILITIES //
 
 function shareText(shares) {
-  const localizedKey = document.documentElement.lang === 'de' ? 'Teil Nummer' : 'share number'
   return shares.map((share, index) => {
     return cleanMultiline(`
       |{
-      |  "${localizedKey}": ${index + 1},
+      |  "Teil Nummer": ${index + 1},
       |  "a": ${share.a},
       |  "b": ${share.b},
       |  "c": ${JSON.stringify(share.c)},
@@ -221,7 +217,7 @@ function shareText(shares) {
       |}
     `)
   })
-  .join('<br /><br />')
+  .join('<br><br>')
 }
 
 function cleanMultiline(text) {
@@ -229,7 +225,7 @@ function cleanMultiline(text) {
     .split(/\r?\n/)
     .filter((line) => line.trim() !== '')
     .map((line) => line.replace(/^ +\|/, ''))
-    .join('<br />')
+    .join('<br>')
 }
 
 function documentElement(elementIdString) {
@@ -367,14 +363,14 @@ ul {
       </div>
       <div>
         <br>
-        <label for="restoredNumbersC">Wiederhergestelltes Passwort als Zahlen:</label><br />
+        <label for="restoredNumbersC">Wiederhergestelltes Passwort als Zahlen:</label><br>
         <input id="restoredNumbersC" class="textinput" type="text" value="" size="100" readonly />
-        <label for="restoredNumbersV">Validierung der Wiederherstellung als Zahlen:</label><br />
+        <label for="restoredNumbersV">Validierung der Wiederherstellung als Zahlen:</label><br>
         <input id="restoredNumbersV" class="textinput" type="text" value="" size="100" readonly />
         <br><br>
-        <label for="restoredStringC">Wiederhergestelltes Passwort als String:</label><br />
+        <label for="restoredStringC">Wiederhergestelltes Passwort als String:</label><br>
         <input id="restoredStringC" class="textinput" type="text" value="" size="100" readonly />
-        <label for="restoredStringV">Validierung der Wiederherstellung als String:</label><br />
+        <label for="restoredStringV">Validierung der Wiederherstellung als String:</label><br>
         <input id="restoredStringV" class="textinput" type="text" value="" size="100" readonly />
       </div>
       <p>
