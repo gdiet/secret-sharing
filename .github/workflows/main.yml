@@ -18,6 +18,15 @@ jobs:
       - run: zip -9 -r secret-sharing/secret-sharing-sources.zip ./ -x secret-sharing/
       - run: npm install
       - run: npx tsc
+      - run: |
+          COMMIT=$(git rev-parse --short=8 HEAD)
+          find dist -name '*.html' -exec sed -i "s/###CommitHash###/$COMMIT/g" {} +
+      - run: |
+          DATESTAMP=$(date +"%Y-%m-%d")
+          find dist -name '*.html' -exec sed -i "s/###DateStamp###/$DATESTAMP/g" {} +
+      - run: |
+          DATESTAMP=$(date +"%d.%m.%Y")
+          find dist -name '*.html' -exec sed -i "s/###Datumsstempel###/$DATESTAMP/g" {} +
       - run: cp -r dist/* secret-sharing/
       - run: zip -r dist/secret-sharing.zip secret-sharing/
       - uses: actions/upload-pages-artifact@v3.0.1
