@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Passwörter teilen (2 Teile)</title>
+    <script>
+// @ts-check
+
+window.addEventListener('DOMContentLoaded', () => {
+  documentElement('javascriptWarning').style.display = 'none'
+})
+
+// COMBINING SHARES //
+
+window.addEventListener('DOMContentLoaded', () => {
+  registerListener('fillExampleSharesButton', 'click', () => {
+    textAreaElement('shareInput1').value = `{
+      "a": 5,
+      "b": [205,123,66,122,140,51,41,57,8,135,132,240,231,107,254,56,165,105,222,247],
+      "v": [236,182,136,177,210,149,174,198,138,246,244,69,73,43,215,176,192,76,203,127]
+    }`.replace(/    /g, "")
+    textAreaElement('shareInput2').value = `{
+      "a": 3,
+      "b": [252,241,137,165,175,179,65,132,18,132,233,195,241,218,152,136,150,114,30,45],
+      "v": [65,225,179,198,217,135,42,11,96,250,146,41,249,231,180,208,12,148,70,230]
+    }`.replace(/    /g, "")
+    shareInputChanged()
+  })
+
+  registerListener('shareInput1', 'change', () => shareInputChanged())
+  registerListener('shareInput2', 'change', () => shareInputChanged())
+
+})
+
+function shareInputChanged() {
+  const share1 = shareInput(textAreaElement('shareInput1').value, documentElement('shareInput1Status'))
+  const share2 = shareInput(textAreaElement('shareInput2').value, documentElement('shareInput2Status'))
+  const s = restore(share1, share2, share => share.b)
+  const sString = bytesToUtf8(s.filter(n => n < 256))
+  const v = restore(share1, share2, share => share.v)
+  const vString = bytesToUtf8(v.filter(n => n < 256))
+  inputElement('restoredNumbersS').value = `${s}`
+  inputElement('restoredNumbersV').value = `${v}`
+  if (`${s}` === `${v}`) inputElement('restoredNumbersV').classList.remove('problem')
+  else inputElement('restoredNumbersV').classList.add('problem')
+  inputElement('restoredStringS').value = sString
+  inputElement('restoredStringV').value = vString
+  if (sString === vString) inputElement('restoredStringV').classList.remove('problem')
+  else inputElement('restoredStringV').classList.add('problem')
+}
+
+function restore(share1, share2, accessor) {
+  const length =
+    Math.max(accessor(share1)?.length ?? 0, accessor(share2)?.length ?? 0)
+  return Array.from({ length: length }).map((_, index) =>
+    calculateShare(
+      share1.a, share2.a,
+      accessor(share1)[index], accessor(share2)[index]
+    )
+  )
+}
+
+function shareInput(share, statusSpan) {
+  if (share === '') {
+    statusSpan.classList.remove('problem')
+    statusSpan.textContent = 'Leer'
+    return undefined
+  }
+  try {
+    const json = JSON.parse(share)
+    if (!Number.isInteger(json.a) || json.a < 1 || json.a > 10) throw 'a'
+    if (!Array.isArray(json.b) || json.b.some(n => !Number.isInteger(n) || n < 0 || n > 256)) throw 'b'
+    if (!Array.isArray(json.v) || json.v.some(n => !Number.isInteger(n) || n < 0 || n > 256))
+      statusSpan.textContent = `Unerwartete Eingabe für Feld v`
+    else
+      statusSpan.textContent = `Eingabeformat OK`
+    statusSpan.classList.remove('problem')
+    return json
+  } catch (e) {
+    statusSpan.classList.add('problem')
+    if (typeof e === "string")
+      statusSpan.textContent = `Unerwartete Eingabe für Feld ${e}`
+    else
+      statusSpan.textContent = 'Unerwartetes Eingabeformat'
+    return undefined
+  }
+}
+
+/* a1 * p + b1 = s
+ * a2 * p + b2 = s
+ * 
+ *     b1*a2 - b2*a1
+ * s = -------------
+ *        a2 - a1
+ */
+function calculateShare(a1, a2, b1, b2) {
+  if ([a1, a2, b1, b2].some(n =>
+    !Number.isInteger(n) || n < 0 || n > 256
+  )) return NaN
+  const dividend = mod257(b1*a2 - b2*a1)
+  const divisor  = mod257(   a2 - a1   )
+  return div257(dividend, divisor)
+}
+
+function div257(a, b) {
+  if (b === 0) return NaN
+  let counter = 0
+  while (a % b !== 0 && counter++ < 257) a += 257
+  return a % b === 0 ? a / b : NaN
+}
+
+// CREATING SHARES //
+
+window.addEventListener('DOMContentLoaded', () => {
+  registerListener('createSharesButton', 'click', () => createShares())
+  registerListener('secretInput', 'change', () => documentElement('shareInfoDiv').hidden = true)
+  registerListener('padToLengthInput', 'change', () => documentElement('shareInfoDiv').hidden = true)
+  registerListener('numberOfSharesInput', 'change', () => documentElement('shareInfoDiv').hidden = true)
+})
+
+function createShares() {
+  const secretBytes = utf8ToUint8(inputElement('secretInput').value)
+  const padToLength = parseInt(inputElement('padToLengthInput').value)
+  const numberOfShares = Math.min(+inputElement('numberOfSharesInput').value, +inputElement('numberOfSharesInput').max)
+  const paddingLength = Math.max(padToLength - secretBytes.length, 0)
+  const secretPadded = [...secretBytes, ...new Array(paddingLength).fill(256)]
+  const length = secretPadded.length
+  const p1 = secretPadded.map(() => Math.floor(Math.random() * 257))
+  const p2 = secretPadded.map(() => Math.floor(Math.random() * 257))
+  const shares = Array.from({ length: numberOfShares }, (_, index) => ({
+    a: index + 1,
+    b: secretPadded.map((s, i) => calculateB(index + 1, p1[i], s)),
+    validation: secretPadded.map((s, i) => calculateB(index + 1, p2[i], s))
+  }))
+  documentElement('sharesSpan').innerHTML = shareText(shares)
+  documentElement('sharesDescriptionSpan').innerText = textAreaElement('sharesDescriptionInput').value.replace(/\r?\n/g, ' ')
+  documentElement('numberOfSharesSpan').innerText = `${numberOfShares}`
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  documentElement('createdDateSpan').innerText = `${day}.${month}.${year}`
+  documentElement('secretNumbersSpan').innerHTML = `s: ${secretPadded}`
+  documentElement('pValuesSpan').innerHTML = `p: ${p1}`
+  documentElement('pValidationValuesSpan').innerHTML = `p: ${p2}`
+  documentElement('shareInfoDiv').hidden = false
+}
+
+// calculate b for a*p + b = s
+function calculateB(a, p, s) {
+  return mod257(s - a*p)
+}
+
+// GENERAL MATH FUNCTIONS //
+
+// calculate the always positive modulo
+function mod257(number) {
+  return (number % 257 + 257) % 257
+}
+
+// DOCUMENT UTILITIES //
+
+function shareText(shares) {
+  return shares.map((share, index) => {
+    return cleanMultiline(`
+      |{
+      |  "a": ${share.a},
+      |  "b": ${JSON.stringify(share.b)},
+      |  "v": ${JSON.stringify(share.validation)}
+      |}
+    `)
+  })
+  .join('<br><br>')
+}
+
+function cleanMultiline(text) {
+  return text
+    .split(/\r?\n/)
+    .filter((line) => line.trim() !== '')
+    .map((line) => line.replace(/^ +\|/, ''))
+    .join('<br>')
+}
+
+function documentElement(elementIdString) {
+  const maybeElement = document.getElementById(elementIdString)
+  if (maybeElement !== null) return maybeElement
+  throw error('Null check in script failed')
+}
+
+function inputElement(elementIdString) {
+  const maybeInput = documentElement(elementIdString)
+  if (maybeInput instanceof HTMLInputElement) return maybeInput
+  throw error('Type check in script failed')
+}
+
+function textAreaElement(elementIdString) {
+  const maybeInput = documentElement(elementIdString)
+  if (maybeInput instanceof HTMLTextAreaElement) return maybeInput
+  throw error('Type check in script failed')
+}
+
+function registerListener(elementIdString, eventTypeString, eventListener) {
+  documentElement(elementIdString).addEventListener(eventTypeString, eventListener)
+}
+
+function error(messageString) {
+  alert(`Oh bother: ${messageString}.`)
+  return new Error(messageString)
+}
+
+function utf8ToUint8(text) {
+  return new TextEncoder().encode(text)
+}
+
+function bytesToUtf8(bytes) {
+  return new TextDecoder().decode(new Uint8Array(bytes))
+}
+
+    </script>
+    <style>
+      body {
+        max-width: 600px;
+        font-size: 115%;
+        font-family: system-ui, sans-serif, serif;
+      }
+      .problem {
+        border-color: red;
+        color: red;
+      }
+      .scrollable {
+        width: auto;
+        overflow-x: auto;
+        border: 1px solid #cccccc;
+        padding: 10px;
+      }
+      .textinput {
+        background-color: #fbfbfb;
+        border-color: #cccccc;
+        border-left: none;
+        border-right: none;
+        padding-left: 0%;
+        padding-right: 0%;
+        width: 100%;
+      }
+      p {
+        line-height: 140%;
+      }
+      ul {
+        margin-left: -1em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <h1>Passwörter teilen und wiederherstellen (2 Teile)</h1>
+      <p>
+        <!-- Flag: Copyright (c) 2013 Panayiotis Lipiridis, MIT License, https://github.com/lipis/flag-icons/blob/main/flags/4x3/gb.svg -->
+        <svg xmlns="http://www.w3.org/2000/svg" id="flag-gb" viewBox="0 0 640 480" style="width: auto; height: 0.7em;">
+          <path fill="#012169" d="M0 0h640v480H0z"/>
+          <path fill="#FFF" d="m75 0 244 181L562 0h78v62L400 241l240 178v61h-80L320 301 81 480H0v-60l239-178L0 64V0z"/>
+          <path fill="#C8102E" d="m424 281 216 159v40L369 281zm-184 20 6 35L54 480H0zM640 0v3L391 191l2-44L590 0zM0 0l239 176h-60L0 42z"/>
+          <path fill="#FFF" d="M241 0v480h160V0zM0 160v160h640V160z"/>
+          <path fill="#C8102E" d="M0 193v96h640v-96zM273 0v480h96V0z"/>
+        </svg>
+        <a href="sharing-passwords.html">This page in English</a>
+      </p>
+      <p id="javascriptWarning" class="problem">
+        Ups! Diese Seite braucht JavaScript, und es scheint, dass JavaScript nicht aktiviert ist. Vielleicht möchtest Du einen anderen Browser verwenden? Oder es liegt daran, dass irgendwie der JavaScript Teil abhanden gekommen ist.
+      </p>
+      <p>
+        <b>Wenn Du von jemandem für Notfälle einen verschlüsselten Teil eines Passworts bekommen hast,</b> dann hat diese Person hoffentlich weitere Teile bei weiteren Personen oder an sinnvollen Orten hinterlegt. Sobald Du zwei unterschiedliche Teile hast, kannst Du auf dieser Seite das Passwort rekonstruieren - natürlich nur, wenn es mit dem auf dieser Seite beschriebenen Verfahren verschlüsselt und geteilt wurde.
+      </p>
+      <p>
+        <b>Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du selbst nicht erreichbar bist,</b> dann kannst Du auf dieser Seite das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens zwei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
+      </p>
+      <p>
+        <b>Bei dem Verfahren wird nur einfache Mathematik verwendet,</b> so dass man zur Not die Berechnungen sogar mit Stift und Papier durchführen kann. Details und weitere Informationen findest Du im Abschnitt zur Theorie.
+      </p>
+      <nav aria-label="Inhaltsverzeichnis">
+        <h2 id="tocNav">Inhaltsverzeichnis</h2>
+        <ul>
+          <li><a href="#combineSharesNav">Ein Passwort aus zwei Teilen wiederherstellen</a></li>
+          <li><a href="#createSharesNav">Ein Passwort verschlüsselt aufteilen</a></li>
+          <li><a href="#theoryNav">Die Theorie hinter dem Ganzen</a></li>
+          <li><a href="#licenseNav">Lizenz und weitere Informationen</a></li>
+        </ul>
+      </nav>
+      <hr />
+      <h2 id="combineSharesNav">Ein Passwort aus zwei Teilen wiederherstellen</h2>
+      <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
+      <p>
+        <b>Wenn Du von jemandem für Notfälle einen verschlüsselten Teil eines Passworts bekommen hast,</b> dann hat derjenige hoffentlich weitere Teile bei weiteren Personen oder an sinnvollen Orten hinterlegt. Wenn Du zwei unterschiedliche Teile hast, kannst Du hier das Passwort rekonstruieren - natürlich nur, wenn es mit dem auf dieser Seite beschriebenen Verfahren verschlüsselt und geteilt wurde.
+      </p>
+      <p>
+        <button id="fillExampleSharesButton" type="button" aria-label="Beispielwerte eintragen">Wenn Du hier klickst, werden Beispielwerte eingetragen.</button>
+      </p>
+      <div>
+        <label for="shareInput1">Teil 1</label> - Status: <span id="shareInput1Status">Leer</span>
+        <textarea
+          id="shareInput1"
+          class="textinput"
+          rows="8"
+          wrap="off"
+          placeholder="Hier kannst Du Teil 1 des verschlüsselt geteilten Passworts eingeben."
+        ></textarea>
+        <label for="shareInput2">Teil 2</label> - Status: <span id="shareInput2Status">Leer</span>
+        <textarea
+          id="shareInput2"
+          class="textinput"
+          rows="8"
+          wrap="off"
+          placeholder="Hier kannst Du Teil 2 des verschlüsselt geteilten Passworts eingeben."
+        ></textarea>
+      </div>
+      <div>
+        <br>
+        <label for="restoredNumbersS">Wiederhergestelltes Passwort als Zahlen:</label><br>
+        <input id="restoredNumbersS" class="textinput" type="text" value="" size="100" readonly />
+        <label for="restoredNumbersV">Validierung der Wiederherstellung als Zahlen:</label><br>
+        <input id="restoredNumbersV" class="textinput" type="text" value="" size="100" readonly />
+        <br><br>
+        <label for="restoredStringS">Wiederhergestelltes Passwort als String:</label><br>
+        <input id="restoredStringS" class="textinput" type="text" value="" size="100" readonly />
+        <label for="restoredStringV">Validierung der Wiederherstellung als String:</label><br>
+        <input id="restoredStringV" class="textinput" type="text" value="" size="100" readonly />
+      </div>
+      <p>
+        <b>Wenn sich Passwort-Daten und Validierungs-Daten unterscheiden, ist das angezeigte wiederhergestellte Passwort möglicherweise nicht korrekt.</b> Mögliche Gründe für die Unterschiede sind, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.
+      </p>
+      <hr />
+      <h2 id="createSharesNav">Ein Passwort verschlüsselt aufteilen</h2>
+      <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
+      <p>
+        <b>Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du nicht verfügbar bist,</b> dann kannst Du hier das Passwort in mehrere Teile verschlüsselt aufteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens zwei Teile zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
+      </p>
+      <div>
+        <label for="secretInput">Passwort:</label>
+        <input id="secretInput" class="textinput" type="text" value="¡secret!" />
+        <br><br>
+        <label for="padToLengthInput">Passwort auf Mindestlänge erweitern (nicht erweitern: 0, Maximum: 64):</label>
+        <input id="padToLengthInput" class="textinput" type="number" min="0" max="64" step="1" value="20" />
+        <br><br>
+        <label for="numberOfSharesInput">Anzahl der zu erzeugenden Teile (Minimum: 2, Maximum: 15):</label>
+        <input id="numberOfSharesInput" class="textinput" type="number" min="2" max="15" step="1" value="5" />
+        <br><br>
+        <label for="sharesDescriptionInput">Optionale Beschreibung der Teile:</label>
+        <textarea
+          id="sharesDescriptionInput"
+          class="textinput"
+          rows="3"
+          placeholder="Hier kannst Du die Beschreibung eingeben."
+        ></textarea>
+        Beispielbeschreibung:<br>
+        <i>Es handelt sich um Marias Benutzerdaten von 2023 bei ihrer Hausbank, geteilt mit ihren Angehörigen für Notfälle.</i>
+      </div>
+      <p><button id="createSharesButton" type="button">Klicke hier um die Teile zu erzeugen</button> und scrolle dann nach unten.</p>
+      <p>
+        Wenn Du Teile an andere weitergibst, dann gib' am besten eine Kopie dieser Seite mit. Sie ist so gestaltet, dass man sie einfach als Datei abspeichern und wieder öffnen kann und sie komplett ohne Internetverbindung funktioniert.
+      </p>
+
+      <div id="shareInfoDiv" hidden>
+        <p>
+          Unten findest Du die verschlüsselten Teile Deines Passworts. Danach folgt ein Vorschlag, wie Du die Teile an andere Personen weitergeben kannst, damit diese auch in zehn Jahren noch wissen, was sie da haben.
+        </p>
+        <hr />
+        <pre class="scrollable"><span id="sharesSpan">DYNAMISCHER TEXT: Die verschlüsselten Teile</span>
+          <br>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
+        <hr />
+        <p>
+          Im Folgenden findest Du ein Beispiel dafür, wie Du die Teile weitergeben könntest &ndash; passe es nach Bedarf an.
+        </p>
+        <p>
+          <i>
+            In diesem Dokument bekommst Du einen verschlüsselten Teil eines Passworts.
+            <span id="sharesDescriptionSpan">DYNAMISCHER TEXT: Beschreibung</span>
+            Zusammen mit diesem Dokument habe ich Dir eine Datei "passwort-teilen.html" geschickt. Bitte bewahre beides zusammen an einem sicheren Ort auf, z.&#x202F;B. in Deinem Passwort-Programm. Ich habe es Dir gegeben, damit Du im Notfall &ndash; zusammen mit einer weiteren Person, die ebenfalls ein Teil erhalten hat &ndash; das Passwort rekonstruieren und alles weitere Notwendige veranlassen kannst. Dies ist einer von
+            <span id="numberOfSharesSpan">DYNAMISCHER TEXT: Anzahl</span> Teilen, erstellt am
+            <span id="createdDateSpan">DYNAMISCHER TEXT: Datum</span>. Für die Rekonstruktion des Passworts wird dieser Text übrigens nicht benötigt, nur die folgenden Daten:
+          </i>
+        </p>
+        <p>
+          <b><i>[Ersetze diesen Absatz mit dem Teil, den Du weitergeben möchtest.]</i></b>
+        </p>
+        <p>
+          <i>
+            Obiger Teil wurde mithilfe der Webseite <a href="https://gdiet.github.io/secret-sharing/passwort-teilen_2.html">https://gdiet.github.io/secret-sharing/passwort-teilen_2.html</a> erstellt, von der die beigelegte Datei "passwort-teilen_2.html" eine Kopie ist. Diese Webseite kann ohne Internetverbindung genutzt werden und hat auch eine Funktion zur Wiederherstellung des Passworts aus zwei Teilen.
+          </i>
+        </p>
+        <p>
+          <i>
+            Für den Fall, dass Du die Webseite nicht verwenden kannst oder die Funktion der Webseite manuell verifizieren möchtest, ist hier eine Beschreibung des Verfahrens zur Wiederherstellung des Passworts aus den zwei Teilen:<br>
+            * Gegeben sind zwei Teile, jeweils mit den Feldern a, b und v.<br>
+            * b und v sind dabei jeweils eine Liste von Zahlen.<br>
+            * Alle b-Werte werden einzeln nacheinander verwendet.<br>
+            Die zwei a-Werte sowie den jeweils ersten b-Wert nennen wir im folgenden a1, a2, a3, b1, b2, b3. Für jede Position in der b-Liste ist das folgende Verfahren entsprechend auszuführen:
+            <pre>
+function calculateSecret(a1, a2, b1, b2) {
+  let dividend = mod257(b1*a2 - b2*a1)
+  let divisor  = mod257(   a2 - a1   )
+  if (divisor === 0) return NaN
+  while (dividend % divisor !== 0) dividend += 257
+  return dividend / divisor
+}
+
+function mod257(number) {
+  return (number % 257 + 257) % 257
+}</pre>
+          </i>
+        </p>
+        <p>
+          <i>
+            Oder in Worten: Berechne die Werte m und n.
+            <pre>
+m = b1*a2 - b2*a1
+n =    a2 - a1   </pre>
+          </i>
+        </p>
+        <p>
+          <i>
+            Im folgenden brauchen wir die Rechenoperationen Modulo, die den Rest einer ganzzahligen Division berechnet. Wenn eine Zahl x durch eine Zahl y geteilt wird, ergibt der Ausdruck x mod y den Rest dieser Division. Zum Beispiel ist 5 mod 3 = 2, da 5 geteilt durch 3 einen Rest von 2 lässt. Vorzeichen behandelst Du dabei so:<br>
+            <pre>
+-17 mod -7 = +17 mod +7 =                = 3
+-17 mod +7 = +17 mod -7 = 7 - (17 mod 7) = 4</pre>
+            Der Modulo ist also nie negativ.
+          </i>
+        </p>
+        <p>
+          <i>
+            Außerdem brauchen wir "div257", die Division im Zahlenraum Modulo 257. x div257 y berechnest Du so: Du prüfst, ob x ohne Rest durch y teilbar ist. Ist es nicht ohne Rest teilbar, dann addiere 257 zu x und prüfe erneut. Wiederhole diesen Vorgang, bis Du eine Zahl erhältst, die ohne Rest durch y teilbar ist. Das Ergebnis dieser Division ist das Ergebnis von "div257". Beispiele:
+            <pre>
+12 div257 4 = 3  ... 12 / 4 = 3 ist ohne Rest teilbar
+15 div257 4      ... 15 / 4 ist nicht ohne Rest teilbar
+15 div257 4      ... 15 + 257 = 272
+15 div257 4 = 68 ... 272 / 4 = 68 ist ohne Rest teilbar</pre>
+          </i>
+        </p>
+        <p>
+          <i>
+            Aus m und n berechnet sich die Zahl des Passworts an der aktuellen Position:
+            <pre>s = (m mod 257) div257 (n mod 257)</pre>
+            s ist eine Zahl im Bereich von 0 bis 256. Sämtliche Zahlen s = 256 werden ignoriert, die übrigen Zahlen werden als UTF-8 Zeichenkette interpretiert. Häufig verwendete UTF-8 Zeichen sind:
+            <pre>
+      32: Leerzeichen
+48 -  57: Ziffern 0-9
+65 -  90: Großbuchstaben A-Z
+97 - 122: Kleinbuchstaben a-z</pre>
+          </i>
+        </p>
+        <p>
+          <i>
+            Wenn Du aus den c-Werten das Passwort rekonstruiert hast, dann kannst Du es mit den v-Werten validieren. Dazu berechnest Du für jeden v-Wert die Zahl s wie oben beschrieben und vergleichst sie mit dem entsprechenden b-Wert. Wenn sich Passwort-Daten und Validierungs-Daten unterscheiden, ist das wiederhergestellte Passwort möglicherweise nicht korrekt. Mögliche Gründe für die Unterschiede sind, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.
+          </i>
+        </p>
+        <p>
+          (Ende des Beispiels für einen Text, wie Du die Teile an andere weitergeben kannst.)
+        </p>
+        <h3>Wenn dich die Mathematik der Berechnung interessiert...</h3>
+        <p>
+          ... findest Du hier die (möglicherweise durch <i>256</i> Werte erweiterten) UTF-8 Zahlenwerte (s-Werte), die das Passwort darstellen:
+          <pre class="scrollable"><span id="secretNumbersSpan">DYNAMISCHER TEXT: Passwort als Zahlen (UTF-8)</span>
+          <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
+          Folgendes sind die p-Werte (siehe <a href="#theoryNav">Die Theorie hinter dem Ganzen</a>), die für die Berechnung der b-Werte verwendet wurden:
+          <pre class="scrollable"><span id="pValuesSpan">DYNAMISCHER TEXT: Werte von p</span>
+          <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
+          Und folgendes sind die p-Werte, die für die Berechnung der v-Werte für die Validierung verwendet wurden:
+          <pre class="scrollable"><span id="pValidationValuesSpan">DYNAMISCHER TEXT: Werte von p (Validierung)</span>
+          <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
+          <b>Wichtig:</b> Die s- und p-Werte werden <b>nicht</b> benötigt, wenn Du das Passwort verschlüsselt teilst. Gib sie <b>auf keinen Fall</b> an andere Personen weiter. Es ist <b>nicht</b> nötig sie zu speichern.
+        </p>
+      </div>
+    </main>
+    <hr />
+    <h2 id="theoryNav">Die Theorie hinter dem Ganzen</h2>
+    <a href="#tocNav">Hier geht es nach oben zum Inhaltsverzeichnis.</a>
+    <p>
+      Wenn Du ein Passwort hast, auf das im Notfall jemand zugreifen können soll auch wenn Du selbst nicht erreichbar bist, dann gibt es Möglichkeiten, das Passwort in mehrere Teile verschlüsselt aufzuteilen. Diese Teile kannst Du z.&#x202F;B. an Freunde weitergeben. Nur wenn mindestens eine bestimmte Anzahl von Teilen zusammengeführt werden, kann das ursprüngliche Passwort rekonstruiert werden.
+    </p>
+    <p>
+      Auf dieser Seite geht es um ein Verfahren und die Theorie dahinter, wenn zur Rekonstruktion <b>zwei</b> Teile benötigt werden. Es gibt auch Verfahren, bei denen <b>drei</b> Teile benötigt werden, und es gibt Verfahren, bei denen man die benötigte Anzahl der Teile <b>frei wählen</b> kann. Diese Verfahren sind aber nicht Thema dieser Seite. Ein bekannter Ansatz für "beliebige Anzahl" ist übrigens Shamir's Secret Sharing - weitere Informationen und eine Implementierung findest Du zum Beispiel hier: <a href="https://gdiet.github.io/secret-sharing/share-compact.html">https://gdiet.github.io/secret-sharing/share-compact.html</a>
+    </p>
+    <h3>Ein Gleichungsystem mit zwei Unbekannten</h3>
+    <p>
+      Nehmen wir zunächst an, dass es nicht um ein Passwort geht, sondern um eine geheime Zahl <i>s</i>. Wenn ich ein Gleichungssystem mit zwei Unbekannten habe, und davon ist eine <i>s</i>, dann kann ich ohne <i>p</i> zu kennen das Gleichungssystem nach <i>s</i> auflösen, wenn ich zwei voneinander linear unabhängige Gleichungen habe.
+    </p>
+    <p>
+      Wenn <i>p</i> eine Zufallszahl ist, und die jeweils zwei <i>a</i> und <i>b</i> Werte bekannt sind, dann kann man das folgende Gleichungssystem nach <i>s</i> auflösen:
+    </p>
+    <p>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <msub><mi>a</mi><mn>1</mn></msub>
+        <mo>∗</mo><mi>p</mi><mo>+</mo>
+        <msub><mi>b</mi><mn>1</mn></msub>
+        <mo>=</mo><mi>s</mi>
+      </math>
+      <br>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <msub><mi>a</mi><mn>2</mn></msub>
+        <mo>∗</mo><mi>p</mi><mo>+</mo>
+        <msub><mi>b</mi><mn>2</mn></msub>
+        <mo>=</mo><mi>s</mi>
+      </math>
+    </p>
+    <p>
+      Nach etwas Umformung erhältst Du folgende Lösung für <i>s</i>:
+    </p>
+    <p>
+      <!--
+      https://tools.simonwillison.net/markdown-math
+      $$s = \frac{b_1a_2 - b_2a_1}{a_2 - a_1}$$
+      -->
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mfrac><mrow><msub><mi>b</mi><mn>1</mn></msub><msub><mi>a</mi><mn>2</mn></msub><mo>−</mo><msub><mi>b</mi><mn>2</mn></msub><msub><mi>a</mi><mn>1</mn></msub></mrow><mrow><msub><mi>a</mi><mn>2</mn></msub><mo>−</mo><msub><mi>a</mi><mn>1</mn></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">s = \frac{b_1a_2 - b_2a_1}{a_2 - a_1}</annotation></semantics></math>
+    </p>
+    <p>
+      Jetzt kommt die Bedingung "zwei voneinander linear unabhängige Gleichungen" ins Spiel: Wenn zum Beispiel <i>a1</i> = <i>a2</i> ist, dann ist der Nenner <i>0</i>, und bei der Division haben wir ein Problem. Nur wenn der Nenner ungleich <i>0</i> ist, können wir <i>s</i> berechnen, wir müssen also jeweils unterschiedliche a-Werte verwenden.
+    </p>
+    <p>
+      Das sieht soweit doch schon mal gut aus. Wir können mehreren Personen je einen Satz voneinander unabhängiger <i>a</i> / <i>b</i> Werte geben, so dass es stets zwei Personen braucht, um <i>s</i> zu rekonstruieren. Oder nicht?
+    </p>
+    <h3>Zusätzliches Wissen</h3>
+    <p>
+      Braucht es wirklich zwei Personen, um Informationen über die geheime Zahl <i>s</i> zu bekommen? In der echten Welt ist das leider nicht immer der Fall. Das liegt daran, dass die Personen möglicherweise zusätzliches Wissen über <i>p</i> und <i>s</i> verwenden können. Wenn beispielsweise bekannt ist, dass <i>p</i> und <i>s</i> Bytes sind, also Zahlen im Bereich <i>[0..255]</i>, und wenn ein <i>b</i>-Wert <i>255</i> ist, dann müssen die zugehörigen <i>p</i>-Werte <i>0</i> sein und <i>s&nbsp;=&nbsp;b</i>. Oder wenn bekannt ist, dass nur ganze Zahlen in der Berechnung verwendet werden, und wenn bei einer Person <i>a</i> und <i>b</i> gerade sind, dann weiß diese Person, dass auch <i>s</i> gerade ist. Diese und ähnliche Überlegungen können verwendet werden, um aus nur einer Gleichung zumindest einige Erkenntnisse über den geheimen Wert <i>s</i> zu gewinnen.
+    </p>
+    <h3>Der Zahlenraum <i>mod&nbsp;257</i></h3>
+    <p>
+      Deshalb wenden wir einen Trick an: Wir führen alle Berechnungen <i>modulo&nbsp;257</i> - oder kurz: <i>mod&nbsp;257</i> - durch, was uns den Zahlenbereich <i>[0..256]</i> zum Arbeiten gibt - ein praktischer Raum, wenn wir mit Bytes arbeiten wollen.
+    </p>
+    <p>
+      Anstelle von <i>257</i> könnte man auch eine beliebige andere Primzahl verwenden. Mit <i>mod&nbsp;101</i> hätten wir zum Beispiel den Zahlenbereich <i>[0..100]</i>, was je nach Anwendung auch sehr praktisch sein kann...
+    </p>
+    <p>
+      Für negative Zahlen bei Modulo verwenden wir hier die Regeln, dass
+      <pre>
+-x mod -y = +x mod +y
+-x mod +y = +x mod -y = y - (x mod y)</pre>
+      ist, so dass der Modulo nie negativ ist. Beispiel:
+      <pre>
+-17 mod -7 = +17 mod +7 = 3
+-17 mod +7 = +17 mod -7 = 7 - (17 mod 7) = 4</pre>
+    </p>
+    <p>
+      Wenn jetzt jemand zum Beispiel die Werte <i>a</i> = 2, <i>b</i> = 2, <i>c</i> = 2 kennt, dann hat er über <i>s</i> trotzdem keine zusätzlichen Informationen, weil
+      <pre>s = (a*p + b*q + c) mod 257</pre>
+      je nach dem Wert von <i>p</i> und <i>q</i> jeden Zahl im Bereich <i>[0..256]</i> sein kann.
+    </p>
+    <h3>Rechnen im Zahlenraum <i>mod&nbsp;257</i></h3>
+    <p>
+      <pre>
+Addition      : a + b im Zahlenraum mod 257 = (a + b) mod 257
+Subtraktion   : a - b im Zahlenraum mod 257 = (a - b) mod 257
+Multiplikation: a * b im Zahlenraum mod 257 = (a * b) mod 257
+Division      : a / b im Zahlenraum mod 257 = ... ?</pre>
+      Die Division ist etwas aufwändiger: Es ist die Inverse der Multiplikation, also "finde die Zahl <i>c</i>, für die gilt: <i>(b&nbsp;*&nbsp;c)&nbsp;mod&nbsp;257&nbsp;=&nbsp;a</i>". Du berechnest <i>c</i> am einfachsten so: Prüfe, ob <i>a</i> ohne Rest durch <i>b</i> teilbar ist. Ist es nicht ohne Rest teilbar, dann addiere <i>257</i> zu <i>a</i> und prüfe erneut. Wiederhole diesen Vorgang, bis Du eine Zahl erhältst, die ohne Rest durch <i>b</i> teilbar ist. Das Ergebnis dieser Division ist die gesuchte Zahl <i>c</i>.<br>
+      Für negative Zahlen gilt dabei:
+      <pre>
+-a / -b = +a / +b                      | im Zahlenraum mod 257
+-a / +b = +a / -b = 257 - ( +a / +b )  | im Zahlenraum mod 257</pre>
+    </p>
+    <h3>Passwörter teilen</h3>
+    <p>
+      Richtig, das wollen wir ja eigentlich. Mit dem obigen Handwerkszeug geht das so:
+    </p>
+    <ul>
+      <li>Passwort in Zahlen umwandeln: Ermittle den UTF-8 Code des Passworts. Du erhältst eine Sequenz von Zahlen <i>s</i> im Bereich <i>[0..255]</i>.</li>
+      <li>Passwort auf Mindestlänge erweitern: Falls Du die Länge des Passworts verheimlichen willst, füge an beliebiger Stelle der Sequenz, zum Beispiel am Schluss, so oft Du möchtest <i>256</i> in die Sequenz ein.</li>
+      <li>Wähle für jede Zahl <i>s</i> aus der Sequenz eine neue Zufallszahl <i>p</i> aus dem Bereich <i>[0..256]</i>.</li>
+      <li>Berechne für jeden Teil, den Du erstellen willst, für jede Zahl <i>s</i> der Sequenz die Zahl <i>b</i>. Rechne dabei im <i>mod 257</i> Raum und verwende die oben genannten <i>a</i>-Werte.</li>
+    </ul>
+    <p>
+      Wenn Du zum Beispiel folgende Werte hast
+      <pre>a = 4, b = 7, p = 23, s = 65</pre>
+      dann berechne
+      <pre>
+a * p + b = s     | mod 257
+b = s - a * p     | mod 257
+c = TODO (65 - 4 * 23 - 7 * 218) mod 257
+c = TODO (-1553) mod 257
+c = TODO 257 - (1553 mod 257)
+c = TODO 257 - 11
+c = TODO 246</pre>
+    </p>
+    <ul>
+      <li value="5">Damit man später das rekonstruierte Passwort validieren kann, wiederhole das Verfahren mit neuen Zufallszahlen <i>p</i> und <i>q</i> und erstelle dabei die <i>v</i>-Werte.</li>
+      <li>Gib als Teil die Werte <i>a</i> und <i>b</i> sowie die Liste der <i>c</i>- und <i>v</i>-Werte weiter. Der Teil kann dann so aussehen:</li>
+    </ul>
+    <p>
+      <pre>
+{
+  "a": 4,
+  "b": 7,
+  "c": [236,6,124,109,87],
+  "v": [125,177,78,85,40]
+}</pre>
+    </p>
+    <h3>Passwörter wiederherstellen</h3>
+    <ul>
+      <li>Du hast drei Teile, jeweils mit <i>a</i> und <i>b</i> sowie die Liste der <i>c</i>- und <i>v</i>-Werte.</li>
+      <li>Berechne aus diesen Zahlen die zwei Listen der <i>s</i>-Werte - die erste Liste aus den <i>c</i>-Werten, die zweite aus den <i>v</i>-Werten. Verwende die Formel für <i>s</i>, die wir oben aus dem Gleichungssystem mit drei Gleichungen hergeleitet haben, und rechne dabei im <i>mod 257</i> Zahlenraum.</li>
+      <li>Vergleiche die zwei Listen von <i>s</i>-Werten. Wenn sie sich unterscheiden, ist das wiederhergestellte Passwort möglicherweise nicht korrekt. Mögliche Gründe für die Unterschiede sind neben Rechenfehlern, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.</li>
+      <li>Entferne alle Zahlen <i>256</i> aus der Liste.</li>
+      <li>Interpretiere die resultierende Liste von Bytes als UTF-8 Zeichenkette.</li>
+    </ul>
+    <h2 id="licenseNav">Lizenz und weitere Informationen</h2>
+    <p>
+      (c) 2023 und später <a href="https://github.com/gdiet">gdiet</a><br>
+      Lizenz: <a href="https://opensource.org/license/mit">MIT Lizenz</a>
+    </p>
+    <p>
+      Stand des Dokuments:<br>
+      ###Datumsstempel###<br>
+      <a href="https://github.com/gdiet/secret-sharing/commit/###CommitHash###">https://github.com/gdiet/secret-sharing/commit/###CommitHash###</a>
+    </p>
+    <p>
+      Anstelle von "weitere Informationen": Möchtest Du vielleicht<br>
+      den <a href="https://github.com/gdiet/secret-sharing/tree/main/typescript/dist">Quellcode dieser Seiten auf GitHub</a> anschauen?
+    </p>
+  </body>
+</html>
