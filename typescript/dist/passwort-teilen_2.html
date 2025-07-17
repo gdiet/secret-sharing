@@ -394,7 +394,7 @@ function bytesToUtf8(bytes) {
             * Gegeben sind zwei Teile, jeweils mit den Feldern a, b und v.<br>
             * b und v sind dabei jeweils eine Liste von Zahlen.<br>
             * Alle b-Werte werden einzeln nacheinander verwendet.<br>
-            Die zwei a-Werte sowie den jeweils ersten b-Wert nennen wir im folgenden a1, a2, a3, b1, b2, b3. Für jede Position in der b-Liste ist das folgende Verfahren entsprechend auszuführen:
+            Die zwei a-Werte sowie den jeweils ersten b-Wert nennen wir im folgenden a1, a2, b1, b2. Für jede Position in der b-Liste ist das folgende Verfahren entsprechend auszuführen:
             <pre>
 function calculateSecret(a1, a2, b1, b2) {
   let dividend = mod257(b1*a2 - b2*a1)
@@ -450,7 +450,7 @@ n =    a2 - a1   </pre>
         </p>
         <p>
           <i>
-            Wenn Du aus den c-Werten das Passwort rekonstruiert hast, dann kannst Du es mit den v-Werten validieren. Dazu berechnest Du für jeden v-Wert die Zahl s wie oben beschrieben und vergleichst sie mit dem entsprechenden b-Wert. Wenn sich Passwort-Daten und Validierungs-Daten unterscheiden, ist das wiederhergestellte Passwort möglicherweise nicht korrekt. Mögliche Gründe für die Unterschiede sind, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.
+            Wenn Du aus den b-Werten das Passwort rekonstruiert hast, dann kannst Du es mit den v-Werten validieren. Dazu berechnest Du für jeden v-Wert die Zahl s wie oben beschrieben und vergleichst sie den aus den b-Werten berechneten Zahlen. Wenn sich Passwort-Daten und Validierungs-Daten unterscheiden, ist das wiederhergestellte Passwort möglicherweise nicht korrekt. Mögliche Gründe für die Unterschiede sind, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.
           </i>
         </p>
         <p>
@@ -540,9 +540,9 @@ n =    a2 - a1   </pre>
 -17 mod +7 = +17 mod -7 = 7 - (17 mod 7) = 4</pre>
     </p>
     <p>
-      Wenn jetzt jemand zum Beispiel die Werte <i>a</i> = 2, <i>b</i> = 2, <i>c</i> = 2 kennt, dann hat er über <i>s</i> trotzdem keine zusätzlichen Informationen, weil
-      <pre>s = (a*p + b*q + c) mod 257</pre>
-      je nach dem Wert von <i>p</i> und <i>q</i> jeden Zahl im Bereich <i>[0..256]</i> sein kann.
+      Wenn jetzt jemand zum Beispiel die Werte <i>a</i> = 2 und <i>b</i> = 2 kennt, dann hat er über <i>s</i> trotzdem keine zusätzlichen Informationen, weil
+      <pre>s = (a*p + b) mod 257</pre>
+      je nach dem Wert von <i>p</i> jede Zahl im Bereich <i>[0..256]</i> sein kann.
     </p>
     <h3>Rechnen im Zahlenraum <i>mod&nbsp;257</i></h3>
     <p>
@@ -569,34 +569,34 @@ Division      : a / b im Zahlenraum mod 257 = ... ?</pre>
     </ul>
     <p>
       Wenn Du zum Beispiel folgende Werte hast
-      <pre>a = 4, b = 7, p = 23, s = 65</pre>
+      <pre>a = 4, p = 23, s = 65</pre>
       dann berechne
       <pre>
-a * p + b = s     | mod 257
-b = s - a * p     | mod 257
-c = TODO (65 - 4 * 23 - 7 * 218) mod 257
-c = TODO (-1553) mod 257
-c = TODO 257 - (1553 mod 257)
-c = TODO 257 - 11
-c = TODO 246</pre>
+s = a * p  + b    | mod 257
+b = s  - a * p    | mod 257
+b = 65 - 4 * 23   | mod 257
+b = 65 - 92       | mod 257
+b = -27           | mod 257
+b = 257 - (27 mod 257)
+b = 257 - 27
+b = 230</pre>
     </p>
     <ul>
       <li value="5">Damit man später das rekonstruierte Passwort validieren kann, wiederhole das Verfahren mit neuen Zufallszahlen <i>p</i> und <i>q</i> und erstelle dabei die <i>v</i>-Werte.</li>
-      <li>Gib als Teil die Werte <i>a</i> und <i>b</i> sowie die Liste der <i>c</i>- und <i>v</i>-Werte weiter. Der Teil kann dann so aussehen:</li>
+      <li>Gib als Teil die Werte <i>a</i> die Liste der <i>b</i>- und <i>v</i>-Werte weiter. Der Teil kann dann so aussehen:</li>
     </ul>
     <p>
       <pre>
 {
   "a": 4,
-  "b": 7,
-  "c": [236,6,124,109,87],
+  "b": [236,6,124,109,87],
   "v": [125,177,78,85,40]
 }</pre>
     </p>
     <h3>Passwörter wiederherstellen</h3>
     <ul>
-      <li>Du hast drei Teile, jeweils mit <i>a</i> und <i>b</i> sowie die Liste der <i>c</i>- und <i>v</i>-Werte.</li>
-      <li>Berechne aus diesen Zahlen die zwei Listen der <i>s</i>-Werte - die erste Liste aus den <i>c</i>-Werten, die zweite aus den <i>v</i>-Werten. Verwende die Formel für <i>s</i>, die wir oben aus dem Gleichungssystem mit drei Gleichungen hergeleitet haben, und rechne dabei im <i>mod 257</i> Zahlenraum.</li>
+      <li>Du hast zwei Teile, jeweils mit <i>a</i> und der Liste der <i>b</i>- und <i>v</i>-Werte.</li>
+      <li>Berechne aus diesen Zahlen die zwei Listen der <i>s</i>-Werte - die erste Liste aus den <i>b</i>-Werten, die zweite aus den <i>v</i>-Werten. Verwende die Formel für <i>s</i>, die wir oben aus dem Gleichungssystem mit zwei Gleichungen hergeleitet haben, und rechne dabei im <i>mod 257</i> Zahlenraum.</li>
       <li>Vergleiche die zwei Listen von <i>s</i>-Werten. Wenn sie sich unterscheiden, ist das wiederhergestellte Passwort möglicherweise nicht korrekt. Mögliche Gründe für die Unterschiede sind neben Rechenfehlern, dass Teile kombiniert wurden, die nicht zueinander gehören, oder dass die Daten in den Teilen nicht komplett richtig vorliegen.</li>
       <li>Entferne alle Zahlen <i>256</i> aus der Liste.</li>
       <li>Interpretiere die resultierende Liste von Bytes als UTF-8 Zeichenkette.</li>
