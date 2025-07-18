@@ -69,7 +69,7 @@ function shareInput(share, statusSpan) {
   }
   try {
     const json = JSON.parse(share)
-    if (!Number.isInteger(json.a) || json.a < 1 || json.a > 10) throw 'a'
+    if (!Number.isInteger(json.a) || json.a < 1 || json.a > 256) throw 'a'
     if (!Array.isArray(json.b) || json.b.some(n => !Number.isInteger(n) || n < 0 || n > 256)) throw 'b'
     if (!Array.isArray(json.v) || json.v.some(n => !Number.isInteger(n) || n < 0 || n > 256))
       statusSpan.textContent = `Unerwartete Eingabe für Feld v`
@@ -342,8 +342,8 @@ function bytesToUtf8(bytes) {
         <label for="padToLengthInput">Passwort auf Mindestlänge erweitern (nicht erweitern: 0, Maximum: 64):</label>
         <input id="padToLengthInput" class="textinput" type="number" min="0" max="64" step="1" value="20" />
         <br><br>
-        <label for="numberOfSharesInput">Anzahl der zu erzeugenden Teile (Minimum: 2, Maximum: 15):</label>
-        <input id="numberOfSharesInput" class="textinput" type="number" min="2" max="15" step="1" value="5" />
+        <label for="numberOfSharesInput">Anzahl der zu erzeugenden Teile (Minimum: 2, Maximum: 256):</label>
+        <input id="numberOfSharesInput" class="textinput" type="number" min="2" max="256" step="1" value="5" />
         <br><br>
         <label for="sharesDescriptionInput">Optionale Beschreibung der Teile:</label>
         <textarea
