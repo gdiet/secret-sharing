@@ -8,19 +8,19 @@
 // @ts-check
 
 window.addEventListener('DOMContentLoaded', () => {
-  documentElement('javascriptWarning').style.display = 'none'
+  documentElement('#javascriptWarning').style.display = 'none'
 })
 
 // COMBINING SHARES //
 
 window.addEventListener('DOMContentLoaded', () => {
-  registerListener('fillExampleSharesButton', 'click', () => {
-    textAreaElement('shareInput1').value = `{
+  registerListener('#fillExampleSharesButton', 'click', () => {
+    textAreaElement('#shareInput1').value = `{
       "a": 5,
       "b": [205,123,66,122,140,51,41,57,8,135,132,240,231,107,254,56,165,105,222,247],
       "v": [236,182,136,177,210,149,174,198,138,246,244,69,73,43,215,176,192,76,203,127]
     }`.replace(/    /g, "")
-    textAreaElement('shareInput2').value = `{
+    textAreaElement('#shareInput2').value = `{
       "a": 3,
       "b": [252,241,137,165,175,179,65,132,18,132,233,195,241,218,152,136,150,114,30,45],
       "v": [65,225,179,198,217,135,42,11,96,250,146,41,249,231,180,208,12,148,70,230]
@@ -28,26 +28,26 @@ window.addEventListener('DOMContentLoaded', () => {
     shareInputChanged()
   })
 
-  registerListener('shareInput1', 'change', () => shareInputChanged())
-  registerListener('shareInput2', 'change', () => shareInputChanged())
+  registerListener('#shareInput1', 'change', () => shareInputChanged())
+  registerListener('#shareInput2', 'change', () => shareInputChanged())
 
 })
 
 function shareInputChanged() {
-  const share1 = shareInput(textAreaElement('shareInput1').value, documentElement('shareInput1Status'))
-  const share2 = shareInput(textAreaElement('shareInput2').value, documentElement('shareInput2Status'))
+  const share1 = shareInput(textAreaElement('#shareInput1').value, documentElement('#shareInput1Status'))
+  const share2 = shareInput(textAreaElement('#shareInput2').value, documentElement('#shareInput2Status'))
   const s = restore(share1, share2, share => share.b)
   const sString = bytesToUtf8(s.filter(n => n < 256))
   const v = restore(share1, share2, share => share.v)
   const vString = bytesToUtf8(v.filter(n => n < 256))
-  inputElement('restoredNumbersS').value = `${s}`
-  inputElement('restoredNumbersV').value = `${v}`
-  if (`${s}` === `${v}`) inputElement('restoredNumbersV').classList.remove('problem')
-  else inputElement('restoredNumbersV').classList.add('problem')
-  inputElement('restoredStringS').value = sString
-  inputElement('restoredStringV').value = vString
-  if (sString === vString) inputElement('restoredStringV').classList.remove('problem')
-  else inputElement('restoredStringV').classList.add('problem')
+  inputElement('#restoredNumbersS').value = `${s}`
+  inputElement('#restoredNumbersV').value = `${v}`
+  if (`${s}` === `${v}`) inputElement('#restoredNumbersV').classList.remove('problem')
+  else inputElement('#restoredNumbersV').classList.add('problem')
+  inputElement('#restoredStringS').value = sString
+  inputElement('#restoredStringV').value = vString
+  if (sString === vString) inputElement('#restoredStringV').classList.remove('problem')
+  else inputElement('#restoredStringV').classList.add('problem')
 }
 
 function restore(share1, share2, accessor) {
@@ -113,16 +113,16 @@ function div257(a, b) {
 // CREATING SHARES //
 
 window.addEventListener('DOMContentLoaded', () => {
-  registerListener('createSharesButton', 'click', () => createShares())
-  registerListener('secretInput', 'change', () => documentElement('shareInfoDiv').hidden = true)
-  registerListener('padToLengthInput', 'change', () => documentElement('shareInfoDiv').hidden = true)
-  registerListener('numberOfSharesInput', 'change', () => documentElement('shareInfoDiv').hidden = true)
+  registerListener('#createSharesButton', 'click', () => createShares())
+  registerListener('#secretInput', 'change', () => documentElement('#shareInfoDiv').hidden = true)
+  registerListener('#padToLengthInput', 'change', () => documentElement('#shareInfoDiv').hidden = true)
+  registerListener('#numberOfSharesInput', 'change', () => documentElement('#shareInfoDiv').hidden = true)
 })
 
 function createShares() {
-  const secretBytes = utf8ToUint8(inputElement('secretInput').value)
-  const padToLength = parseInt(inputElement('padToLengthInput').value)
-  const numberOfShares = Math.min(+inputElement('numberOfSharesInput').value, +inputElement('numberOfSharesInput').max)
+  const secretBytes = utf8ToUint8(inputElement('#secretInput').value)
+  const padToLength = parseInt(inputElement('#padToLengthInput').value)
+  const numberOfShares = Math.min(+inputElement('#numberOfSharesInput').value, +inputElement('#numberOfSharesInput').max)
   const paddingLength = Math.max(padToLength - secretBytes.length, 0)
   const secretPadded = [...secretBytes, ...new Array(paddingLength).fill(256)]
   const length = secretPadded.length
@@ -133,18 +133,18 @@ function createShares() {
     b: secretPadded.map((s, i) => calculateB(index + 1, p1[i], s)),
     validation: secretPadded.map((s, i) => calculateB(index + 1, p2[i], s))
   }))
-  documentElement('sharesSpan').innerHTML = shareText(shares)
-  documentElement('sharesDescriptionSpan').innerText = textAreaElement('sharesDescriptionInput').value.replace(/\r?\n/g, ' ')
-  documentElement('numberOfSharesSpan').innerText = `${numberOfShares}`
+  documentElement('#sharesSpan').innerHTML = shareText(shares)
+  documentElement('#sharesDescriptionSpan').innerText = textAreaElement('#sharesDescriptionInput').value.replace(/\r?\n/g, ' ')
+  documentElement('#numberOfSharesSpan').innerText = `${numberOfShares}`
   const date = new Date()
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
-  documentElement('createdDateSpan').innerText = `${day}.${month}.${year}`
-  documentElement('secretNumbersSpan').innerHTML = `s: ${secretPadded}`
-  documentElement('pValuesSpan').innerHTML = `p: ${p1}`
-  documentElement('pValidationValuesSpan').innerHTML = `p: ${p2}`
-  documentElement('shareInfoDiv').hidden = false
+  documentElement('#createdDateSpan').innerText = `${day}.${month}.${year}`
+  documentElement('#secretNumbersSpan').innerHTML = `s: ${secretPadded}`
+  documentElement('#pValuesSpan').innerHTML = `p: ${p1}`
+  documentElement('#pValidationValuesSpan').innerHTML = `p: ${p2}`
+  documentElement('#shareInfoDiv').hidden = false
 }
 
 // calculate b for a*p + b = s
@@ -182,26 +182,26 @@ function cleanMultiline(text) {
     .join('<br>')
 }
 
-function documentElement(elementIdString) {
-  const maybeElement = document.getElementById(elementIdString)
+function documentElement(selector) {
+  const maybeElement = document.querySelector(selector)
   if (maybeElement !== null) return maybeElement
   throw error('Null check in script failed')
 }
 
-function inputElement(elementIdString) {
-  const maybeInput = documentElement(elementIdString)
+function inputElement(selector) {
+  const maybeInput = documentElement(selector)
   if (maybeInput instanceof HTMLInputElement) return maybeInput
   throw error('Type check in script failed')
 }
 
-function textAreaElement(elementIdString) {
-  const maybeInput = documentElement(elementIdString)
+function textAreaElement(selector) {
+  const maybeInput = documentElement(selector)
   if (maybeInput instanceof HTMLTextAreaElement) return maybeInput
   throw error('Type check in script failed')
 }
 
-function registerListener(elementIdString, eventTypeString, eventListener) {
-  documentElement(elementIdString).addEventListener(eventTypeString, eventListener)
+function registerListener(selector, eventTypeString, eventListener) {
+  documentElement(selector).addEventListener(eventTypeString, eventListener)
 }
 
 function error(messageString) {
