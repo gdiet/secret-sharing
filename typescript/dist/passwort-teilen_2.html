@@ -225,30 +225,29 @@ function bytesToUtf8(bytes) {
         font-size: 115%;
         font-family: system-ui, sans-serif, serif;
       }
-      .problem {
-        border-color: red;
-        color: red;
-      }
-      .scrollable {
-        width: auto;
-        overflow-x: auto;
-        border: 1px solid #cccccc;
-        padding: 10px;
-      }
-      .textinput {
-        background-color: #fbfbfb;
-        border-color: #cccccc;
-        border-left: none;
-        border-right: none;
-        padding-left: 0%;
-        padding-right: 0%;
-        width: 100%;
-      }
       p {
         line-height: 140%;
       }
       ul {
         margin-left: -1em;
+      }
+      pre, .scrollable {
+        width: auto;
+        overflow-x: auto;
+        padding: 10px;
+      }
+      .bordered {
+        border: 1px solid #cccccc;
+      }
+      .textinput {
+        background-color: #fbfbfb;
+        border: 1px solid #cccccc;
+        padding-left: 3px;
+        width: 100%;
+      }
+      .problem {
+        border-color: red;
+        color: red;
       }
     </style>
   </head>
@@ -366,7 +365,8 @@ function bytesToUtf8(bytes) {
           Unten findest Du die verschlüsselten Teile Deines Passworts. Danach folgt ein Vorschlag, wie Du die Teile an andere Personen weitergeben kannst, damit diese auch in zehn Jahren noch wissen, was sie da haben.
         </p>
         <hr />
-        <pre class="scrollable"><span id="sharesSpan">DYNAMISCHER TEXT: Die verschlüsselten Teile</span>
+        <pre class="bordered">==> ==>  Eventuell musst Du scrollen  ==> ==>
+          <br><span id="sharesSpan">DYNAMISCHER TEXT: Die verschlüsselten Teile</span>
           <br>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
         <hr />
         <p>
@@ -460,13 +460,13 @@ n =    a2 - a1   </pre>
         <h3>Wenn dich die Mathematik der Berechnung interessiert...</h3>
         <p>
           ... findest Du hier die (möglicherweise durch <i>256</i> Werte erweiterten) UTF-8 Zahlenwerte (s-Werte), die das Passwort darstellen:
-          <pre class="scrollable"><span id="secretNumbersSpan">DYNAMISCHER TEXT: Passwort als Zahlen (UTF-8)</span>
+          <pre class="bordered"><span id="secretNumbersSpan">DYNAMISCHER TEXT: Passwort als Zahlen (UTF-8)</span>
           <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
           Folgendes sind die p-Werte (siehe <a href="#theoryNav">Die Theorie hinter dem Ganzen</a>), die für die Berechnung der b-Werte verwendet wurden:
-          <pre class="scrollable"><span id="pValuesSpan">DYNAMISCHER TEXT: Werte von p</span>
+          <pre class="bordered"><span id="pValuesSpan">DYNAMISCHER TEXT: Werte von p</span>
           <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
           Und folgendes sind die p-Werte, die für die Berechnung der v-Werte für die Validierung verwendet wurden:
-          <pre class="scrollable"><span id="pValidationValuesSpan">DYNAMISCHER TEXT: Werte von p (Validierung)</span>
+          <pre class="bordered"><span id="pValidationValuesSpan">DYNAMISCHER TEXT: Werte von p (Validierung)</span>
           <br/>==> ==>  Eventuell musst Du scrollen  ==> ==></pre>
           <b>Wichtig:</b> Die s- und p-Werte werden <b>nicht</b> benötigt, wenn Du das Passwort verschlüsselt teilst. Gib sie <b>auf keinen Fall</b> an andere Personen weiter. Es ist <b>nicht</b> nötig sie zu speichern.
         </p>
