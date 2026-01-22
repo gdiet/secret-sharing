@@ -67,7 +67,7 @@ function restore(share1, share2, share3, accessor) {
   const length =
     Math.max(accessor(share1)?.length ?? 0, accessor(share2)?.length ?? 0, accessor(share3)?.length ?? 0)
   return Array.from({ length: length }).map((_, index) =>
-    calculateShare(
+    calculateSecret(
       share1.a, share2.a, share3.a,
       share1.b, share2.b, share3.b,
       accessor(share1)[index], accessor(share2)[index], accessor(share3)[index]
@@ -110,7 +110,7 @@ function shareInput(share, statusSpan) {
  * s = ---------------------------------------------------------------
  *              a1*b3 + a3*b2 + a2*b1 - a2*b3 - a3*b1 - a1*b2
  */
-function calculateShare(a1, a2, a3, b1, b2, b3, c1, c2, c3) {
+function calculateSecret(a1, a2, a3, b1, b2, b3, c1, c2, c3) {
   if ([a1, a2, a3, b1, b2, b3, c1, c2, c3].some(n =>
     !Number.isInteger(n) || n < 0 || n > 256
   )) return NaN
