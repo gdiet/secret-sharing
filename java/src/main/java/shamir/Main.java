@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Main {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         if (args.length == 0) usage();
         else if ("share"         .equals(args[0]) && args.length == 4)
             share         (args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
@@ -25,9 +25,9 @@ public class Main {
         else usage();
     }
 
-    final static Shamir.Random random = Optional.ofNullable(System.getenv("fakerandom"))
+    static final Shamir.Random random = Optional.ofNullable(System.getenv("fakerandom"))
             .map(fakeRandom -> {
-                System.err.printf("Using fake random value %s.\n", fakeRandom);
+                System.err.printf("Using fake random value %s.%n", fakeRandom);
                 return (Shamir.Random) (ignore1, ignore2) -> Integer.parseInt(fakeRandom);
             })
             .orElse(new SecureRandom()::nextInt);
